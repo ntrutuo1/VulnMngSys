@@ -1,11 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('rules', 'rules')],
+    datas=[('rules', 'rules'), ('react-ui/dist', 'react-ui/dist')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -22,7 +24,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='VulnMngSysDesktop',
+    name=os.environ.get('VULNMGN_EXE_NAME', 'VulnMngSysDesktop'),
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

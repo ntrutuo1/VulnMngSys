@@ -47,8 +47,19 @@ class ScanSummary:
 
 
 @dataclass
+class CveAdvisory:
+    cve_id: str
+    title: str
+    severity: str
+    reason: str
+    reference: str
+
+
+@dataclass
 class ScanReport:
     module: ModuleDefinition
     used_config_paths: dict[str, str]
     summary: ScanSummary
     results: list[RuleResult]
+    version_context: dict[str, str] = field(default_factory=dict)
+    cve_advisories: list[CveAdvisory] = field(default_factory=list)

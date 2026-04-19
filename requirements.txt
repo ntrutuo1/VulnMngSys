@@ -1,1 +1,1 @@
-# Standard library only (tkinter included in most Python installers)
+pywebview>=5.2

@@ -16,13 +16,21 @@ def _is_windows_admin() -> bool:
 
 
 def _relaunch_windows_admin() -> None:
-    script = str(Path(sys.argv[0]).resolve())
     params = " ".join([f'"{arg}"' for arg in sys.argv[1:]])
+
+    if getattr(sys, "frozen", False):
+        executable = str(Path(sys.executable).resolve())
+        launch_params = params
+    else:
+        script = str(Path(sys.argv[0]).resolve())
+        executable = sys.executable
+        launch_params = f'"{script}" {params}'.strip()
+
     result = ctypes.windll.shell32.ShellExecuteW(
         None,
         "runas",
-        sys.executable,
-        f'"{script}" {params}'.strip(),
+        executable,
+        launch_params,
         None,
         1,
     )

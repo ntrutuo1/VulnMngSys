@@ -6,25 +6,22 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox, ttk
 
+from .contracts import ModuleCatalog, ReportWriter, ScanEngine
 from .models import ModuleDefinition, ScanReport
-from .modules import load_modules
-from .reporting import write_report
-from .scanner import scan_module
+from .modules import HardcodedModuleCatalog
+from .platform_probe import detect_host_family, detect_host_version, detect_service_version
+from .reporting import get_report_writer
+from .scanner import get_scanner
 
 
 class AppState:
-    def __init__(self) -> None:
-        self.modules = load_modules()
+    def __init__(self, module_catalog: ModuleCatalog) -> None:
+        self.modules = module_catalog.list_modules()
         self.module_map = {item.display_name: item for item in self.modules}
 
 
 def _detect_host_family() -> str:
-    system = platform.system().lower()
-    if system.startswith("win"):
-        return "windows"
-    if system == "darwin":
-        return "macos"
-    return "linux"
+    return detect_host_family()
 
 
 def _filter_modules(modules: list[ModuleDefinition], os_family: str, service: str) -> list[ModuleDefinition]:
@@ -56,6 +53,20 @@ def _format_report(report: ScanReport) -> str:
         lines.append("Warnings:")
         for warning in summary.warnings:
             lines.append(f"- {warning}")
+
+    if report.version_context:
+        lines.append("")
+        lines.append("Version context:")
+        lines.append(f"- OS version: {report.version_context.get('os_version', '')}")
+        lines.append(f"- Service version: {report.version_context.get('service_version', '')}")
+
+    if report.cve_advisories:
+        lines.append("")
+        lines.append("CVE intelligence:")
+        for item in report.cve_advisories:
+            lines.append(
+                f"- [{item.severity.upper()}] {item.cve_id} | {item.title} | {item.reason}"
+            )
 
     lines.append("")
     lines.append("Rule results:")
@@ -104,8 +115,15 @@ def _module_targets_exist(module: ModuleDefinition) -> tuple[bool, dict[str, str
     return True, resolved
 
 
-def run_app() -> None:
-    state = AppState()
+def run_app(
+    module_catalog: ModuleCatalog | None = None,
+    scanner: ScanEngine | None = None,
+    report_writer: ReportWriter | None = None,
+) -> None:
+    catalog = module_catalog or HardcodedModuleCatalog()
+    scan_engine = scanner or get_scanner()
+    writer = report_writer or get_report_writer()
+    state = AppState(catalog)
 
     root = tk.Tk()
     root.title("VulnMngSys Desktop Scanner")
@@ -135,6 +153,16 @@ def run_app() -> None:
     module_combo = ttk.Combobox(top_frame, textvariable=module_var, state="readonly", width=48)
     module_combo.grid(row=0, column=5, sticky="we")
 
+    ttk.Label(top_frame, text="OS Version").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=(8, 0))
+    os_version_var = tk.StringVar(value="")
+    os_version_entry = ttk.Entry(top_frame, textvariable=os_version_var, width=18)
+    os_version_entry.grid(row=1, column=1, sticky="w", pady=(8, 0))
+
+    ttk.Label(top_frame, text="Service Version").grid(row=1, column=2, sticky="w", padx=(16, 8), pady=(8, 0))
+    service_version_var = tk.StringVar(value="")
+    service_version_entry = ttk.Entry(top_frame, textvariable=service_version_var, width=20)
+    service_version_entry.grid(row=1, column=3, sticky="w", pady=(8, 0))
+
     top_frame.columnconfigure(5, weight=1)
 
     text_frame = ttk.Frame(root, padding=(12, 0, 12, 12))
@@ -156,8 +184,24 @@ def run_app() -> None:
         module_combo["values"] = names
         if names:
             module_var.set(names[0])
+            selected = state.module_map[names[0]]
+            os_version_var.set(detect_host_version() if os_var.get() == detect_host_family() else selected.os_version)
+            detected_service = detect_service_version(selected.service_type)
+            service_version_var.set(detected_service or "")
         else:
             module_var.set("")
+            os_version_var.set("")
+            service_version_var.set("")
+
+    def on_module_change(*_args) -> None:
+        selected_name = module_var.get().strip()
+        if not selected_name:
+            return
+        module = state.module_map[selected_name]
+        os_version_var.set(detect_host_version() if module.os_family == detect_host_family() else module.os_version)
+        detected_service = detect_service_version(module.service_type)
+        if detected_service:
+            service_version_var.set(detected_service)
 
     def run_scan() -> None:
         selected_name = module_var.get().strip()
@@ -173,7 +217,11 @@ def run_app() -> None:
             return
 
         try:
-            report = scan_module(module)
+            report = scan_engine.scan(
+                module,
+                os_version=os_version_var.get().strip() or module.os_version,
+                service_version=service_version_var.get().strip(),
+            )
         except FileNotFoundError as exc:
             output.delete("1.0", tk.END)
             output.insert(
@@ -192,7 +240,7 @@ def run_app() -> None:
         output.insert(tk.END, _format_report(report))
 
         reports_dir = Path.cwd() / "reports"
-        report_path = write_report(report, reports_dir)
+        report_path = writer.write(report, reports_dir)
         messagebox.showinfo("Scan complete", f"Report saved at:\n{report_path}")
 
     def show_flow() -> None:
@@ -213,6 +261,7 @@ def run_app() -> None:
 
     os_combo.bind("<<ComboboxSelected>>", refresh_module_list)
     service_combo.bind("<<ComboboxSelected>>", refresh_module_list)
+    module_combo.bind("<<ComboboxSelected>>", on_module_change)
 
     refresh_module_list()
     output.insert(
