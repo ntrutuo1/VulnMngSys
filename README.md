@@ -23,15 +23,14 @@ Rule sources are kept in `rules/` and mapped to executable checks in code.
 ## Project Layout
 
 - `main.py`: app entrypoint
-- `vulnmngsys_app/contracts.py`: abstraction layer (Protocol interfaces)
-- `vulnmngsys_app/services.py`: concrete scan/scoring/report implementations
-- `vulnmngsys_app/privilege.py`: privilege elevation
-- `vulnmngsys_app/modules/`: hardcoded module catalog split by service and version
+- `vulnmngsys_app/domain/`: entities + contracts (pure domain)
+- `vulnmngsys_app/application/`: factories/composition root
+- `vulnmngsys_app/infrastructure/`: adapters (scan, report, platform, privilege, catalog, CVE intel)
+- `vulnmngsys_app/interfaces/`: delivery layers (CLI, Tk GUI, desktop frontend host)
+- `vulnmngsys_app/modules/`: hardcoded module definitions by service/version
   - `modules/ssh/`: SSH modules by OS/version
   - `modules/apache/`: Apache modules by OS/version
-- `vulnmngsys_app/scanner.py`: backward-compatible scanner facade
-- `vulnmngsys_app/ui.py`: desktop interface
-- `vulnmngsys_app/reporting.py`: backward-compatible reporting facade
+- `vulnmngsys_app/*.py` (legacy names): compatibility facades to keep old imports working
 - `rules/`: source rule text files
 
 ## SOLID Notes
@@ -136,6 +135,53 @@ python main.py --cli --service ssh --os-version ubuntu-22.04 --service-version 9
 
 If `--os-version` or `--service-version` is omitted, the scanner now auto-detects values from host commands/files across Windows, Linux, and macOS where possible.
 
+### Detect and list service versions (SSH/HTTPD/Tomcat)
+
+The project now includes a dedicated script that probes and lists versions from multiple sources, including XAMPP/LAMPP paths.
+
+```bash
+python scripts/detect_and_install_services.py
+```
+
+Probe only selected services:
+
+```bash
+python scripts/detect_and_install_services.py --services ssh apache-http apache-tomcat
+```
+
+Apache layout mode (when you are not sure if host uses XAMPP or standalone):
+
+```bash
+python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout auto
+python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout xampp
+python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout standalone
+```
+
+If XAMPP is installed in a custom folder, provide it explicitly:
+
+```bash
+python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout xampp --xampp-root D:/tools/xampp
+```
+
+In `xampp` mode, the probe tries to locate Apache/Tomcat `bin` directories first, changes into them, runs version commands, and parses output for version auto-fill.
+
+Attempt automatic installation for missing services:
+
+```bash
+python scripts/detect_and_install_services.py --install-missing
+```
+
+Non-interactive install mode:
+
+```bash
+python scripts/detect_and_install_services.py --install-missing --yes
+```
+
+Notes:
+- Windows: `ssh` uses OpenSSH capability install, `apache-http` and `apache-tomcat` use XAMPP via `winget`.
+- Linux: installer uses detected package manager (`apt-get`, `dnf`, `yum`, or `pacman`).
+- On systems without package manager support in this script, install command must be run manually.
+
 ### Build Linux executable
 
 ```bash
@@ -159,6 +205,16 @@ Use the provided PowerShell script to bundle the React frontend into the exe:
 
 ```powershell
 .\build_windows.ps1
+```
+Script sẽ tạo 2 file trong thư mục `dist`:
+
+- `VulnMngSysDesktop-<timestamp>.exe`: bản GUI desktop (React UI).
+- `VulnMngSysDesktop-CLI-<timestamp>.exe`: bản CLI (hỗ trợ `--cli --interactive`).
+
+Ví dụ chạy bản CLI interactive trên Windows:
+
+```powershell
+.\dist\VulnMngSysDesktop-CLI-<timestamp>.exe --cli --interactive
 ```
 
 If you want to run the commands manually:

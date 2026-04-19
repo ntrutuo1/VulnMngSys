@@ -12,7 +12,12 @@ def linux_apache_paths() -> list[str]:
 
 
 def windows_apache_paths() -> list[str]:
-    return [r"C:\Apache24\conf\httpd.conf"]
+    return [
+        r"C:\xampp\apache\conf\httpd.conf",  # XAMPP first
+        r"C:\Apache24\conf\httpd.conf",      # Standalone
+        r"C:\Program Files\Apache Group\Apache2\conf\httpd.conf",
+        r"C:\Program Files (x86)\Apache Group\Apache2\conf\httpd.conf",
+    ]
 
 
 def macos_apache_paths() -> list[str]:
@@ -41,9 +46,21 @@ def linux_tomcat_paths() -> dict[str, list[str]]:
 
 def windows_tomcat_paths() -> dict[str, list[str]]:
     return {
-        "server": [r"C:\Tomcat\conf\server.xml"],
-        "web": [r"C:\Tomcat\conf\web.xml"],
-        "context": [r"C:\Tomcat\conf\context.xml"],
+        "server": [
+            r"C:\xampp\tomcat\conf\server.xml",  # XAMPP first
+            r"C:\Tomcat\conf\server.xml",
+            r"C:\Program Files\Apache Tomcat\conf\server.xml",
+        ],
+        "web": [
+            r"C:\xampp\tomcat\conf\web.xml",
+            r"C:\Tomcat\conf\web.xml",
+            r"C:\Program Files\Apache Tomcat\conf\web.xml",
+        ],
+        "context": [
+            r"C:\xampp\tomcat\conf\context.xml",
+            r"C:\Tomcat\conf\context.xml",
+            r"C:\Program Files\Apache Tomcat\conf\context.xml",
+        ],
     }
 
 

@@ -1,66 +1,293 @@
---------------------------------------------------------------------------------
-PHẦN 2: APACHE CONFIGURATION THEO APPLICATION TIER
---------------------------------------------------------------------------------
+================================================================================
+        TẬP TIN CẤU HÌNH VÀ HƯỚNG DẪN CHUẨN: APACHE HTTP SERVER 2.4
+================================================================================
+# Nguồn: CIS Apache HTTP Server 2.4 Benchmark v2.3.0
+# Tệp áp dụng: /etc/httpd/conf/httpd.conf hoặc /etc/apache2/apache2.conf
 
-[App_Target = Apache HTTP Server 2.4]
-Đường dẫn file: /etc/httpd/conf/httpd.conf hoặc /etc/apache2/apache2.conf
-Mục tiêu: Ẩn thông tin phiên bản, chống DoS, chặn duyệt thư mục.
+# ------------------------------------------------------------------------------
+# 1. QUYỀN THỰC THI (PRINCIPLES & PERMISSIONS)
+# ------------------------------------------------------------------------------
+# Chạy Apache bằng một user/group riêng biệt không có đặc quyền root để giảm rủi ro
+# khi máy chủ bị xâm nhập [1], [2].
+User apache
+Group apache
 
-# Ẩn thông tin hệ thống (Information Leakage)
-ServerTokens Prod                   # Chỉ trả về "Apache" trong Header, giấu version OS [42, 43]
-ServerSignature Off                 # Không in chữ ký server ở các trang lỗi [42, 43]
-TraceEnable off                     # Tắt phương thức TRACE (Chống lỗi XST) [44, 45]
+# Đảm bảo Core Dump và PidFile nằm ở thư mục an toàn, không thuộc DocumentRoot 
+# và chỉ root mới có quyền ghi [3], [4].
+CoreDumpDirectory /var/log/httpd
+PidFile logs/httpd.pid
 
-# Tối ưu hóa kết nối & Chống Denial of Service (DoS)
-KeepAlive On                        # Bật KeepAlive [46, 47]
-MaxKeepAliveRequests 100            # Đặt giới hạn yêu cầu KeepAlive [48, 49]
-KeepAliveTimeout 15                 # Đặt KeepAliveTimeout ở mức 15 hoặc thấp hơn [50, 51]
-Timeout 10                          # Giảm timeout chờ phản hồi xuống 10 giây hoặc thấp hơn [52, 53]
-LimitRequestLine 8190               # Giới hạn kích thước dòng Request [54, 55]
-LimitRequestFields 100              # Giới hạn số lượng header fields [56, 57]
-LimitRequestFieldsize 8190          # Giới hạn kích thước từng header [58, 59]
-LimitRequestBody 102400             # Giới hạn kích thước Body (100KB - tùy chỉnh theo app) [60, 61]
 
-# Thắt chặt quyền mặc định (Default Access Control) cho thư mục gốc OS
+# ------------------------------------------------------------------------------
+# 2. CHỐNG RÒ RỈ THÔNG TIN (INFORMATION LEAKAGE)
+# ------------------------------------------------------------------------------
+# Chỉ hiển thị "Apache" trong header phản hồi thay vì toàn bộ module/phiên bản OS [5].
+ServerTokens Prod
+
+# Tắt chữ ký máy chủ ở các trang lỗi do Apache tạo ra [6].
+ServerSignature Off
+
+# Không sử dụng Inodes trong ETag header để tránh rò rỉ cấu trúc tệp tin hệ thống [7], [8].
+FileETag MTime Size
+
+
+# ------------------------------------------------------------------------------
+# 3. TỐI ƯU KẾT NỐI VÀ CHỐNG DOS (TIMEOUTS & REQUEST LIMITS)
+# ------------------------------------------------------------------------------
+# Giảm thời gian chờ để ngắt các kết nối chậm/treo [9].
+Timeout 10
+
+# Bật KeepAlive để tái sử dụng socket TCP, tăng hiệu năng và chống DoS [10].
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 15
+
+# Giới hạn kích thước Request để phòng chống tấn công Tràn bộ đệm (Buffer Overflow) [11], [12], [13], [14].
+LimitRequestLine 8190
+LimitRequestFields 100
+LimitRequestFieldsize 8190
+LimitRequestBody 102400
+
+
+# ------------------------------------------------------------------------------
+# 4. KIỂM SOÁT TRUY CẬP CỐT LÕI (ACCESS CONTROL)
+# ------------------------------------------------------------------------------
+# Thiết lập chính sách Default Deny (Từ chối mặc định) đối với thư mục gốc của OS [15], [16].
+# Tắt hoàn toàn tính năng ghi đè bằng file .htaccess ở mức gốc để chống thay đổi cấu hình trái phép [17].
 <Directory />
-    AllowOverride None              # Không cho phép ghi đè bằng file .htaccess [62, 63]
-    Options None                    # Tắt toàn bộ Options (như Indexes, FollowSymLinks) [64, 65]
-    Require all denied              # Từ chối mọi truy cập không được cấp phép rõ ràng [66, 67]
+    Require all denied
+    AllowOverride None
+    Options None
 </Directory>
 
-# Ngăn truy cập vào các thư mục / tệp cấu hình ẩn
+# ------------------------------------------------------------------------------
+# 5. CẤU HÌNH THƯ MỤC WEB (DOCUMENT ROOT)
+# ------------------------------------------------------------------------------
+# Hạn chế tùy chọn thư mục, tắt duyệt thư mục tự động (Indexes) [18].
+# Chỉ cho phép các phương thức HTTP cần thiết: GET, POST, OPTIONS [19].
+<Directory "/usr/local/apache2/htdocs">
+    Options None
+    <LimitExcept GET POST OPTIONS>
+        Require all denied
+    </LimitExcept>
+</Directory>
+
+# Tắt phương thức HTTP TRACE để ngăn chặn tấn công Cross-Site Tracing (XST) [20], [21].
+TraceEnable off
+
+
+# ------------------------------------------------------------------------------
+# 6. BẢO VỆ TỆP TIN NHẠY CẢM (FILE PROTECTION)
+# ------------------------------------------------------------------------------
+# Cấm truy cập trực tiếp từ web vào các tệp hệ thống / cấu hình / phiên bản mã nguồn [22], [23], [24].
 <FilesMatch "^\.ht">
-    Require all denied              # Chặn quyền truy cập các file .ht* [68, 69]
+    Require all denied
 </FilesMatch>
+
 <DirectoryMatch "/\.git">
-    Require all denied              # Chặn quyền truy cập các file/thư mục Git [70, 71]
+    Require all denied
+</DirectoryMatch>
+
+<DirectoryMatch "/\.svn">
+    Require all denied
+</DirectoryMatch>
+
+
+# ------------------------------------------------------------------------------
+# 7. CẤU HÌNH HTTP SECURITY HEADERS
+# ------------------------------------------------------------------------------
+# Phòng chống tấn công Clickjacking và nhúng Frame trái phép [25], [26].
+Header always append Content-Security-Policy "frame-ancestors 'self'"
+Header always set X-Frame-Options SAMEORIGIN
+
+# Quản lý chính sách Referrer để giới hạn việc chia sẻ thông tin gốc [27].
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+
+# ------------------------------------------------------------------------------
+# 8. GHI NHẬT KÝ (LOGGING)
+# ------------------------------------------------------------------------------
+# Cấu hình mức độ cảnh báo log (LogLevel) để thu thập thông tin hợp lý [28].
+LogLevel notice core:info
+
+# Lưu log lỗi vào file riêng hoặc syslog [29].
+ErrorLog "logs/error_log"
+
+# Cấu hình định dạng log truy cập chuẩn (Combined format) chứa đầy đủ IP, Thời gian, User-Agent [30], [31].
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog "logs/access_log" combined
+
+
+# ------------------------------------------------------------------------------
+# 9. CẤU HÌNH MÃ HÓA SSL/TLS (BẢO MẬT GIAO THỨC TRUYỀN TẢI)
+# ------------------------------------------------------------------------------
+# Chú ý: Các cấu hình này thường nằm trong mod_ssl.conf hoặc thẻ <VirtualHost *:443>
+
+# Chỉ cho phép TLSv1.2 hoặc TLSv1.3. Vô hiệu hóa SSLv3, TLSv1.0 và TLSv1.1 [32].
+SSLProtocol +TLSv1.2 +TLSv1.3
+
+# Ưu tiên sử dụng thứ tự bộ mã hóa (Cipher) từ phía máy chủ [33].
+SSLHonorCipherOrder On
+
+# Sử dụng bộ mã hóa mạnh, loại bỏ các chuẩn yếu (như RC4, 3DES, IDEA) [34].
+SSLCipherSuite ALL:!EXP:!NULL:!LOW:!SSLv2:!RC4:!aNULL:!3DES:!IDEA
+
+# Vô hiệu hóa nén SSL để chống tấn công CRIME (Đánh cắp Cookie) [35], [36].
+SSLCompression off
+
+# Bật OCSP Stapling để tối ưu kiểm tra chứng chỉ bị thu hồi mà không làm lộ IP client cho CA [37], [38].
+SSLUseStapling On
+SSLStaplingCache "shmcb:logs/ssl_staple_cache(512000)"
+💡 Hướng dẫn kiểm tra và áp dụng sau khi lưu file:
+Vô hiệu hóa các Module không cần thiết: Bên cạnh cấu hình file text bên trên, bạn cần tắt các module sinh ra rủi ro cho Server nếu không sử dụng đến. Tùy thuộc vào HĐH, hãy comment (#) dòng LoadModule hoặc dùng công cụ a2dismod (trên Ubuntu/Debian) đối với:
+mod_status, mod_info: Tránh làm lộ cấu hình và tài nguyên của server
+,
+.
+mod_autoindex: Tránh việc tự động in danh sách file (Directory Listing) khi không có index.html
+,
+.
+mod_dav, mod_proxy, mod_userdir: Nếu máy chủ của bạn không dùng WebDAV hoặc không đóng vai trò Proxy
+,
+,
+.
+Kiểm tra file cấu hình vừa tạo: Chạy lệnh xác thực cú pháp của Apache để đảm bảo không bị lỗi typo trước khi tải lại dịch vụ:
+Nếu màn hình trả về Syntax OK là bạn đã cấu hình chính xác
+.
+Reload / Restart dịch vụ Apache: Để cấu hình mới bắt đầu có hiệu lực mà không làm gián đoạn các kết nối hiện tại:
+Cách cấu hình mod_ssl an toàn cho Apache?
+Hướng dẫn tắt các module không cần thiết trong Apache
+So sánh bảo mật giữa Apache HTTP và Tomcat
+Xuất Apache-httpd sang thành 1 file cấu hình chuẩn hoặc 1 file hướng dẫn cấu hình .txt để có thể phục vụ so sánh với file cấu hình mặc định
+
+Dựa trên tài liệu CIS Apache HTTP Server 2.4 Benchmark v2.3.0, tôi đã tổng hợp một tệp cấu hình chuẩn (dạng file .txt) chứa các chỉ thị bảo mật quan trọng nhất
+. Tệp này được thiết kế để bạn có thể dễ dàng đối chiếu (sử dụng các công cụ như diff hoặc WinMerge) với tệp httpd.conf hoặc apache2.conf mặc định của hệ thống.
+Bạn có thể sao chép toàn bộ nội dung trong khối dưới đây và lưu thành tệp Apache_HTTP_CIS_Hardening.txt. Các bình luận (bắt đầu bằng dấu #) giải thích lý do cấu hình đều dựa trên các nguyên tắc bảo vệ sâu của CIS nhằm chống lại rò rỉ thông tin, từ chối dịch vụ (DoS), và thực thi mã trái phép
+,
+,
+,
+.
+================================================================================
+           TẬP TIN CẤU HÌNH BẢO MẬT CHUẨN: APACHE HTTP SERVER 2.4
+================================================================================
+# Tiêu chuẩn áp dụng: CIS Apache HTTP Server 2.4 Benchmark v2.3.0
+# Mục đích: Dùng để rà soát, so sánh và hardening tệp httpd.conf / apache2.conf
+
+# ------------------------------------------------------------------------------
+# 1. QUẢN LÝ TIẾN TRÌNH VÀ ĐẶC QUYỀN (Principles, Permissions)
+# ------------------------------------------------------------------------------
+# Không chạy Apache bằng tài khoản root hoặc daemon mặc định. 
+# Phải tạo một tài khoản hệ thống chuyên dụng (vd: apache) không có quyền đăng nhập.
+User apache
+Group apache
+
+# ------------------------------------------------------------------------------
+# 2. NGĂN CHẶN RÒ RỈ THÔNG TIN (Information Leakage & Fingerprinting)
+# ------------------------------------------------------------------------------
+# Chỉ trả về "Apache" trong HTTP Header, che giấu hệ điều hành và các module.
+ServerTokens Prod
+# Tắt chữ ký server (không hiển thị version ở các trang lỗi 404, 403, v.v.).
+ServerSignature Off
+# Tắt phương thức TRACE để ngăn chặn tấn công Cross-Site Tracing (XST).
+TraceEnable off
+# Không cho phép hiển thị Inodes của hệ thống tệp trong ETag response header.
+FileETag None
+
+# ------------------------------------------------------------------------------
+# 3. BẢO VỆ THƯ MỤC GỐC CỦA HỆ ĐIỀU HÀNH (OS Root Directory Restriction)
+# ------------------------------------------------------------------------------
+# Thiết lập chính sách "Từ chối theo mặc định" (Default Deny) cho toàn bộ hệ thống tệp.
+<Directory />
+    # Không cho phép bất kỳ tính năng nào (như duyệt thư mục, chạy CGI).
+    Options None
+    # Bỏ qua hoàn toàn các tệp .htaccess để ngăn ghi đè cấu hình bảo mật.
+    AllowOverride None
+    # Từ chối mọi truy cập từ bên ngoài vào thư mục gốc OS.
+    Require all denied
+</Directory>
+
+# ------------------------------------------------------------------------------
+# 4. CẤU HÌNH THƯ MỤC WEB GỐC (Web Document Root)
+# ------------------------------------------------------------------------------
+# Áp dụng cho thư mục chứa mã nguồn web (vd: /var/www/html hoặc /usr/local/apache2/htdocs)
+<Directory "/var/www/html">
+    # Tắt duyệt thư mục (Indexes) và các tính năng không cần thiết. Chỉ bật Multiviews nếu cần.
+    Options None
+    # Không cho phép tệp .htaccess ghi đè cấu hình.
+    AllowOverride None
+    # Chỉ cho phép các phương thức HTTP an toàn và cần thiết (GET, POST, OPTIONS).
+    <LimitExcept GET POST OPTIONS>
+        Require all denied
+    </LimitExcept>
+    # Cấp quyền truy cập web hợp lệ.
+    Require all granted
+</Directory>
+
+# ------------------------------------------------------------------------------
+# 5. BẢO VỆ CÁC TỆP TIN NHẠY CẢM (Restrict Access to Sensitive Files)
+# ------------------------------------------------------------------------------
+# Ngăn chặn truy cập vào các tệp cấu hình ẩn như .htaccess, .htpasswd.
+<FilesMatch "^\.ht">
+    Require all denied
+</FilesMatch>
+
+# Chặn quyền truy cập trái phép vào các thư mục quản lý mã nguồn (Git, SVN).
+<DirectoryMatch "/\.git">
+    Require all denied
 </DirectoryMatch>
 <DirectoryMatch "/\.svn">
-    Require all denied              # Chặn quyền truy cập các thư mục SVN [72, 73]
+    Require all denied
 </DirectoryMatch>
 
+# ------------------------------------------------------------------------------
+# 6. TỐI ƯU HÓA & PHÒNG CHỐNG TỪ CHỐI DỊCH VỤ (DoS / Request Limits)
+# ------------------------------------------------------------------------------
+# Giảm thời gian chờ phản hồi chung xuống tối đa 10 giây (mặc định là 60s).
+Timeout 10
+# Bật KeepAlive để tái sử dụng kết nối TCP, giảm tải cho máy chủ.
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 15
 
-[App_Target = Apache Tomcat (Versions 7, 8, 9, 10)]
-Đường dẫn file 1: $CATALINA_HOME/conf/server.xml
-Đường dẫn file 2: $CATALINA_HOME/conf/web.xml
+# Đặt giới hạn kích thước Request để chống lỗi tràn bộ đệm (Buffer Overflow) và DoS.
+LimitRequestLine 8190
+LimitRequestFields 100
+LimitRequestFieldSize 8190
+LimitRequestBody 102400
 
-# === TRONG FILE server.xml ===
-# 1. Vô hiệu hóa cổng Shutdown (hoặc đổi thành mật khẩu chuỗi dài/ngẫu nhiên)
-<Server port="-1" shutdown="SHUTDOWN"> [74, 75]
+# ------------------------------------------------------------------------------
+# 7. CẤU HÌNH GHI NHẬT KÝ (Logging Facilities)
+# ------------------------------------------------------------------------------
+# Cấu hình mức độ log: Thu thập log ở mức notice, riêng core module ở mức info.
+LogLevel notice core:info
+# Định dạng log tiêu chuẩn (kết hợp cả Referer và User-Agent).
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+# Chỉ định tệp lưu log hoặc đẩy sang Syslog.
+ErrorLog "logs/error_log"
+CustomLog "logs/access_log" combined
 
-# 2. Xóa thông tin Server Header và tắt tính năng X-Powered-By trên tất cả Connector
-<Connector port="8080" 
-           protocol="HTTP/1.1"
-           connectionTimeout="20000"
-           allowTrace="false"             # Tắt TRACE method [76, 77]
-           xpoweredBy="false"             # Tắt header X-Powered-By [78, 79]
-           server="I am a teapot"         # Đổi hoặc ẩn hoàn toàn Server Header [80, 81]
-           maxHttpHeaderSize="8192"       # Chống DoS header lớn [82, 83]
-           redirectPort="8443" />
+# ------------------------------------------------------------------------------
+# 8. BẢO MẬT GIAO THỨC SSL/TLS (HTTPS & Ciphers)
+# ------------------------------------------------------------------------------
+# Chỉ hỗ trợ các giao thức mã hóa an toàn nhất hiện nay (Loại bỏ TLS 1.0 và 1.1).
+SSLProtocol +TLSv1.2 +TLSv1.3
+# Bắt buộc Client phải sử dụng thứ tự bộ mã hóa (Ciphers) do Server quyết định.
+SSLHonorCipherOrder On
+# Chỉ dùng Cipher mạnh, loại bỏ các chuẩn yếu (như RC4, 3DES, MD5, NULL, LOW, EXP).
+SSLCipherSuite ALL:!EXP:!NULL:!LOW:!SSLv2:!RC4:!aNULL:!3DES:!IDEA
 
-# === TRONG FILE web.xml (Cấu hình chung cho mọi App) ===
-# Chặn trang báo lỗi rò rỉ mã nguồn (Stack Traces)
-<error-page>
-    <exception-type>java.lang.Throwable</exception-type>
-    <location>/error.jsp</location>       # Chuyển hướng lỗi về trang an toàn [84, 85]
-</error-page>
+# Các thiết lập chống lại lỗ hổng nhắm vào SSL/TLS.
+SSLCompression off
+SSLInsecureRenegotiation off
+SSLUseStapling On
+SSLStaplingCache "shmcb:logs/ssl_staple_cache(512000)"
+
+# ------------------------------------------------------------------------------
+# 9. BỔ SUNG CÁC HTTP SECURITY HEADERS (Cấp Server)
+# ------------------------------------------------------------------------------
+# Bắt buộc trình duyệt chỉ kết nối bằng HTTPS (HSTS) trong ít nhất 8 phút (khuyến nghị tăng lên 1 năm).
+Header always set Strict-Transport-Security "max-age=600"
+# Chống tấn công Clickjacking (Click tàng hình).
+Header always set X-Frame-Options SAMEORIGIN
+Header always append Content-Security-Policy "frame-ancestors 'self'"
+# Bảo vệ quyền riêng tư qua Referrer-Policy.
+Header set Referrer-Policy "strict-origin-when-cross-origin"
