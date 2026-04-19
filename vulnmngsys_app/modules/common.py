@@ -24,6 +24,7 @@ def make_directive_check(
     config_file_key: str,
     directive: str,
     expected_value: str,
+    explanation: str = "",
 ) -> RuleCheck:
     expected_normalized = expected_value.strip().lower()
 
@@ -43,6 +44,7 @@ def make_directive_check(
         weight=SEVERITY_WEIGHT[severity.lower()],
         config_file_key=config_file_key,
         evaluator=evaluate,
+        explanation=explanation,
     )
 
 
@@ -73,6 +75,7 @@ def contains_xml_predicate(
     predicate,
     success_message: str,
     failure_message: str,
+    explanation: str = "",
 ) -> RuleCheck:
     def evaluate(raw_text: str) -> tuple[bool, str]:
         passed = predicate(raw_text)
@@ -87,4 +90,5 @@ def contains_xml_predicate(
         weight=SEVERITY_WEIGHT[severity.lower()],
         config_file_key=config_file_key,
         evaluator=evaluate,
+        explanation=explanation,
     )

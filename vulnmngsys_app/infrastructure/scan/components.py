@@ -141,7 +141,7 @@ class ComplianceScanner:
             config_line = _find_first_line_number(raw_text, search_terms)
             config_path = used_paths.get(check.config_file_key, "")
             baseline = metadata.get("baseline", "")
-            explanation = metadata.get("explanation", "")
+            explanation = check.explanation or metadata.get("explanation", "")
             actual_line = _read_line_content(raw_text, config_line)
             results.append(
                 RuleResult(

@@ -10,6 +10,7 @@ class RuleCheck:
     weight: int
     config_file_key: str
     evaluator: Callable[[str], tuple[bool, str]]
+    explanation: str = ""
 
 
 @dataclass(frozen=True)
