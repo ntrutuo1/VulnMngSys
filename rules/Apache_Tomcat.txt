@@ -1,0 +1,77 @@
+================================================================================
+           TẬP TIN CẤU HÌNH CHUẨN: APACHE TOMCAT (PHIÊN BẢN 7, 8, 10, 10.1)
+================================================================================
+# Nguồn: CIS Apache Tomcat Benchmarks
+# Áp dụng cho: OS_Id = 3 (Linux/Unix - Application Layer)
+
+# ------------------------------------------------------------------------------
+# 1. CẤU HÌNH BẢO MẬT LÕI (File: $CATALINA_HOME/conf/server.xml)
+# ------------------------------------------------------------------------------
+# Vô hiệu hóa cổng Shutdown: Ngăn chặn việc kẻ tấn công local sử dụng cổng 8005
+# để gửi lệnh SHUTDOWN làm tắt toàn bộ ứng dụng [6-10].
+<Server port="-1" shutdown="SHUTDOWN">
+
+# Thắt chặt cấu hình trên tất cả các thẻ <Connector> (HTTP/AJP/HTTPS):
+<Connector port="8080" 
+           protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           allowTrace="false"             # Tắt phương thức TRACE để chống lỗi XST [11-13].
+           xpoweredBy="false"             # Tắt header X-Powered-By để ẩn thông tin phiên bản [14-17].
+           server="I am a teapot"         # Đổi Server Header thành chuỗi giả mạo để chống dò quét [18-21].
+           maxHttpHeaderSize="8192"       # Giới hạn kích thước Header (8192 bytes) chống DoS [22, 23].
+           redirectPort="8443" />
+
+# ------------------------------------------------------------------------------
+# 2. CẤU HÌNH ỨNG DỤNG MẶC ĐỊNH (File: $CATALINA_HOME/conf/web.xml)
+# ------------------------------------------------------------------------------
+# Chặn rò rỉ mã nguồn/thông tin hệ thống qua trang báo lỗi (Stack Traces)
+# Cấu hình này giúp trả về một trang lỗi an toàn thay vì in toàn bộ lỗi Java ra màn hình [24-29].
+<error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.jsp</location>       
+</error-page>
+
+# Đảm bảo Default Servlet cấu hình Read-Only và tắt liệt kê thư mục (Directory Listing)
+<servlet>
+    <servlet-name>default</servlet-name>
+    <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+    <init-param>
+        <param-name>readonly</param-name>
+        <param-value>true</param-value>   # Từ chối các lệnh PUT/DELETE trái phép [30].
+    </init-param>
+    <init-param>
+        <param-name>listings</param-name>
+        <param-value>false</param-value>  # Không cho phép duyệt các tệp trong thư mục.
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+# ------------------------------------------------------------------------------
+# 3. CẤU HÌNH NGỮ CẢNH (File: $CATALINA_HOME/conf/context.xml)
+# ------------------------------------------------------------------------------
+# Cấu hình Context mặc định để ngăn lỗ hổng Directory Traversal và giới hạn ranh giới ứng dụng.
+<Context crossContext="false">            # Không cho phép ứng dụng này gọi ngữ cảnh của ứng dụng khác [31-33].
+    <Resources allowLinking="false" />    # Cấm Symbolic Linking để ngăn việc truy cập tệp ngoài thư mục gốc [34-38].
+</Context>
+
+# ------------------------------------------------------------------------------
+# 4. PHÂN QUYỀN TRUY CẬP TỆP TIN BẰNG LỆNH (LINUX/UNIX)
+# ------------------------------------------------------------------------------
+# Yêu cầu tất cả các file cấu hình quan trọng phải thuộc sở hữu của user/group là `tomcat_admin:tomcat`
+# và bị giới hạn quyền đọc/ghi cực kỳ nghiêm ngặt để ngăn chặn sửa đổi trái phép từ người dùng local.
+
+# Phân quyền cho server.xml (Quyền 600 - Chỉ chủ sở hữu được Read/Write) [11, 39-43]:
+chown tomcat_admin:tomcat $CATALINA_HOME/conf/server.xml
+chmod 600 $CATALINA_HOME/conf/server.xml
+
+# Phân quyền cho context.xml (Quyền 600) [44-49]:
+chown tomcat_admin:tomcat $CATALINA_HOME/conf/context.xml
+chmod 600 $CATALINA_HOME/conf/context.xml
+
+# Phân quyền cho tomcat-users.xml (Quyền 600) [50-55]:
+chown tomcat_admin:tomcat $CATALINA_HOME/conf/tomcat-users.xml
+chmod 600 $CATALINA_HOME/conf/tomcat-users.xml
+
+# Phân quyền cho web.xml (Quyền 400 - Chỉ chủ sở hữu được Read, Cấm Write) [56-61]:
+chown tomcat_admin:tomcat $CATALINA_HOME/conf/web.xml
+chmod 400 $CATALINA_HOME/conf/web.xml

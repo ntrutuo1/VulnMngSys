@@ -1,0 +1,58 @@
+================================================================================
+           TẬP TIN CẤU HÌNH CHUẨN SSH SERVER - UBUNTU 24.04 LTS
+================================================================================
+# Đường dẫn áp dụng: /etc/ssh/sshd_config 
+# Tiêu chuẩn: CIS Ubuntu Linux 24.04 LTS Benchmark v1.0.0
+
+# ------------------------------------------------------------------------------
+# 1. Xác thực và Kiểm soát quyền truy cập (Authentication & Access Control)
+# ------------------------------------------------------------------------------
+PermitRootLogin no                  # Cấm root đăng nhập trực tiếp qua SSH
+PermitEmptyPasswords no             # Từ chối các tài khoản có mật khẩu rỗng
+MaxAuthTries 4                      # Giới hạn số lần nhập sai mật khẩu tối đa là 4
+IgnoreRhosts yes                    # Bỏ qua xác thực kém an toàn từ file .rhosts
+HostbasedAuthentication no          # Tắt xác thực dựa trên host
+GSSAPIAuthentication no             # Vô hiệu hóa GSSAPI để giảm bề mặt tấn công
+PermitUserEnvironment no            # Ngăn người dùng can thiệp vào biến môi trường (Chống RCE)
+UsePAM yes                          # Bắt buộc xác thực và kiểm soát thông qua mô-đun PAM
+
+# ------------------------------------------------------------------------------
+# 2. Quản lý Phiên kết nối và Thời gian chờ (Sessions & Timeouts)
+# ------------------------------------------------------------------------------
+ClientAliveInterval 15              # Gửi gói tin kiểm tra (keep-alive) mỗi 15 giây
+ClientAliveCountMax 3               # Ngắt kết nối nếu 3 lần gửi gói tin kiểm tra không có phản hồi
+LoginGraceTime 60                   # Ngắt kết nối nếu quá trình đăng nhập không thành công sau 60s
+MaxSessions 10                      # Giới hạn tối đa 10 phiên hoạt động đồng thời
+MaxStartups 10:30:60                # Bảo vệ SSH khỏi DoS bằng cách giới hạn kết nối chưa xác thực
+DisableForwarding yes               # Tắt tính năng Tunneling, X11, TCP, Agent Forwarding (Chống Backdoor)
+
+# ------------------------------------------------------------------------------
+# 3. Mức độ Ghi nhật ký hệ thống (Logging)
+# ------------------------------------------------------------------------------
+LogLevel INFO                       # Ghi lại đầy đủ các thông tin đăng nhập/đăng xuất (Có thể dùng VERBOSE)
+
+# ------------------------------------------------------------------------------
+# 4. Tiêu chuẩn Mã hóa (Ciphers, MACs, KexAlgorithms)
+# ------------------------------------------------------------------------------
+# Chỉ cho phép các thuật toán mã hóa mạnh, loại bỏ các chuẩn yếu (3DES, MD5, CBC...)
+Ciphers chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+MACs umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+KexAlgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+
+# ------------------------------------------------------------------------------
+# 5. Cảnh báo hiển thị (Banner)
+# ------------------------------------------------------------------------------
+Banner /etc/issue.net               # Đẩy ra màn hình cảnh báo pháp lý trước khi người dùng đăng nhập
+
+# Tùy chọn (Tùy theo cấu hình mạng và chính sách của tổ chức):
+# AllowUsers <user1> <user2>        # (Khuyên dùng) Chỉ định các User được phép đăng nhập
+# AllowGroups <group1>              # (Khuyên dùng) Chỉ định các Group được phép đăng nhập
+Các Command để áp dụng và kiểm tra trên Ubuntu 24.04
+1. Phân quyền chuẩn cho file cấu hình SSH (để tránh bị chỉnh sửa trái phép):
+# Phân quyền cho file sshd_config gốc
+chown root:root /etc/ssh/sshd_config
+chmod u-x,og-rwx /etc/ssh/sshd_config
+
+# Phân quyền cho thư mục mở rộng (Rất quan trọng trên 24.04 vì nó tự động include thư mục này)
+find /etc/ssh/sshd_config.d -type f -exec chmod u-x,og-rwx {} \;
+find /etc/ssh/sshd_config.d -type f -exec chown root:root {} \;

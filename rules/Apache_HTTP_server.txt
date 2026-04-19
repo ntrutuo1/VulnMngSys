@@ -1,0 +1,66 @@
+--------------------------------------------------------------------------------
+PHẦN 2: APACHE CONFIGURATION THEO APPLICATION TIER
+--------------------------------------------------------------------------------
+
+[App_Target = Apache HTTP Server 2.4]
+Đường dẫn file: /etc/httpd/conf/httpd.conf hoặc /etc/apache2/apache2.conf
+Mục tiêu: Ẩn thông tin phiên bản, chống DoS, chặn duyệt thư mục.
+
+# Ẩn thông tin hệ thống (Information Leakage)
+ServerTokens Prod                   # Chỉ trả về "Apache" trong Header, giấu version OS [42, 43]
+ServerSignature Off                 # Không in chữ ký server ở các trang lỗi [42, 43]
+TraceEnable off                     # Tắt phương thức TRACE (Chống lỗi XST) [44, 45]
+
+# Tối ưu hóa kết nối & Chống Denial of Service (DoS)
+KeepAlive On                        # Bật KeepAlive [46, 47]
+MaxKeepAliveRequests 100            # Đặt giới hạn yêu cầu KeepAlive [48, 49]
+KeepAliveTimeout 15                 # Đặt KeepAliveTimeout ở mức 15 hoặc thấp hơn [50, 51]
+Timeout 10                          # Giảm timeout chờ phản hồi xuống 10 giây hoặc thấp hơn [52, 53]
+LimitRequestLine 8190               # Giới hạn kích thước dòng Request [54, 55]
+LimitRequestFields 100              # Giới hạn số lượng header fields [56, 57]
+LimitRequestFieldsize 8190          # Giới hạn kích thước từng header [58, 59]
+LimitRequestBody 102400             # Giới hạn kích thước Body (100KB - tùy chỉnh theo app) [60, 61]
+
+# Thắt chặt quyền mặc định (Default Access Control) cho thư mục gốc OS
+<Directory />
+    AllowOverride None              # Không cho phép ghi đè bằng file .htaccess [62, 63]
+    Options None                    # Tắt toàn bộ Options (như Indexes, FollowSymLinks) [64, 65]
+    Require all denied              # Từ chối mọi truy cập không được cấp phép rõ ràng [66, 67]
+</Directory>
+
+# Ngăn truy cập vào các thư mục / tệp cấu hình ẩn
+<FilesMatch "^\.ht">
+    Require all denied              # Chặn quyền truy cập các file .ht* [68, 69]
+</FilesMatch>
+<DirectoryMatch "/\.git">
+    Require all denied              # Chặn quyền truy cập các file/thư mục Git [70, 71]
+</DirectoryMatch>
+<DirectoryMatch "/\.svn">
+    Require all denied              # Chặn quyền truy cập các thư mục SVN [72, 73]
+</DirectoryMatch>
+
+
+[App_Target = Apache Tomcat (Versions 7, 8, 9, 10)]
+Đường dẫn file 1: $CATALINA_HOME/conf/server.xml
+Đường dẫn file 2: $CATALINA_HOME/conf/web.xml
+
+# === TRONG FILE server.xml ===
+# 1. Vô hiệu hóa cổng Shutdown (hoặc đổi thành mật khẩu chuỗi dài/ngẫu nhiên)
+<Server port="-1" shutdown="SHUTDOWN"> [74, 75]
+
+# 2. Xóa thông tin Server Header và tắt tính năng X-Powered-By trên tất cả Connector
+<Connector port="8080" 
+           protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           allowTrace="false"             # Tắt TRACE method [76, 77]
+           xpoweredBy="false"             # Tắt header X-Powered-By [78, 79]
+           server="I am a teapot"         # Đổi hoặc ẩn hoàn toàn Server Header [80, 81]
+           maxHttpHeaderSize="8192"       # Chống DoS header lớn [82, 83]
+           redirectPort="8443" />
+
+# === TRONG FILE web.xml (Cấu hình chung cho mọi App) ===
+# Chặn trang báo lỗi rò rỉ mã nguồn (Stack Traces)
+<error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.jsp</location>       # Chuyển hướng lỗi về trang an toàn [84, 85]
+</error-page>
