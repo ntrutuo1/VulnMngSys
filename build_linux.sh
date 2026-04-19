@@ -9,7 +9,9 @@ REACT_DIST_DIR="$REACT_UI_DIR/dist"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 VENV_DIR="${VENV_DIR:-.venv-linux}"
-APP_NAME="${APP_NAME:-VulnMngSysDesktop-linux}"
+BUILD_TAG="$(date +%Y%m%d-%H%M%S)"
+GUI_APP_NAME="${GUI_APP_NAME:-VulnMngSysDesktop-linux-$BUILD_TAG}"
+CLI_APP_NAME="${CLI_APP_NAME:-VulnMngSysDesktop-CLI-linux-$BUILD_TAG}"
 
 if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
   echo "[ERROR] Python binary not found: $PYTHON_BIN"
@@ -28,7 +30,7 @@ python -m pip install -r requirements.txt
 python -m pip install --upgrade pyinstaller
 
 if command -v npm >/dev/null 2>&1; then
-  echo "[1/3] Building React frontend..."
+  echo "[1/4] Building React frontend..."
   (cd "$REACT_UI_DIR" && npm install && npm run build)
 else
   echo "[WARN] npm not found; using existing react-ui/dist if available."
@@ -54,12 +56,13 @@ if [ ! -f "$REACT_DIST_DIR/index.html" ]; then
   exit 1
 fi
 
-echo "[2/3] Building Linux executable..."
+echo "[2/4] Building Linux GUI executable..."
 python -m PyInstaller \
   --noconfirm \
   --clean \
   --onefile \
-  --name "$APP_NAME" \
+  --windowed \
+  --name "$GUI_APP_NAME" \
   --hidden-import tkinter \
   --hidden-import _tkinter \
   --hidden-import webview \
@@ -67,4 +70,20 @@ python -m PyInstaller \
   --add-data "react-ui/dist:react-ui/dist" \
   main.py
 
-echo "[OK] Linux binary created at: $PROJECT_DIR/dist/$APP_NAME"
+echo "[3/4] Building Linux CLI executable..."
+python -m PyInstaller \
+  --noconfirm \
+  --clean \
+  --onefile \
+  --console \
+  --name "$CLI_APP_NAME" \
+  --hidden-import tkinter \
+  --hidden-import _tkinter \
+  --hidden-import webview \
+  --add-data "rules:rules" \
+  --add-data "react-ui/dist:react-ui/dist" \
+  main.py
+
+echo "[4/4] Done. Outputs:"
+echo " - $PROJECT_DIR/dist/$GUI_APP_NAME"
+echo " - $PROJECT_DIR/dist/$CLI_APP_NAME"

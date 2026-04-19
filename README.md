@@ -117,7 +117,7 @@ This will let you choose service, module, OS version, and service version step b
 If running from frozen Linux binary without GUI backends, interactive CLI can still be used:
 
 ```bash
-./VulnMngSysDesktop-linux --cli --interactive
+./VulnMngSysDesktop-CLI-linux-<timestamp> --cli --interactive
 ```
 
 ### CVE intelligence (version-aware)
@@ -189,7 +189,10 @@ python -m pip install -U pyinstaller
 python -m PyInstaller --noconfirm --clean --onefile --name VulnMngSysDesktop --add-data "rules:rules" --add-data "react-ui/dist:react-ui/dist" main.py
 ```
 
-The output binary will be created in `dist/VulnMngSysDesktop`.
+The script now creates 2 Linux binaries in `dist/`:
+
+- `VulnMngSysDesktop-linux-<timestamp>`: GUI desktop build.
+- `VulnMngSysDesktop-CLI-linux-<timestamp>`: dedicated CLI build.
 
 Or run one command:
 
