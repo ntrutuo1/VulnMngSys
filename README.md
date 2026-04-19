@@ -36,6 +36,56 @@ Rule sources are kept in `rules/` and mapped to executable checks in code.
 python main.py
 ```
 
+## Ubuntu 22.04 Quick Start
+
+Install required system packages:
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-venv python3-tk policykit-1
+```
+
+If you already created a venv before installing python3-tk, recreate the venv so tkinter is available inside it.
+
+Create and activate virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+```
+
+Run app (it will auto-request root using pkexec or sudo):
+
+```bash
+python main.py
+```
+
+If you are on a headless Ubuntu server (no GUI / no DISPLAY), the app automatically switches to CLI mode.
+
+You can also force CLI mode:
+
+```bash
+python main.py --cli --service ssh
+python main.py --cli --service apache-http
+python main.py --cli --module-id linux-ubuntu22-ssh
+```
+
+### Build Linux executable
+
+```bash
+python -m pip install -U pyinstaller
+python -m PyInstaller --noconfirm --clean --onefile --name VulnMngSysDesktop --add-data "rules:rules" main.py
+```
+
+The output binary will be created in `dist/VulnMngSysDesktop`.
+
+Or run one command:
+
+```bash
+bash build_linux.sh
+```
+
 ## Process Flow
 
 1. Start app.

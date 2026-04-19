@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ctypes
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -34,10 +35,17 @@ def _is_unix_root() -> bool:
 
 
 def _relaunch_unix_root() -> None:
-    cmd = ["sudo", "-E", sys.executable, str(Path(sys.argv[0]).resolve()), *sys.argv[1:]]
+    script = str(Path(sys.argv[0]).resolve())
+    if os.environ.get("DISPLAY") and shutil.which("pkexec"):
+        cmd = ["pkexec", sys.executable, script, *sys.argv[1:]]
+    elif shutil.which("sudo"):
+        cmd = ["sudo", "-E", sys.executable, script, *sys.argv[1:]]
+    else:
+        raise RuntimeError("Missing privilege escalation tool. Install sudo or pkexec.")
+
     completed = subprocess.run(cmd, check=False)
     if completed.returncode != 0:
-        raise RuntimeError("Failed to elevate privileges with sudo")
+        raise RuntimeError("Failed to elevate privileges on Unix host")
 
 
 def ensure_privileged() -> None:
