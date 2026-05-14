@@ -242,11 +242,38 @@ export default function App() {
       payload.enable_metasploit = Boolean(enableMetasploit);
     }
 
-    fetch('/api/scan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
+    // For Windows Server, prepare audit.inf first
+    let scanPromise;
+    if (currentModule.service === 'windows-server') {
+      scanPromise = fetch('/api/prepare/audit')
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((err) => {
+              throw new Error(err.message || 'Failed to prepare audit.inf');
+            });
+          }
+          return response.json();
+        })
+        .then((result) => {
+          if (!result.success) {
+            throw new Error(result.message || 'audit.inf preparation failed');
+          }
+          // Now proceed with the scan
+          return fetch('/api/scan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+        });
+    } else {
+      scanPromise = fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    }
+
+    scanPromise
       .then((response) => {
         if (!response.ok) {
           return response.json().then((err) => {

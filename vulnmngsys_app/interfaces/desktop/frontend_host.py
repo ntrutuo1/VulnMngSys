@@ -18,6 +18,7 @@ from ...infrastructure.platform.service_probe import (
     detect_host_version,
     list_service_versions,
 )
+from ...infrastructure.platform.audit_generator import ensure_audit_inf
 from ...scanner import scan_module
 from ...modules import load_modules
 
@@ -196,6 +197,17 @@ def _serve_directory(directory: Path, port: int = 0):
                         "serviceVersion": hits[0]["version"] if hits else "",
                         "hits": hits,
                     }
+                )
+                return
+
+            if parsed.path == "/api/prepare/audit":
+                success, message = ensure_audit_inf()
+                self._write_json(
+                    {
+                        "success": success,
+                        "message": message,
+                    },
+                    status=200 if success else 500,
                 )
                 return
 

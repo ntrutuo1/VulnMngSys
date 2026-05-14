@@ -10,6 +10,7 @@ from ...domain.contracts import ModuleCatalog, ReportWriter, ScanEngine
 from ...domain.models import ModuleDefinition, ScanReport
 from ...infrastructure.catalog.hardcoded_catalog import HardcodedModuleCatalog
 from ...infrastructure.platform.service_probe import detect_host_family, detect_host_version, detect_service_version
+from ...infrastructure.platform.audit_generator import ensure_audit_inf
 
 
 class AppState:
@@ -212,6 +213,15 @@ def run_app(
             return
 
         module = state.module_map[selected_name]
+        
+        # For Windows Server, ensure audit.inf is generated first
+        if module.service_type == "windows-server":
+            success, message = ensure_audit_inf()
+            if not success:
+                output.delete("1.0", tk.END)
+                output.insert(tk.END, f"Failed to prepare audit.inf:\n\n{message}")
+                return
+        
         exists, _resolved = _module_targets_exist(module)
         if not exists:
             output.delete("1.0", tk.END)

@@ -160,6 +160,65 @@ cd ..
 & "D:\VulnMngSys\.venv\Scripts\python.exe" -m PyInstaller --noconfirm --clean --onefile --windowed --name VulnMngSysDesktop --add-data "rules;rules" --add-data "react-ui/dist;react-ui/dist" main.py
 ```
 
+## Windows Server UI Notes
+
+The app automatically detects Windows Server environments and uses the **Tkinter legacy UI** for better compatibility. This ensures the app works reliably on Windows Server machines.
+
+### Command-Line Options
+
+- `--legacy-ui`: Force the Tkinter UI (useful if webview has issues)
+- `--web-ui`: Force the React UI in browser mode (Firefox)
+- `--cli`: Run in headless CLI mode without any GUI
+
+Example:
+```powershell
+VulnMngSysDesktop.exe --legacy-ui
+VulnMngSysDesktop.exe --cli
+```
+
+## Windows Server - Security Policy (audit.inf)
+
+The Windows Server hardening checks require the security policy to be exported to a file called `audit.inf`. The app handles this automatically with dynamic path resolution:
+
+### How It Works
+
+1. When you select "Windows Server 2022 - Security Policy Baseline" and run a scan:
+   - The app dynamically resolves the `%TEMP%` directory from environment variables
+   - It checks if `audit.inf` exists at: `%TEMP%\audit.inf`
+   - If not found and you're running as Administrator, it automatically generates it using `secedit`
+   - The scan then proceeds with the security policy data
+
+2. **Dynamic Path Resolution:**
+   - Primary: Uses `%TEMP%` environment variable (e.g., `C:\Users\<username>\AppData\Local\Temp\audit.inf`)
+   - Fallback: `C:\Windows\Temp\audit.inf` or `C:\Temp\audit.inf` (if TEMP is unavailable)
+
+3. This approach ensures the app works correctly regardless of:
+   - User account type
+   - Custom TEMP directory settings
+   - Network or domain configurations
+
+### Troubleshooting audit.inf Issues
+
+**Problem: "Cannot generate audit.inf: Administrator privileges required"**
+- Solution: Run the app **as Administrator**
+
+**Problem: Still getting missing audit.inf error**
+- Manual generation: Run the helper script:
+  ```bash
+  scripts\prepare_audit.bat
+  ```
+  Or run manually in PowerShell (as Admin):
+  ```powershell
+  secedit /export /cfg $env:TEMP\audit.inf /areas SECURITYPOLICY
+  ```
+
+**Problem: File is empty or corrupted**
+- Delete the file and let the app regenerate it:
+  ```powershell
+  Remove-Item $env:TEMP\audit.inf -Force
+  # Then run the app and scan again
+  ```
+
 ## Process Flow
 
 1. Start the app.

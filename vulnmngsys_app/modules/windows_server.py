@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 from ..models import ModuleDefinition
+from ..infrastructure.platform.audit_generator import get_audit_inf_path
 from .common import make_assignment_check, rules_file
 
 
@@ -65,14 +66,32 @@ def build_windows_server_check_metadata() -> dict[str, dict[str, str]]:
 
 
 def windows_server_audit_inf_paths() -> list[str]:
+    """
+    Get candidate paths for audit.inf.
+    
+    Returns paths in order of preference:
+    1. Dynamic path from get_audit_inf_path() (TEMP environment variable)
+    2. Hardcoded fallback paths if TEMP is unavailable
+    """
     candidates: list[str] = []
-    temp_dir = os.environ.get("TEMP") or os.environ.get("TMP")
-    if temp_dir:
-        candidates.append(str(Path(temp_dir) / "audit.inf"))
-    candidates.extend([
+    
+    # Primary: dynamic path from the audit_generator module
+    primary_path = get_audit_inf_path()
+    candidates.append(str(primary_path))
+    
+    # Fallback: if the dynamic path didn't pick up TEMP for some reason,
+    # try alternative locations
+    fallback_paths = [
         r"C:\Windows\Temp\audit.inf",
         r"C:\Temp\audit.inf",
-    ])
+    ]
+    
+    # Only add fallbacks if they're different from the primary path
+    primary_str = str(primary_path).lower()
+    for fallback in fallback_paths:
+        if fallback.lower() != primary_str:
+            candidates.append(fallback)
+    
     return candidates
 
 
