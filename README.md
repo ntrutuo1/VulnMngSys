@@ -1,45 +1,108 @@
-# VulnMngSys Desktop (No-DB)
+# VulnMngSys Desktop
 
-Desktop security configuration scanner written in Python.
+Windows Server service audit and hardening scanner written in Python.
 
-This rebuild removes database usage and uses hardcoded scan modules by:
-- OS family (`linux`, `windows`, `macos`)
-- OS version (for example `ubuntu-22.04`, `ubuntu-24.04`, `windows-11`)
-- Service type (`ssh`, `apache-http`, `apache-tomcat`)
+This project is intentionally focused on Windows Server environments and on scanning all installed or running services, in the same spirit as Lynis, but adapted for Windows Server administration and Windows desktop app development.
 
-Rule sources are kept in `rules/` and mapped to executable checks in code.
+## What It Does
 
-## Key Behavior
+- Scans Windows Server services and related configuration surfaces.
+- Evaluates service exposure, hardening posture, startup behavior, and risky settings.
+- Produces a Lynis hardening index and grade.
+- Runs as a Windows desktop app built with Python.
+- Includes a React-based UI for a modern Windows app experience.
 
-- Desktop app (Tkinter) runs on Linux, Windows, and macOS.
-- On startup, app attempts to relaunch with elevated privilege:
-  - Linux/macOS: `sudo -E`
-  - Windows: UAC `runas`
-- Scanner reads real configuration files and evaluates checks.
-- Scoring uses a Lynis-style hardening index:
-  - `hardening_index = round((passed_weight / total_weight) * 100)`
-  - Grade bands: `A >= 90`, `B >= 75`, `C >= 60`, `D < 60`
+## Focus
+
+- Platform: Windows Server only
+- Language: Python
+- UI: Windows desktop app development
+- Scope: service discovery, service inspection, hardening checks, and reporting
 
 ## Project Layout
 
-- `main.py`: app entrypoint
-- `vulnmngsys_app/domain/`: entities + contracts (pure domain)
-- `vulnmngsys_app/application/`: factories/composition root
-- `vulnmngsys_app/infrastructure/`: adapters (scan, report, platform, privilege, catalog, CVE intel)
-- `vulnmngsys_app/interfaces/`: delivery layers (CLI, Tk GUI, desktop frontend host)
-- `vulnmngsys_app/modules/`: hardcoded module definitions by service/version
-  - `modules/ssh/`: SSH modules by OS/version
-  - `modules/apache/`: Apache modules by OS/version
-- `vulnmngsys_app/*.py` (legacy names): compatibility facades to keep old imports working
-- `rules/`: source rule text files
+- `main.py`: application entrypoint
+- `vulnmngsys_app/domain/`: entities and contracts
+- `vulnmngsys_app/application/`: composition root and factories
+- `vulnmngsys_app/infrastructure/`: scanning, reporting, platform, privilege, catalog, and intelligence adapters
+- `vulnmngsys_app/interfaces/`: CLI and desktop UI delivery layers
+- `vulnmngsys_app/modules/`: hardcoded service and check definitions
+- `rules/`: JSON rule sources used by the scanner, including check commands
+- `react-ui/`: React frontend for the desktop app
 
-## SOLID Notes
+## Scoring Model
 
-- SRP: scanning, scoring, report writing, module catalog are separated classes.
-- OCP: new scoring/report implementations can be added without changing UI/CLI flows.
-- LSP: UI/CLI depend on interfaces (`ScanEngine`, `ReportWriter`, `ModuleCatalog`).
-- ISP: small focused interfaces in `contracts.py`.
-- DIP: high-level modules receive abstractions, concrete defaults are injected centrally.
+The scanner uses the Lynis hardening index and grade criteria:
+
+- `hardening_index = round((passed_weight / total_weight) * 100)`
+- Grade bands:
+  - `A`: `90-100`
+  - `B`: `75-89`
+  - `C`: `60-74`
+  - `D`: `< 60`
+
+## Lynis-Inspired Workflow
+
+1. Detect host and service context.
+2. Load CIS-aligned rule modules from JSON.
+3. Resolve config paths and read configuration data.
+4. Evaluate rules, aggregate score, and collect suggestions.
+5. Optional service vulnerability checks (CVE and Metasploit) based on context.
+6. Output a report with hardening index, warnings, and recommendations.
+
+## CIS-Based Modules
+
+Rules are stored in JSON under `rules/`. Each entry maps to a CIS control with a code like `1.1.1`.
+
+Example format:
+
+```json
+{
+  "code": "1.1.1",
+  "title": "Password history",
+  "severity": "High",
+  "key": "PasswordHistoryCount",
+  "expected": "24",
+  "explanation": "...",
+  "powershell_check": "Select-String \"PasswordHistoryCount\" $env:temp\\audit.inf"
+}
+```
+
+## Metasploit Modules (JSON)
+
+Metasploit auxiliary modules are listed in `rules/metasploit_windows_modules.json` and loaded at runtime:
+
+```json
+{
+  "modules": [
+    {
+      "module": "auxiliary/scanner/smb/smb_version",
+      "enabled": true,
+      "options": { "RPORT": "445" }
+    }
+  ]
+}
+```
+
+## Performance & Optimization
+
+- CVE lookups are indexed by service type to avoid scanning unrelated advisories.
+- Version parsing is cached for fast comparisons.
+- API requests are bounded in size to avoid memory spikes.
+- Scan history is append-only JSONL for low overhead.
+
+## Easy Install (Windows)
+
+Quick path for development:
+
+```powershell
+python -m venv .venv
+.
+.venv\Scripts\Activate.ps1
+python -m pip install -U pip
+pip install -r requirements.txt
+python main.py
+```
 
 ## Run
 
@@ -47,22 +110,7 @@ Rule sources are kept in `rules/` and mapped to executable checks in code.
 python main.py
 ```
 
-The packaged app now opens the React frontend inside a desktop window.
-On Linux, you must run inside a graphical desktop session with a valid `DISPLAY`; a headless SSH-only shell cannot show the UI.
-If GTK/QT Python backends are missing on Linux, the app falls back to the legacy desktop UI instead of crashing.
-
-For Linux frozen builds, the app uses Firefox web-view mode by default.
-
-For Ubuntu, install these system packages to enable the native React window:
-
-```bash
-sudo apt install -y python3-gi gir1.2-gtk-3.0 libgtk-3-0 libwebkit2gtk-4.0-37
-sudo apt install -y firefox
-```
-
-## React UI
-
-New React interface is available in `react-ui/`.
+If you want the React UI during development:
 
 ```bash
 cd react-ui
@@ -70,157 +118,39 @@ npm install
 npm run dev
 ```
 
-## Ubuntu 22.04 Quick Start
+## Windows Quick Start
 
-Install required system packages:
+Create and activate a virtual environment:
 
-```bash
-sudo apt update
-sudo apt install -y python3 python3-venv python3-tk policykit-1
-```
-
-If you already created a venv before installing python3-tk, recreate the venv so tkinter is available inside it.
-
-Create and activate virtual environment:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
 ```
 
-Run app (it will auto-request root using pkexec or sudo):
+Install dependencies:
 
-```bash
+```powershell
+pip install -r requirements.txt
+```
+
+Run the app:
+
+```powershell
 python main.py
 ```
 
-If you are on a headless Ubuntu server (no GUI / no DISPLAY), the app automatically switches to CLI mode.
+## Build Windows Executable
 
-You can also force CLI mode:
-
-```bash
-python main.py --cli --service ssh
-python main.py --cli --service apache-http
-python main.py --cli --module-id linux-ubuntu22-ssh
-python main.py --cli --service apache-http --os-version ubuntu-22.04 --service-version 2.4.50
-```
-
-Interactive CLI selection (recommended on Linux/headless):
-
-```bash
-python main.py --cli --interactive
-```
-
-This will let you choose service, module, OS version, and service version step by step.
-
-If running from frozen Linux binary without GUI backends, interactive CLI can still be used:
-
-```bash
-./VulnMngSysDesktop-CLI-linux-<timestamp> --cli --interactive
-```
-
-### CVE intelligence (version-aware)
-
-The scanner can evaluate hardcoded CVE knowledge for:
-- Apache HTTP/Tomcat version ranges
-- OpenSSH version ranges
-- Combined Apache/SSH + OS context rules (for example Ubuntu 22.04)
-
-To enable this, provide service version in GUI or use CLI flags:
-
-```bash
-python main.py --cli --service ssh --os-version ubuntu-22.04 --service-version 9.2
-```
-
-If `--os-version` or `--service-version` is omitted, the scanner now auto-detects values from host commands/files across Windows, Linux, and macOS where possible.
-
-### Detect and list service versions (SSH/HTTPD/Tomcat)
-
-The project now includes a dedicated script that probes and lists versions from multiple sources, including XAMPP/LAMPP paths.
-
-```bash
-python scripts/detect_and_install_services.py
-```
-
-Probe only selected services:
-
-```bash
-python scripts/detect_and_install_services.py --services ssh apache-http apache-tomcat
-```
-
-Apache layout mode (when you are not sure if host uses XAMPP or standalone):
-
-```bash
-python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout auto
-python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout xampp
-python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout standalone
-```
-
-If XAMPP is installed in a custom folder, provide it explicitly:
-
-```bash
-python scripts/detect_and_install_services.py --services apache-http apache-tomcat --apache-layout xampp --xampp-root D:/tools/xampp
-```
-
-In `xampp` mode, the probe tries to locate Apache/Tomcat `bin` directories first, changes into them, runs version commands, and parses output for version auto-fill.
-
-Attempt automatic installation for missing services:
-
-```bash
-python scripts/detect_and_install_services.py --install-missing
-```
-
-Non-interactive install mode:
-
-```bash
-python scripts/detect_and_install_services.py --install-missing --yes
-```
-
-Notes:
-- Windows: `ssh` uses OpenSSH capability install, `apache-http` and `apache-tomcat` use XAMPP via `winget`.
-- Linux: installer uses detected package manager (`apt-get`, `dnf`, `yum`, or `pacman`).
-- On systems without package manager support in this script, install command must be run manually.
-
-### Build Linux executable
-
-```bash
-python -m pip install -U pyinstaller
-python -m PyInstaller --noconfirm --clean --onefile --name VulnMngSysDesktop --add-data "rules:rules" --add-data "react-ui/dist:react-ui/dist" main.py
-```
-
-The script now creates 2 Linux binaries in `dist/`:
-
-- `VulnMngSysDesktop-linux-<timestamp>`: GUI desktop build.
-- `VulnMngSysDesktop-CLI-linux-<timestamp>`: dedicated CLI build.
-
-Or run one command:
-
-```bash
-bash build_linux.sh
-```
-
-The Linux build script will also build `react-ui/` first and bundle it into the executable.
-
-### Build Windows executable with React UI
-
-Use the provided PowerShell script to bundle the React frontend into the exe:
+Use the provided PowerShell script to build the Windows desktop app:
 
 ```powershell
 .\build_windows.ps1
 ```
-Script sẽ tạo 2 file trong thư mục `dist`:
 
-- `VulnMngSysDesktop-<timestamp>.exe`: bản GUI desktop (React UI).
-- `VulnMngSysDesktop-CLI-<timestamp>.exe`: bản CLI (hỗ trợ `--cli --interactive`).
+This produces stable executables in `dist/` for the GUI app and CLI variant.
 
-Ví dụ chạy bản CLI interactive trên Windows:
-
-```powershell
-.\dist\VulnMngSysDesktop-CLI-<timestamp>.exe --cli --interactive
-```
-
-If you want to run the commands manually:
+If you want to build manually:
 
 ```powershell
 cd react-ui
@@ -230,28 +160,19 @@ cd ..
 & "D:\VulnMngSys\.venv\Scripts\python.exe" -m PyInstaller --noconfirm --clean --onefile --windowed --name VulnMngSysDesktop --add-data "rules;rules" --add-data "react-ui/dist;react-ui/dist" main.py
 ```
 
-The exe will open as a desktop app window, not inside Chrome.
-
-If native webview backends are missing on Linux but you still want the React interface, allow browser fallback:
-
-```bash
-python main.py --web-ui
-```
-
-Windows builds now generate a timestamped exe name in `dist/` to avoid overwriting a locked running binary.
-
 ## Process Flow
 
-1. Start app.
-2. Ensure root/admin privileges.
-3. Choose OS + service module from hardcoded matrix.
-4. Resolve config file path candidates.
-5. Run all checks in selected module.
-6. Calculate hardening index and grade.
-7. Display results and save report into `reports/`.
+1. Start the app.
+2. Detect the Windows Server host and enumerate services.
+3. Inspect service configuration, startup type, permissions, and exposure.
+4. Run hardening checks for each discovered service.
+5. Calculate the score and grade.
+6. Show the results in the desktop UI and save a report.
 
 ## Notes
 
-- This version intentionally does not use MySQL/SQLite.
-- Checks are deterministic and code-based for portability.
-- You can extend modules in `vulnmngsys_app/modules/` for additional OS versions and services.
+- The project does not use MySQL or SQLite.
+- The scanner is code-driven so checks are deterministic and easy to extend.
+- CVE lookups use service-type hash indexes and cached version parsing to keep scans fast and memory-friendly.
+- The desktop API rejects oversized scan payloads and normalizes request fields before dispatch.
+- New Windows Server service checks can be added in `vulnmngsys_app/modules/`.

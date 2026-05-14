@@ -1,0 +1,208 @@
+Báo cáo Cấu hình Bảo mật Windows Server theo Chuẩn CIS Benchmark
+
+Người thực hiện: Chuyên gia Bảo mật Hệ thống và Tư vấn Tuân thủ Đối tượng áp dụng: Quản trị viên hệ thống, Nhân viên vận hành IT (Fresher) Tài liệu tham khảo: CIS Microsoft Windows Server 2012 R2 Benchmark v3.0.0
+
+
+--------------------------------------------------------------------------------
+
+
+1. Tổng quan về Tài liệu và Phạm vi áp dụng
+
+Tài liệu này được biên soạn nhằm cung cấp hướng dẫn kỹ thuật chi tiết để thiết lập cấu hình bảo mật cho hệ điều hành Microsoft Windows Server 2012 R2 theo tiêu chuẩn của Center for Internet Security (CIS). Việc áp dụng các cấu hình này giúp tổ chức thiết lập một "phương án cơ sở" (baseline) vững chắc, giảm thiểu tối đa các lỗ hổng hệ thống và ngăn chặn các cuộc tấn công phổ biến.
+
+Phạm vi áp dụng:
+
+* Tài liệu tập trung vào các hệ thống đã gia nhập Miền (Active Directory domain-joined systems) và được quản lý thông qua Group Policy Objects (GPO).
+* Lưu ý quan trọng: Đối với các hệ thống chạy độc lập (Standalone) hoặc triển khai trên nền tảng điện toán đám mây (Cloud), quản trị viên cần thực hiện điều chỉnh (tailoring) để đảm bảo không làm gián đoạn các tính năng vận hành đặc thù của môi trường đó.
+
+
+--------------------------------------------------------------------------------
+
+
+2. Định nghĩa các Cấp độ Bảo mật (Profile Definitions)
+
+Các khuyến nghị được phân loại theo từng cấp độ (Profile) để phù hợp với nhu cầu bảo mật và khả năng vận hành của từng tổ chức:
+
+* Level 1 (L1) - Domain Controller / Member Server:
+  * Gồm các thiết lập mang tính thực tiễn và thận trọng.
+  * Mang lại lợi ích bảo mật rõ rệt mà không gây ảnh hưởng tiêu cực đến tính hữu dụng của hệ thống trong môi trường sản xuất.
+* Level 2 (L2) - Domain Controller / Member Server:
+  * Mở rộng từ Level 1, dành cho các môi trường yêu cầu mức độ an ninh cực cao.
+  * Đóng vai trò là các biện pháp "phòng thủ theo chiều sâu" (defense in depth).
+  * Có thể làm giảm hiệu suất hoặc hạn chế một số tính năng linh hoạt của hệ thống.
+* Next Generation Windows Security:
+  * Bao gồm các tính năng bảo mật nâng cao của Windows với các điều kiện phụ thuộc cấu hình phức tạp.
+  * Yêu cầu thử nghiệm kỹ lưỡng trước khi triển khai do có thể gây ra vấn đề tương thích với các hệ thống cũ.
+
+
+--------------------------------------------------------------------------------
+
+
+3. Danh mục Quy tắc Cấu hình Chi tiết (Detailed Configuration Rules)
+
+Dưới đây là danh sách toàn bộ các quy tắc thuộc phần 1 (Account Policies) và phần 2 (Local Policies - đến mục 2.3.4.2) theo Source Context.
+
+3.1. Chính sách Tài khoản (Account Policies - 1.1 & 1.2)
+
+Mã Rule	Tên Rule	Cấp độ	Mô tả & Giá trị chuẩn	Hướng dẫn triển khai (Action & UI Path)
+1.1.1	Enforce password history	L1 (DC/MS)	Lưu giữ 24 mật khẩu trở lên.	Set to '24 or more' tại: Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy
+1.1.2	Maximum password age	L1 (DC/MS)	365 ngày hoặc ít hơn, nhưng không được là 0.	Set to '365 or fewer, but not 0' tại đường dẫn như trên.
+1.1.3	Minimum password age	L1 (DC/MS)	1 ngày hoặc nhiều hơn.	Set to '1 or more' tại đường dẫn như trên.
+1.1.4	Minimum password length	L1 (DC/MS)	Tối thiểu 14 ký tự.	Set to '14 or more' tại đường dẫn như trên.
+1.1.5	Password must meet complexity requirements	L1 (DC/MS)	Trạng thái: Enabled.	Set to 'Enabled' tại đường dẫn như trên.
+1.1.6	Store passwords using reversible encryption	L1 (DC/MS)	Trạng thái: Disabled.	Set to 'Disabled' tại đường dẫn như trên.
+1.2.1	Account lockout duration	L1 (DC/MS)	Tối thiểu 15 phút.	Set to '15 or more' tại: Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy
+1.2.2	Account lockout threshold	L1 (DC/MS)	5 lần thử sai hoặc ít hơn, nhưng không được là 0.	Set to '5 or fewer, but not 0' tại đường dẫn như trên.
+1.2.3	Allow Administrator account lockout	L1 (MS Only)	Trạng thái: Enabled.	Set to 'Enabled' tại đường dẫn như trên.
+1.2.4	Reset account lockout counter after	L1 (DC/MS)	Tối thiểu 15 phút.	Set to '15 or more' tại đường dẫn như trên.
+
+3.2. Chính sách Cục bộ - Gán quyền người dùng (User Rights Assignment - 2.2)
+
+Mã Rule	Tên Rule	Cấp độ	Mô tả & Giá trị chuẩn	Hướng dẫn triển khai (Action & UI Path)
+2.2.1	Access Credential Manager as a trusted caller	L1 (DC/MS)	Thiết lập: No One.	Path: Computer Configuration\Policies\Windows Settings\Security Settings\Local Policies\User Rights Assignment -> Set to 'No One'
+2.2.2	Access this computer from the network (DC)	L1 (DC Only)	Giá trị: Administrators, Authenticated Users, ENTERPRISE DOMAIN CONTROLLERS.	Path như trên -> Add specified groups
+2.2.3	Access this computer from the network (MS)	L1 (MS Only)	Giá trị: Administrators, Authenticated Users.	Path như trên -> Add specified groups
+2.2.4	Act as part of the operating system	L1 (DC/MS)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.5	Add workstations to domain	L1 (DC Only)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.6	Adjust memory quotas for a process	L1 (DC/MS)	Giá trị: Administrators, LOCAL SERVICE, NETWORK SERVICE.	Path như trên -> Add specified groups
+2.2.7	Allow log on locally	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.8	Allow log on through Remote Desktop Services (DC)	L1 (DC Only)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.9	Allow log on through Remote Desktop Services (MS)	L1 (MS Only)	Giá trị: Administrators, Remote Desktop Users.	Path như trên -> Add specified groups
+2.2.10	Back up files and directories	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.11	Change the system time	L1 (DC/MS)	Giá trị: Administrators, LOCAL SERVICE.	Path như trên -> Add specified groups
+2.2.12	Change the time zone	L1 (DC/MS)	Giá trị: Administrators, LOCAL SERVICE.	Path như trên -> Add specified groups
+2.2.13	Create a pagefile	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.14	Create a token object	L1 (DC/MS)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.15	Create global objects	L1 (DC/MS)	Giá trị: Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE.	Path như trên -> Add specified groups
+2.2.16	Create permanent shared objects	L1 (DC/MS)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.17	Create symbolic links (DC)	L1 (DC Only)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.18	Create symbolic links (MS)	L1 (MS Only)	Giá trị: Administrators, NT VIRTUAL MACHINE\Virtual Machines.	Path như trên -> Add specified groups
+2.2.19	Debug programs	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.20	Deny access to this computer from the network (DC)	L1 (DC Only)	Giá trị: Bao gồm Guests.	Path như trên -> Add 'Guests'
+2.2.21	Deny access to this computer from the network (MS)	L1 (MS Only)	Giá trị: Guests, Local account and member of Administrators group.	Path như trên -> Add specified groups
+2.2.22	Deny log on as a batch job	L1 (DC/MS)	Giá trị: Bao gồm Guests.	Path như trên -> Add 'Guests'
+2.2.23	Deny log on as a service	L1 (DC/MS)	Giá trị: Bao gồm Guests.	Path như trên -> Add 'Guests'
+2.2.24	Deny log on locally	L1 (DC/MS)	Giá trị: Bao gồm Guests.	Path như trên -> Add 'Guests'
+2.2.25	Deny log on through RD Services (DC)	L1 (DC Only)	Giá trị: Bao gồm Guests.	Path như trên -> Add 'Guests'
+2.2.26	Deny log on through RD Services (MS)	L1 (MS Only)	Giá trị: Guests, Local account.	Path như trên -> Add specified groups
+2.2.27	Enable computer and user accounts to be trusted for delegation (DC)	L1 (DC Only)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.28	Enable computer and user accounts to be trusted for delegation (MS)	L1 (MS Only)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.29	Force shutdown from a remote system	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.30	Generate security audits	L1 (DC/MS)	Giá trị: LOCAL SERVICE, NETWORK SERVICE.	Path như trên -> Add specified groups
+2.2.31	Impersonate a client after authentication (DC)	L1 (DC Only)	Giá trị: Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE.	Path như trên -> Add specified groups
+2.2.32	Impersonate a client after authentication (MS)	L1 (MS Only)	Giá trị: Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE (IIS_IUSRS nếu có IIS).	Path như trên -> Add specified groups
+2.2.33	Increase scheduling priority	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.34	Load and unload device drivers	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.35	Lock pages in memory	L1 (DC/MS)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.36	Log on as a batch job	L2 (DC Only)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.37	Manage auditing and security log (DC)	L1 (DC Only)	Giá trị: Administrators (Exchange Servers nếu có Exchange).	Path như trên -> Add specified groups
+2.2.38	Manage auditing and security log (MS)	L1 (MS Only)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.39	Modify an object label	L1 (DC/MS)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.40	Modify firmware environment values	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.41	Perform volume maintenance tasks	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.42	Profile single process	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.43	Profile system performance	L1 (DC/MS)	Giá trị: Administrators, NT SERVICE\WdiServiceHost.	Path như trên -> Add specified groups
+2.2.44	Replace a process level token	L1 (DC/MS)	Giá trị: LOCAL SERVICE, NETWORK SERVICE.	Path như trên -> Add specified groups
+2.2.45	Restore files and directories	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.46	Shut down the system	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.2.47	Synchronize directory service data	L1 (DC Only)	Thiết lập: No One.	Path như trên -> Set to 'No One'
+2.2.48	Take ownership of files or other objects	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+
+3.3. Tùy chọn Bảo mật (Security Options - 2.3.1.1 tới 2.3.4.2)
+
+Mã Rule	Tên Rule	Cấp độ	Mô tả & Giá trị chuẩn	Hướng dẫn triển khai (Action & UI Path)
+2.3.1.1	Accounts: Block Microsoft accounts	L1 (DC/MS)	Users can't add or log on with Microsoft accounts.	Path: ...\Security Options -> Set to 'Users can't add or log on...'
+2.3.1.2	Accounts: Guest account status	L1 (MS Only)	Trạng thái: Disabled.	Path như trên -> Set to 'Disabled'
+2.3.1.3	Accounts: Limit local account use of blank passwords	L1 (DC/MS)	Trạng thái: Enabled.	Path như trên -> Set to 'Enabled'
+2.3.1.4	Accounts: Rename administrator account	L1 (DC/MS)	Đổi tên tài khoản mặc định.	Path như trên -> Nhập tên mới (Configured)
+2.3.1.5	Accounts: Rename guest account	L1 (DC/MS)	Đổi tên tài khoản mặc định.	Path như trên -> Nhập tên mới (Configured)
+2.3.2.1	Audit: Force audit policy subcategory settings	L1 (DC/MS)	Trạng thái: Enabled.	Path như trên -> Set to 'Enabled'
+2.3.2.2	Audit: Shut down system immediately if unable to log	L1 (DC/MS)	Trạng thái: Disabled.	Path như trên -> Set to 'Disabled'
+2.3.4.1	Devices: Allowed to format and eject removable media	L1 (DC/MS)	Giá trị: Administrators.	Path như trên -> Set to 'Administrators'
+2.3.4.2	Devices: Prevent users from installing printer drivers	L1 (DC/MS)	Trạng thái: Enabled.	Path như trên -> Set to 'Enabled'
+
+
+--------------------------------------------------------------------------------
+
+
+4. Chi tiết các thiết lập Chính sách Tài khoản (Account Policies)
+
+Các thiết lập này đặc biệt quan trọng và phải được cấu hình thông qua Default Domain Policy GPO để có hiệu lực trên toàn bộ các tài khoản người dùng trong miền.
+
+* Password Policy (1.1):
+  * Enforce password history: Phải đạt tối thiểu 24 mật khẩu để ngăn chặn việc xoay vòng mật khẩu cũ.
+  * Maximum password age: Giới hạn 365 ngày buộc người dùng đổi mật khẩu định kỳ. Tuyệt đối không để giá trị 0 (vô thời hạn).
+  * Minimum password age: Để giá trị 1 ngày nhằm kết hợp với Password history, ngăn người dùng đổi mật khẩu liên tục nhiều lần trong ngày để quay lại mật khẩu cũ.
+  * Minimum password length: 14 ký tự là tiêu chuẩn hiện tại để chống tấn công Brute-force.
+  * Complexity requirements: Phải bật (Enabled) để yêu cầu mật khẩu có đủ 4 loại ký tự.
+  * Reversible encryption: Phải tắt (Disabled) để tránh lưu trữ mật khẩu ở dạng có thể giải mã được (tương tự plaintext).
+* Account Lockout Policy (1.2):
+  * Duration & Reset counter: Cần đặt tối thiểu 15 phút để làm chậm tốc độ tấn công dò mật khẩu.
+  * Lockout threshold: Ngưỡng 5 lần thử sai là cân bằng giữa bảo mật và hỗ trợ người dùng (User Experience).
+  * Allow Administrator account lockout: Cần bật cho Member Server để bảo vệ tài khoản quản trị nội bộ khỏi các đợt dò quét mật khẩu từ mạng.
+
+
+--------------------------------------------------------------------------------
+
+
+5. Chi tiết các thiết lập Chính sách Cục bộ (Local Policies)
+
+Kiểm soát các quyền hạn nhạy cảm liên quan trực tiếp tới sự an toàn của lõi hệ điều hành.
+
+* User Rights Assignment (2.2):
+  * Các quyền như "Act as part of operating system" hay "Create a token object" được đặt là No One vì chúng cung cấp khả năng leo thang đặc quyền cực kỳ nguy hiểm.
+  * Allow log on locally: Hạn chế tối đa, chỉ cấp cho nhóm Administrators trên máy chủ để tránh người dùng không có thẩm quyền tiếp cận trực tiếp console.
+  * Deny log on: Luôn bao gồm nhóm Guests trong tất cả các mục Deny (Network, Batch, Service, Locally, RDS) để triệt tiêu mọi khả năng đăng nhập của tài khoản vô danh.
+* Security Options (2.3):
+  * Microsoft Accounts: Ngăn chặn việc sử dụng tài khoản cá nhân (Outlook, Hotmail) để đăng nhập máy chủ doanh nghiệp.
+  * Rename Administrator/Guest: Đây là biện pháp bảo mật qua sự ẩn nấp (Security through obscurity). Việc đổi tên giúp kẻ tấn công không biết chính xác ID nào để thực hiện Brute-force. Khi thực hiện, trạng thái kiểm tra sẽ được đánh dấu là Configured.
+
+
+--------------------------------------------------------------------------------
+
+
+6. Bảng Tổng hợp Đối chiếu nhanh cho Fresher (Checklist)
+
+Mã Rule	Tên Rule	Cấu hình chuẩn (Recommended State)	Trạng thái kiểm tra (Checkbox)
+1.1.1	Enforce password history	24 or more password(s)	[ ]
+1.1.2	Maximum password age	365 or fewer days, but not 0	[ ]
+1.1.3	Minimum password age	1 or more day(s)	[ ]
+1.1.4	Minimum password length	14 or more character(s)	[ ]
+1.1.5	Password complexity	Enabled	[ ]
+1.1.6	Reversible encryption	Disabled	[ ]
+1.2.1	Lockout duration	15 or more minute(s)	[ ]
+1.2.2	Lockout threshold	5 or fewer attempts, but not 0	[ ]
+1.2.3	Admin lockout (MS)	Enabled	[ ]
+1.2.4	Reset lockout counter	15 or more minute(s)	[ ]
+2.2.1	Credential Manager	No One	[ ]
+2.2.4	Act as part of OS	No One	[ ]
+2.2.7	Log on locally	Administrators	[ ]
+2.2.9	RD Services (MS)	Administrators, Remote Desktop Users	[ ]
+2.2.21	Deny Network (MS)	Guests, Local account & member of Admin group	[ ]
+2.2.24	Deny log on locally	Guests	[ ]
+2.2.48	Take ownership	Administrators	[ ]
+2.3.1.1	Block MS accounts	Users can't add or log on...	[ ]
+2.3.1.2	Guest account status	Disabled (MS only)	[ ]
+2.3.1.4	Rename Administrator	Configured (Đã đổi tên)	[ ]
+2.3.1.5	Rename Guest	Configured (Đã đổi tên)	[ ]
+2.3.2.1	Force audit subcat	Enabled	[ ]
+2.3.4.2	Prevent print drivers	Enabled	[ ]
+
+
+--------------------------------------------------------------------------------
+
+
+7. Hướng dẫn các bước Kiểm tra và Khắc phục (Audit & Remediation Guidance)
+
+Dành cho các quản trị viên mới (Fresher), quy trình triển khai chuẩn được thực hiện như sau:
+
+1. Truy cập công cụ quản lý:
+  * Sử dụng Group Policy Management Editor (GPME) cho các thiết lập áp dụng toàn miền (Domain).
+  * Sử dụng Local Group Policy Editor (gpedit.msc) để kiểm tra cấu hình trên từng máy chủ riêng lẻ.
+2. Điều hướng tới quy tắc: Sử dụng cột "Hướng dẫn triển khai" trong mục 3 để tìm đúng đường dẫn UI Path (Ví dụ: Computer Configuration > Windows Settings > Security Settings > Local Policies > Security Options).
+3. Kiểm tra (Audit): Xem giá trị hiện tại (Current Setting). Nếu giá trị không khớp với cột "Mô tả & Giá trị chuẩn", hệ thống đang ở trạng thái không tuân thủ (Non-compliant).
+4. Khắc phục (Remediation):
+  * Nhấp đúp vào quy tắc, chọn giá trị đúng theo khuyến nghị (Ví dụ: chọn 'Enabled' hoặc nhập số '24').
+  * Nhấn OK để lưu cấu hình.
+5. Cập nhật và Thực thi:
+  * Mở Command Prompt (Admin) và chạy lệnh: gpupdate /force để chính sách mới được áp dụng ngay lập tức mà không cần chờ chu kỳ làm mới của hệ thống.

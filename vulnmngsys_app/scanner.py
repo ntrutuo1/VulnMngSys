@@ -42,6 +42,8 @@ def scan_module(
     service_version: str | None = None,
     xampp_version: str | None = None,
     xampp_root: str | None = None,
+    target_host: str | None = None,
+    enable_metasploit: bool = False,
 ) -> ScanReport:
     # If XAMPP root provided and module is Apache-based, override config paths
     if xampp_root and module.service_type in ("apache-http", "apache-tomcat"):
@@ -65,4 +67,6 @@ def scan_module(
         os_version=os_version,
         service_version=service_version,
         xampp_version=xampp_version,
+        target_host=target_host,
+        enable_metasploit=enable_metasploit,
     )

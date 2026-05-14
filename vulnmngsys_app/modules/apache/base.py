@@ -4,13 +4,6 @@ from ...models import ModuleDefinition, RuleCheck
 from ..common import contains_xml_predicate, make_directive_check
 
 
-def linux_apache_paths() -> list[str]:
-    return [
-        "/etc/apache2/apache2.conf",
-        "/etc/httpd/conf/httpd.conf",
-    ]
-
-
 def windows_apache_paths() -> list[str]:
     return [
         r"C:\xampp\apache\conf\httpd.conf",  # XAMPP first
@@ -18,30 +11,6 @@ def windows_apache_paths() -> list[str]:
         r"C:\Program Files\Apache Group\Apache2\conf\httpd.conf",
         r"C:\Program Files (x86)\Apache Group\Apache2\conf\httpd.conf",
     ]
-
-
-def macos_apache_paths() -> list[str]:
-    return ["/etc/apache2/httpd.conf"]
-
-
-def linux_tomcat_paths() -> dict[str, list[str]]:
-    return {
-        "server": [
-            "/etc/tomcat/server.xml",
-            "/opt/tomcat/conf/server.xml",
-            "/usr/share/tomcat/conf/server.xml",
-        ],
-        "web": [
-            "/etc/tomcat/web.xml",
-            "/opt/tomcat/conf/web.xml",
-            "/usr/share/tomcat/conf/web.xml",
-        ],
-        "context": [
-            "/etc/tomcat/context.xml",
-            "/opt/tomcat/conf/context.xml",
-            "/usr/share/tomcat/conf/context.xml",
-        ],
-    }
 
 
 def windows_tomcat_paths() -> dict[str, list[str]]:
@@ -61,14 +30,6 @@ def windows_tomcat_paths() -> dict[str, list[str]]:
             r"C:\Tomcat\conf\context.xml",
             r"C:\Program Files\Apache Tomcat\conf\context.xml",
         ],
-    }
-
-
-def macos_tomcat_paths() -> dict[str, list[str]]:
-    return {
-        "server": ["/usr/local/opt/tomcat/conf/server.xml"],
-        "web": ["/usr/local/opt/tomcat/conf/web.xml"],
-        "context": ["/usr/local/opt/tomcat/conf/context.xml"],
     }
 
 

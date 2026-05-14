@@ -19,16 +19,8 @@ SSH_RULE_EXPLANATIONS: dict[str, str] = {
 }
 
 
-def linux_ssh_paths() -> list[str]:
-    return ["/etc/ssh/sshd_config"]
-
-
 def windows_ssh_paths() -> list[str]:
     return [r"C:\ProgramData\ssh\sshd_config"]
-
-
-def macos_ssh_paths() -> list[str]:
-    return ["/etc/ssh/sshd_config"]
 
 
 def build_ssh_checks(prefix: str) -> list[RuleCheck]:

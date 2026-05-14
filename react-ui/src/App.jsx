@@ -5,6 +5,7 @@ import {
   Card,
   Col,
   ConfigProvider,
+  Collapse,
   Descriptions,
   Divider,
   Drawer,
@@ -12,13 +13,13 @@ import {
   Input,
   Layout,
   List,
-  Radio,
   Row,
   Select,
   Space,
   Spin,
   Statistic,
   Steps,
+  Switch,
   Table,
   Tag,
   Typography,
@@ -31,9 +32,8 @@ const { Title, Text, Paragraph } = Typography;
 const { useBreakpoint } = Grid;
 const { defaultAlgorithm } = theme;
 
-const osOptions = ['all', 'linux', 'windows', 'macos'];
-const serviceOptions = ['all', 'ssh', 'apache-http', 'apache-tomcat'];
-const apacheLayoutOptions = ['auto', 'xampp', 'standalone'];
+const osOptions = ['windows'];
+const serviceOptions = ['windows-server'];
 const stepLabels = ['Target', 'Module', 'Review', 'Result'];
 
 function transformBackendResult(backendReport) {
@@ -94,30 +94,32 @@ function transformBackendResult(backendReport) {
     overallSuggestions: missingDirectiveSuggestions,
     warnings: backendReport.summary.warnings || [],
     cveAdvisories,
+    metasploitResults: backendReport.metasploit_results || [],
   };
 }
 
 export default function App() {
   const screens = useBreakpoint();
   const [osFamily, setOsFamily] = useState('windows');
-  const [service, setService] = useState('ssh');
+  const [service, setService] = useState('windows-server');
   const [selectedId, setSelectedId] = useState('');
   const [osVersion, setOsVersion] = useState('windows-11');
   const [serviceVersion, setServiceVersion] = useState('9.7');
-  const [xamppVersion, setXamppVersion] = useState('');
-  const [scanMode, setScanMode] = useState('balanced');
+  const [xamppVersion] = useState('');
   const [step, setStep] = useState(1);
   const [result, setResult] = useState(null);
   const [running, setRunning] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [detectError, setDetectError] = useState('');
-  const [apacheLayout, setApacheLayout] = useState('auto');
-  const [xamppRoot, setXamppRoot] = useState('C:/xampp');
+  const [apacheLayout] = useState('auto');
+  const [xamppRoot] = useState('');
   const [detectedSource, setDetectedSource] = useState('');
   const [scanError, setScanError] = useState('');
   const [activeFindingCode, setActiveFindingCode] = useState('');
   const [showOverallSuggestions, setShowOverallSuggestions] = useState(false);
   const [showFloatingNote, setShowFloatingNote] = useState(true);
+  const [targetHost, setTargetHost] = useState('');
+  const [enableMetasploit, setEnableMetasploit] = useState(false);
 
   const filteredModules = useMemo(() => {
     return moduleCatalog.filter((item) => {
@@ -163,14 +165,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!currentModule || service === 'all') return;
+    if (!currentModule) return;
 
     let canceled = false;
     async function detectServiceVersion() {
-      const layoutQuery = currentModule.service.startsWith('apache-') ? `&layout=${encodeURIComponent(apacheLayout)}` : '';
-      const xamppQuery = currentModule.service.startsWith('apache-') && apacheLayout === 'xampp'
-        ? `&xamppRoot=${encodeURIComponent(xamppRoot)}`
-        : '';
+      const layoutQuery = '';
+      const xamppQuery = '';
       try {
         const response = await fetch(`/api/detect/service?type=${encodeURIComponent(currentModule.service)}${layoutQuery}${xamppQuery}`);
         if (!response.ok) return;
@@ -205,11 +205,9 @@ export default function App() {
       if (host.osFamily) setOsFamily(host.osFamily);
       if (host.osVersion) setOsVersion(host.osVersion);
 
-      if (currentModule && currentModule.service !== 'all') {
-        const layoutQuery = currentModule.service.startsWith('apache-') ? `&layout=${encodeURIComponent(apacheLayout)}` : '';
-        const xamppQuery = currentModule.service.startsWith('apache-') && apacheLayout === 'xampp'
-          ? `&xamppRoot=${encodeURIComponent(xamppRoot)}`
-          : '';
+      if (currentModule) {
+        const layoutQuery = '';
+        const xamppQuery = '';
         const svcRes = await fetch(`/api/detect/service?type=${encodeURIComponent(currentModule.service)}${layoutQuery}${xamppQuery}`);
         if (svcRes.ok) {
           const svc = await svcRes.json();
@@ -239,16 +237,9 @@ export default function App() {
       service_version: serviceVersion,
     };
 
-    if (
-      currentModule.service.startsWith('apache-') &&
-      apacheLayout === 'xampp' &&
-      xamppRoot
-    ) {
-      payload.xampp_root = xamppRoot;
-    }
-
-    if (currentModule.service.startsWith('apache-') && apacheLayout === 'xampp' && xamppVersion) {
-      payload.xampp_version = xamppVersion;
+    if (currentModule.service === 'windows-server' && targetHost) {
+      payload.target_host = targetHost;
+      payload.enable_metasploit = Boolean(enableMetasploit);
     }
 
     fetch('/api/scan', {
@@ -411,34 +402,23 @@ export default function App() {
                       <Input value={serviceVersion} onChange={(e) => setServiceVersion(e.target.value)} style={{ marginTop: 6 }} />
                     </Col>
 
-                    {(service === 'apache-http' || service === 'apache-tomcat') && (
+                    {service === 'windows-server' && (
                       <>
                         <Col xs={24} md={12}>
-                          <Text>Apache Layout</Text>
-                          <Select
-                            value={apacheLayout}
-                            onChange={setApacheLayout}
-                            style={{ width: '100%', marginTop: 6 }}
-                            options={apacheLayoutOptions.map((opt) => ({ label: opt, value: opt }))}
+                          <Text>Target Host (Metasploit)</Text>
+                          <Input
+                            value={targetHost}
+                            onChange={(e) => setTargetHost(e.target.value)}
+                            placeholder="e.g. 192.168.1.10"
+                            style={{ marginTop: 6 }}
                           />
                         </Col>
-                        {apacheLayout === 'xampp' && (
-                          <>
-                            <Col xs={24} md={12}>
-                              <Text>XAMPP Root Path</Text>
-                              <Input value={xamppRoot} onChange={(e) => setXamppRoot(e.target.value)} style={{ marginTop: 6 }} />
-                            </Col>
-                            <Col xs={24} md={12}>
-                              <Text>XAMPP Version</Text>
-                              <Input
-                                value={xamppVersion}
-                                onChange={(e) => setXamppVersion(e.target.value)}
-                                placeholder="e.g. 8.1.25"
-                                style={{ marginTop: 6 }}
-                              />
-                            </Col>
-                          </>
-                        )}
+                        <Col xs={24} md={12}>
+                          <Text>Enable Metasploit Scan</Text>
+                          <div style={{ marginTop: 6 }}>
+                            <Switch checked={enableMetasploit} onChange={setEnableMetasploit} />
+                          </div>
+                        </Col>
                       </>
                     )}
 
@@ -465,16 +445,6 @@ export default function App() {
                         options={filteredModules.map((item) => ({ label: item.name, value: item.id }))}
                       />
                     </div>
-                    <div>
-                      <Text>Scan Mode</Text>
-                      <div style={{ marginTop: 8 }}>
-                        <Radio.Group value={scanMode} onChange={(e) => setScanMode(e.target.value)}>
-                          <Radio.Button value="strict">Strict</Radio.Button>
-                          <Radio.Button value="balanced">Balanced</Radio.Button>
-                          <Radio.Button value="quick">Quick</Radio.Button>
-                        </Radio.Group>
-                      </div>
-                    </div>
                   </Space>
                 </Card>
               )}
@@ -486,11 +456,12 @@ export default function App() {
                     <Descriptions.Item label="OS Version">{osVersion || 'N/A'}</Descriptions.Item>
                     <Descriptions.Item label="Service">{service}</Descriptions.Item>
                     <Descriptions.Item label="Service Version">{serviceVersion || 'N/A'}</Descriptions.Item>
-                    <Descriptions.Item label="XAMPP Version">{apacheLayout === 'xampp' ? (xamppVersion || 'N/A') : 'N/A'}</Descriptions.Item>
+                    <Descriptions.Item label="Target Host">{targetHost || 'N/A'}</Descriptions.Item>
+                    <Descriptions.Item label="Metasploit Enabled">{enableMetasploit ? 'Yes' : 'No'}</Descriptions.Item>
+                    <Descriptions.Item label="XAMPP Version">N/A</Descriptions.Item>
                     <Descriptions.Item label="Selected Module" span={screens.md ? 2 : 1}>
                       {currentModule ? currentModule.name : 'No module selected'}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Scan Mode" span={screens.md ? 2 : 1}>{scanMode}</Descriptions.Item>
                   </Descriptions>
                   <Space style={{ marginTop: 16 }}>
                     <Button onClick={() => setStep(2)}>Back</Button>
@@ -514,11 +485,23 @@ export default function App() {
                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                       {result.warnings.length > 0 && (
                         <Card className="panel-card" title="Version upgrade recommendation">
-                          <Space direction="vertical" style={{ width: '100%' }} size="small">
-                            {result.warnings.map((warning) => (
-                              <Alert key={warning} type="warning" showIcon message={warning} />
-                            ))}
-                          </Space>
+                          <Collapse
+                            defaultActiveKey={[]}
+                            bordered={false}
+                            expandIconPosition="end"
+                            style={{ background: 'transparent' }}
+                          >
+                            <Collapse.Panel
+                              key="warnings"
+                              header={`Show recommendations (${result.warnings.length})`}
+                            >
+                              <Space direction="vertical" style={{ width: '100%' }} size="small">
+                                {result.warnings.map((warning) => (
+                                  <Alert key={warning} type="warning" showIcon message={warning} />
+                                ))}
+                              </Space>
+                            </Collapse.Panel>
+                          </Collapse>
                         </Card>
                       )}
 
@@ -535,6 +518,32 @@ export default function App() {
                                       <Text>{item.title}</Text>
                                       <Text type="secondary">{item.reason}</Text>
                                       <Text type="secondary">Reference: {item.reference}</Text>
+                                    </Space>
+                                  )}
+                                />
+                              </List.Item>
+                            )}
+                          />
+                        </Card>
+                      )}
+
+                      {result.metasploitResults && result.metasploitResults.length > 0 && (
+                        <Card className="panel-card" title="Metasploit service scan">
+                          <List
+                            dataSource={result.metasploitResults}
+                            renderItem={(item) => (
+                              <List.Item>
+                                <List.Item.Meta
+                                  title={(
+                                    <Space wrap>
+                                      <Text strong>{item.module}</Text>
+                                      <Tag color={item.success ? 'green' : 'red'}>{item.success ? 'OK' : 'FAIL'}</Tag>
+                                    </Space>
+                                  )}
+                                  description={(
+                                    <Space direction="vertical" size={0}>
+                                      <Text type="secondary">Target: {item.target}</Text>
+                                      <Text>{item.summary || 'No summary returned.'}</Text>
                                     </Space>
                                   )}
                                 />

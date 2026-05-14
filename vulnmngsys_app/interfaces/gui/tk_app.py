@@ -100,6 +100,12 @@ def _build_missing_target_message(module: ModuleDefinition) -> str:
         lines.append("- Start-Service sshd")
         lines.append("- Set-Service -Name sshd -StartupType Automatic")
 
+    if module.service_type == "windows-server":
+        lines.append("")
+        lines.append("Windows Server security policy export:")
+        lines.append("- secedit /export /cfg %TEMP%\\audit.inf /areas SECURITYPOLICY")
+        lines.append("- Copy the exported audit.inf into a readable temp path if needed.")
+
     return "\n".join(lines)
 
 
@@ -132,7 +138,7 @@ def run_app(
 
     ttk.Label(top_frame, text="OS Family").grid(row=0, column=0, sticky="w", padx=(0, 8))
     os_var = tk.StringVar(value=_detect_host_family())
-    os_combo = ttk.Combobox(top_frame, textvariable=os_var, values=["linux", "windows", "macos", "all"], state="readonly", width=16)
+    os_combo = ttk.Combobox(top_frame, textvariable=os_var, values=["windows", "all"], state="readonly", width=16)
     os_combo.grid(row=0, column=1, sticky="w")
 
     ttk.Label(top_frame, text="Service").grid(row=0, column=2, sticky="w", padx=(16, 8))
@@ -140,7 +146,7 @@ def run_app(
     service_combo = ttk.Combobox(
         top_frame,
         textvariable=service_var,
-        values=["all", "ssh", "apache-http", "apache-tomcat"],
+        values=["all", "ssh", "apache-http", "apache-tomcat", "windows-server"],
         state="readonly",
         width=18,
     )

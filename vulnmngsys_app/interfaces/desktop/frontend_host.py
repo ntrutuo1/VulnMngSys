@@ -3,6 +3,7 @@ from __future__ import annotations
 import http.server
 import io
 import json
+from functools import lru_cache
 import socketserver
 import subprocess
 import sys
@@ -20,9 +21,24 @@ from ...infrastructure.platform.service_probe import (
 from ...scanner import scan_module
 from ...modules import load_modules
 
+MAX_SCAN_REQUEST_SIZE = 64 * 1024
+
 
 class FrontendNotFoundError(FileNotFoundError):
     pass
+
+
+def _safe_text(value: object) -> str:
+    if isinstance(value, str):
+        return value
+    if value is None:
+        return ""
+    return str(value)
+
+
+@lru_cache(maxsize=1)
+def _module_index() -> dict[str, object]:
+    return {module.module_id: module for module in load_modules()}
 
 
 def _scan_report_to_dict(report) -> dict:
@@ -45,6 +61,7 @@ def _scan_report_to_dict(report) -> dict:
             "grade": report.summary.grade,
             "warnings": report.summary.warnings,
         },
+        "scan_id": report.scan_id,
         "results": [
             {
                 "code": r.code,
@@ -62,6 +79,19 @@ def _scan_report_to_dict(report) -> dict:
             }
             for r in report.results
         ],
+        "vulnerability_findings": [
+            {
+                "identifier": item.identifier,
+                "title": item.title,
+                "severity": item.severity,
+                "scope": item.scope,
+                "confidence": item.confidence,
+                "evidence": item.evidence,
+                "recommendation": item.recommendation,
+                "reference": item.reference,
+            }
+            for item in report.vulnerability_findings
+        ],
         "version_context": report.version_context,
         "cve_advisories": [
             {
@@ -73,6 +103,16 @@ def _scan_report_to_dict(report) -> dict:
                 "reference": c.reference,
             }
             for c in report.cve_advisories
+        ],
+        "metasploit_results": [
+            {
+                "module": item.module,
+                "target": item.target,
+                "success": item.success,
+                "summary": item.summary,
+                "output": item.output,
+            }
+            for item in report.metasploit_results
         ],
     }
 
@@ -135,7 +175,7 @@ def _serve_directory(directory: Path, port: int = 0):
                 service_type = (query.get("type") or [""])[0].strip()
                 apache_layout = (query.get("layout") or ["auto"])[0].strip().lower() or "auto"
                 xampp_root = (query.get("xamppRoot") or [""])[0].strip() or None
-                if service_type not in {"ssh", "apache-http", "apache-tomcat"}:
+                if service_type not in {"ssh", "apache-http", "apache-tomcat", "windows-server"}:
                     self._write_json({"error": "Invalid service type"}, status=400)
                     return
                 if apache_layout not in {"auto", "xampp", "standalone"}:
@@ -169,27 +209,26 @@ def _serve_directory(directory: Path, port: int = 0):
                     if content_length == 0:
                         self._write_json({"error": "Empty request body"}, status=400)
                         return
+                    if content_length > MAX_SCAN_REQUEST_SIZE:
+                        self._write_json({"error": "Request body too large"}, status=413)
+                        return
 
                     body = self.rfile.read(content_length)
                     payload = json.loads(body.decode("utf-8"))
 
-                    module_id = payload.get("module_id", "").strip()
-                    os_version = payload.get("os_version", "").strip() or None
-                    service_version = payload.get("service_version", "").strip() or None
-                    xampp_version = payload.get("xampp_version", "").strip() or None
-                    xampp_root = payload.get("xampp_root", "").strip() or None
+                    module_id = _safe_text(payload.get("module_id", "")).strip()
+                    os_version = _safe_text(payload.get("os_version", "")).strip() or None
+                    service_version = _safe_text(payload.get("service_version", "")).strip() or None
+                    xampp_version = _safe_text(payload.get("xampp_version", "")).strip() or None
+                    xampp_root = _safe_text(payload.get("xampp_root", "")).strip() or None
+                    target_host = _safe_text(payload.get("target_host", "")).strip() or None
+                    enable_metasploit = bool(payload.get("enable_metasploit", False))
 
                     if not module_id:
                         self._write_json({"error": "module_id is required"}, status=400)
                         return
 
-                    # Find the module from catalog
-                    modules = load_modules()
-                    module = None
-                    for m in modules:
-                        if m.module_id == module_id:
-                            module = m
-                            break
+                    module = _module_index().get(module_id)
 
                     if not module:
                         self._write_json({"error": f"Module {module_id} not found"}, status=404)
@@ -202,6 +241,8 @@ def _serve_directory(directory: Path, port: int = 0):
                         service_version=service_version,
                         xampp_version=xampp_version,
                         xampp_root=xampp_root,
+                        target_host=target_host,
+                        enable_metasploit=enable_metasploit,
                     )
 
                     # Convert report to JSON-serializable format

@@ -32,6 +32,9 @@ class ScanEngine(Protocol):
         module: ModuleDefinition,
         os_version: str | None = None,
         service_version: str | None = None,
+        xampp_version: str | None = None,
+        target_host: str | None = None,
+        enable_metasploit: bool = False,
     ) -> ScanReport:
         ...
 

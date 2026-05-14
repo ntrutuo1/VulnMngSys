@@ -1,0 +1,18 @@
+{
+  "modules": [
+    {
+      "module": "auxiliary/scanner/smb/smb_version",
+      "enabled": true,
+      "options": {
+        "RPORT": "445"
+      }
+    },
+    {
+      "module": "auxiliary/scanner/rdp/rdp_scanner",
+      "enabled": true,
+      "options": {
+        "RPORT": "3389"
+      }
+    }
+  ]
+}

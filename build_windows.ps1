@@ -5,9 +5,8 @@ Set-Location $PSScriptRoot
 $reactUiDir = Join-Path $PSScriptRoot 'react-ui'
 $pythonExe = 'D:\VulnMngSys\.venv\Scripts\python.exe'
 $distExe = Join-Path $PSScriptRoot 'dist\VulnMngSysDesktop.exe'
-$buildTag = Get-Date -Format 'yyyyMMdd-HHmmss'
-$guiExeName = "VulnMngSysDesktop-$buildTag"
-$cliExeName = "VulnMngSysDesktop-CLI-$buildTag"
+$guiExeName = 'VulnMngSysDesktop'
+$cliExeName = 'VulnMngSysDesktop-CLI'
 
 Write-Host '[1/3] Building React UI...'
 Push-Location $reactUiDir

@@ -13,8 +13,8 @@ def main() -> None:
     parser.add_argument("--module-id", default=None, help="Run a specific hardcoded module id")
     parser.add_argument(
         "--service",
-        default="ssh",
-        choices=["ssh", "apache-http", "apache-tomcat"],
+        default="windows-server",
+        choices=["windows-server"],
         help="Service type in CLI mode",
     )
     parser.add_argument("--os-version", default=None, help="OS version context for CVE evaluation")
@@ -65,7 +65,20 @@ def main() -> None:
             )
         )
 
-    if not args.legacy_ui:
+    # Detect Windows Server and auto-use legacy UI for better compatibility
+    is_windows_server = False
+    if sys.platform.startswith("win"):
+        try:
+            import platform
+            os_info = platform.platform().lower()
+            is_windows_server = "server" in os_info
+        except Exception:
+            pass
+    
+    # Use legacy UI by default on Windows Server, or if explicitly requested
+    should_use_legacy_ui = args.legacy_ui or is_windows_server
+
+    if not should_use_legacy_ui:
         try:
             use_firefox_view = args.web_ui or (sys.platform.startswith("linux") and getattr(sys, "frozen", False))
             launch_react_frontend(open_browser=use_firefox_view)

@@ -48,6 +48,37 @@ def make_directive_check(
     )
 
 
+def make_assignment_check(
+    code: str,
+    title: str,
+    severity: str,
+    config_file_key: str,
+    key: str,
+    expected_value: str,
+    explanation: str = "",
+) -> RuleCheck:
+    expected_normalized = " ".join(expected_value.split()).lower()
+
+    def evaluate(raw_text: str) -> tuple[bool, str]:
+        effective = extract_last_assignment_value(raw_text, key)
+        if effective is None:
+            return False, f"Missing setting: {key}"
+        actual = " ".join(effective.split()).lower()
+        if actual != expected_normalized:
+            return False, f"Expected '{key} = {expected_value}', got '{key} = {effective}'"
+        return True, "Matched expected value"
+
+    return RuleCheck(
+        code=code,
+        title=title,
+        severity=severity,
+        weight=SEVERITY_WEIGHT[severity.lower()],
+        config_file_key=config_file_key,
+        evaluator=evaluate,
+        explanation=explanation,
+    )
+
+
 def extract_last_directive_value(raw_text: str, directive: str) -> str | None:
     matched_value: str | None = None
     lookup = directive.lower()
@@ -64,6 +95,22 @@ def extract_last_directive_value(raw_text: str, directive: str) -> str | None:
         key = parts[0].lower()
         if key == lookup:
             matched_value = " ".join(parts[1:]).strip()
+    return matched_value
+
+
+def extract_last_assignment_value(raw_text: str, key: str) -> str | None:
+    matched_value: str | None = None
+    lookup = key.lower()
+    for line in raw_text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        content = stripped.split("#", 1)[0].strip()
+        if not content or "=" not in content:
+            continue
+        left, right = content.split("=", 1)
+        if left.strip().lower() == lookup:
+            matched_value = right.strip()
     return matched_value
 
 

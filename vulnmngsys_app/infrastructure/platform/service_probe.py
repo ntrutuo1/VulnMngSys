@@ -16,18 +16,14 @@ class ServiceVersionHit(TypedDict):
 def _resolve_xampp_root(family: str, xampp_root: str | None) -> str:
     if xampp_root and xampp_root.strip():
         return xampp_root.strip()
-    if family == "windows":
-        return r"C:\xampp"
-    return "/opt/lampp"
+    return r"C:\xampp"
 
 
 def detect_host_family() -> str:
     system = platform.system().lower()
     if system.startswith("win"):
         return "windows"
-    if system == "darwin":
-        return "macos"
-    return "linux"
+    return "generic"
 
 
 def detect_host_version() -> str:
@@ -35,20 +31,6 @@ def detect_host_version() -> str:
     if family == "windows":
         release = platform.release().strip() or "unknown"
         return f"windows-{release}"
-    if family == "macos":
-        version = platform.mac_ver()[0].strip()
-        if version:
-            major = version.split(".")[0]
-            return f"macos-{major}"
-        return "macos-generic"
-
-    os_release = Path("/etc/os-release")
-    if os_release.exists():
-        content = os_release.read_text(encoding="utf-8", errors="ignore")
-        if "ubuntu" in content.lower() and "22.04" in content:
-            return "ubuntu-22.04"
-        if "ubuntu" in content.lower() and "24.04" in content:
-            return "ubuntu-24.04"
     return "generic"
 
 
@@ -162,23 +144,6 @@ def list_service_versions(
                         ("PATH:httpd", ["httpd", "-v"], None),
                     ]
                 )
-        else:
-            if layout in {"auto", "xampp"}:
-                lampp_apache_bin = str(Path(resolved_xampp_root) / "bin")
-                candidates.extend(
-                    [
-                        ("LAMPP:httpd-bin", ["./httpd", "-v"], lampp_apache_bin),
-                        ("LAMPP:httpd-fullpath", [str(Path(lampp_apache_bin) / "httpd"), "-v"], None),
-                    ]
-                )
-            if layout in {"auto", "standalone"}:
-                candidates.extend(
-                    [
-                        ("PATH:apache2", ["apache2", "-v"], None),
-                        ("PATH:httpd", ["httpd", "-v"], None),
-                        ("PATH:apachectl", ["apachectl", "-v"], None),
-                    ]
-                )
 
         hits = _collect_versions(candidates)
         if hits:
@@ -216,24 +181,6 @@ def list_service_versions(
                         ("Tomcat 10.1", [r"C:\Program Files\Apache Software Foundation\Tomcat 10.1\bin\version.bat"], None),
                         ("Tomcat 9.0", [r"C:\Program Files\Apache Software Foundation\Tomcat 9.0\bin\version.bat"], None),
                         ("PATH:catalina.bat", ["catalina.bat", "version"], None),
-                    ]
-                )
-        else:
-            if layout in {"auto", "xampp"}:
-                lampp_tomcat_bin = str(Path(resolved_xampp_root) / "tomcat" / "bin")
-                candidates.extend(
-                    [
-                        ("LAMPP:tomcat-bin", ["./version.sh"], lampp_tomcat_bin),
-                        ("LAMPP:tomcat-fullpath", [str(Path(lampp_tomcat_bin) / "version.sh")], None),
-                    ]
-                )
-            if layout in {"auto", "standalone"}:
-                candidates.extend(
-                    [
-                        ("PATH:catalina.sh", ["catalina.sh", "version"], None),
-                        ("PATH:catalina", ["catalina", "version"], None),
-                        ("Tomcat:/usr/share/tomcat/bin/version.sh", ["/usr/share/tomcat/bin/version.sh"], None),
-                        ("Tomcat:/opt/tomcat/bin/version.sh", ["/opt/tomcat/bin/version.sh"], None),
                     ]
                 )
 

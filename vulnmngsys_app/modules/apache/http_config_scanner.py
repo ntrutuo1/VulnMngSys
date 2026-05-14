@@ -66,21 +66,6 @@ def windows_apache_http_config_paths() -> list[str]:
     ]
 
 
-def linux_apache_http_config_paths() -> list[str]:
-    return [
-        "/etc/apache2/apache2.conf",
-        "/etc/httpd/conf/httpd.conf",
-        "/etc/apache2/conf-enabled/security.conf",
-    ]
-
-
-def macos_apache_http_config_paths() -> list[str]:
-    return [
-        "/usr/local/etc/apache2/2.4/httpd.conf",
-        "/etc/apache2/httpd.conf",
-    ]
-
-
 def build_apache_http_config_module(
     module_id: str,
     os_family: str,

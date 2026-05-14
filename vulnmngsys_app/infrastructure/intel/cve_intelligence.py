@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from functools import lru_cache
 from dataclasses import dataclass
 from typing import Iterable
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CveRule:
     cve_id: str
     title: str
@@ -17,7 +18,7 @@ class CveRule:
     reference: str = ""
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CveAssessment:
     cve_id: str
     title: str
@@ -27,7 +28,7 @@ class CveAssessment:
     reference: str
 
 
-SERVICE_CVE_RULES: list[CveRule] = [
+SERVICE_CVE_RULES: tuple[CveRule, ...] = (
     CveRule(
         cve_id="CVE-2021-41773",
         title="Apache HTTP Server Path Traversal and RCE",
@@ -91,35 +92,24 @@ SERVICE_CVE_RULES: list[CveRule] = [
         max_exclusive_version="9.3",
         reference="https://www.openssh.com/security.html",
     ),
-]
+)
 
 
-COMBINATION_RULES: list[CveRule] = [
-    CveRule(
-        cve_id="CVE-2021-41773",
-        title="Ubuntu 22.04 + Apache HTTP vulnerable branch requires patch verification",
-        severity="high",
-        service_type="apache-http",
-        min_version="2.4.49",
-        max_exclusive_version="2.4.51",
-        os_family="linux",
-        os_version_prefix="ubuntu-22.04",
-        reference="https://ubuntu.com/security/notices",
-    ),
-    CveRule(
-        cve_id="CVE-2024-6387",
-        title="Ubuntu 22.04 OpenSSH packages need vendor backport confirmation",
-        severity="high",
-        service_type="ssh",
-        min_version="8.5",
-        max_exclusive_version="9.8",
-        os_family="linux",
-        os_version_prefix="ubuntu-22.04",
-        reference="https://ubuntu.com/security/notices",
-    ),
-]
+COMBINATION_RULES: tuple[CveRule, ...] = ()
 
 
+def _build_rule_index(rules: Iterable[CveRule]) -> dict[str, tuple[CveRule, ...]]:
+    indexed_rules: dict[str, list[CveRule]] = {}
+    for rule in rules:
+        indexed_rules.setdefault(rule.service_type, []).append(rule)
+    return {key: tuple(value) for key, value in indexed_rules.items()}
+
+
+SERVICE_RULE_INDEX = _build_rule_index(SERVICE_CVE_RULES)
+COMBINATION_RULE_INDEX = _build_rule_index(COMBINATION_RULES)
+
+
+@lru_cache(maxsize=512)
 def _to_version_tuple(value: str) -> tuple[int, ...]:
     cleaned = []
     for chunk in value.replace("_", ".").split("."):
@@ -200,7 +190,7 @@ def evaluate_cves(
         return []
 
     assessments = _match_rules(
-        SERVICE_CVE_RULES,
+        SERVICE_RULE_INDEX.get(service_type, ()),
         os_family=os_family,
         os_version=os_version,
         service_type=service_type,
@@ -208,7 +198,7 @@ def evaluate_cves(
     )
     assessments.extend(
         _match_rules(
-            COMBINATION_RULES,
+            COMBINATION_RULE_INDEX.get(service_type, ()),
             os_family=os_family,
             os_version=os_version,
             service_type=service_type,

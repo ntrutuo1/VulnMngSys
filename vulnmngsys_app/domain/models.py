@@ -64,11 +64,35 @@ class CveAdvisory:
     reference: str
 
 
+@dataclass(frozen=True, slots=True)
+class VulnerabilityFinding:
+    identifier: str
+    title: str
+    severity: str
+    scope: str
+    confidence: str
+    evidence: str
+    recommendation: str
+    reference: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class MetasploitScanResult:
+    module: str
+    target: str
+    success: bool
+    summary: str
+    output: str = ""
+
+
 @dataclass
 class ScanReport:
     module: ModuleDefinition
     used_config_paths: dict[str, str]
     summary: ScanSummary
     results: list[RuleResult]
+    scan_id: str = ""
+    vulnerability_findings: list[VulnerabilityFinding] = field(default_factory=list)
     version_context: dict[str, str] = field(default_factory=dict)
     cve_advisories: list[CveAdvisory] = field(default_factory=list)
+    metasploit_results: list[MetasploitScanResult] = field(default_factory=list)
