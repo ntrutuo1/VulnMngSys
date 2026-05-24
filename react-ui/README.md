@@ -1,22 +1,19 @@
-# VulnMngSys React UI
+# VulnMngSys Ant Design UI
 
-Modern React interface for VulnMngSys scan flow.
+Modern desktop frontend for VulnMngSys, built with React + Ant Design.
 
-## Run
+## Run (development)
 
-```bash
+```powershell
 npm install
 npm run dev
 ```
 
 ## Build
 
-```bash
+```powershell
+npm install
 npm run build
-npm run preview
 ```
 
-## Notes
-
-- This UI currently simulates scan results in-browser.
-- You can replace `simulateScan` in `src/catalog.js` with real API calls to your Python scan engine.
+Build output is generated to `react-ui/dist` and is embedded into the Windows `.exe` by `build_windows.ps1`.

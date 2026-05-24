@@ -1,0 +1,13 @@
+[
+  {"id":"19.5.1.1","title":"Turn off toast notifications on the lock screen","expected":"1","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications:NoToastApplicationNotificationOnLockScreen"},
+  {"id":"19.6.6.1.1","title":"Turn off Help Experience Improvement Program","expected":"1","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Assistance\\Client\\1.0:NoImplicitFeedback"},
+  {"id":"19.7.5.1","title":"Do not preserve zone information in file attachments","expected":"2","registry":"HKU\\[USER SID]\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments:SaveZoneInformation"},
+  {"id":"19.7.5.2","title":"Notify antivirus programs when opening attachments","expected":"3","registry":"HKU\\[USER SID]\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments:ScanWithAntiVirus"},
+  {"id":"19.7.8.1","title":"Configure Windows spotlight on lock screen","expected":"2","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent:ConfigureWindowsSpotlight"},
+  {"id":"19.7.8.2","title":"Do not suggest third-party content in Windows spotlight","expected":"1","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent:DisableThirdPartySuggestions"},
+  {"id":"19.7.8.3","title":"Do not use diagnostic data for tailored experiences","expected":"1","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent:DisableTailoredExperiencesWithDiagnosticData"},
+  {"id":"19.7.8.4","title":"Turn off all Windows spotlight features","expected":"1","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent:DisableWindowsSpotlightFeatures"},
+  {"id":"19.7.8.5","title":"Turn off Spotlight collection on Desktop","expected":"1","registry":"HKU\\[USER SID]\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableSpotlightCollectionOnDesktop"},
+  {"id":"19.7.26.1","title":"Prevent users from sharing files within their profile","expected":"1","registry":"HKU\\[USER SID]\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoInplaceSharing"},
+  {"id":"19.7.46.2.1","title":"Prevent Codec Download","expected":"1","registry":"HKU\\[USER SID]\\Software\\Policies\\Microsoft\\WindowsMediaPlayer:PreventCodecDownload"}
+]

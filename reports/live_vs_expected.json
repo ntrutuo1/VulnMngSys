@@ -1,0 +1,200 @@
+﻿{
+  "inventory": {
+    "ComputerName": "LAPTOP-CV1SLK6B",
+    "OsCaption": "Microsoft Windows 11 Home Single Language",
+    "OsVersion": "10.0.26200",
+    "ProductType": 1,
+    "IsServer": false,
+    "IsAdmin": false,
+    "TimestampUtc": "2026-05-24T09:22:56.3566050Z"
+  },
+  "netAccounts": {
+    "MinimumPasswordAge": "0",
+    "MaximumPasswordAge": "42",
+    "LockoutBadCount": "10",
+    "ResetLockoutCount": "10",
+    "LockoutDuration": "10",
+    "PasswordHistorySize": "None",
+    "MinimumPasswordLength": "0"
+  },
+  "seceditExportKeys": [],
+  "summary": {
+    "total": 11,
+    "passed": 1,
+    "failed": 6,
+    "manual": 4
+  },
+  "items": [
+    {
+      "ruleId": "1.1.1",
+      "title": "Enforce password history",
+      "verdict": "FAIL",
+      "passed": false,
+      "expected": "24 or more passwords retained in history",
+      "expectedRaw": {
+        "min": 24
+      },
+      "actual": "0",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:PasswordHistorySize",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.1.1"
+    },
+    {
+      "ruleId": "1.1.2",
+      "title": "Maximum password age",
+      "verdict": "PASS",
+      "passed": true,
+      "expected": "365 or fewer days, but not 0",
+      "expectedRaw": {
+        "max": 365,
+        "gt": 0
+      },
+      "actual": "42",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:MaximumPasswordAge",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.1.2"
+    },
+    {
+      "ruleId": "1.1.3",
+      "title": "Minimum password age",
+      "verdict": "FAIL",
+      "passed": false,
+      "expected": "1 or more day(s)",
+      "expectedRaw": {
+        "min": 1
+      },
+      "actual": "0",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:MinimumPasswordAge",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.1.3"
+    },
+    {
+      "ruleId": "1.1.4",
+      "title": "Minimum password length",
+      "verdict": "FAIL",
+      "passed": false,
+      "expected": "14 or more characters",
+      "expectedRaw": {
+        "min": 14
+      },
+      "actual": "0",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:MinimumPasswordLength",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.1.4"
+    },
+    {
+      "ruleId": "1.1.5",
+      "title": "Password complexity",
+      "verdict": "MANUAL",
+      "passed": false,
+      "expected": "Enabled",
+      "expectedRaw": 1,
+      "actual": "",
+      "scanStatus": "MissingOrError",
+      "checkType": "secedit",
+      "source": "secedit:PasswordComplexity",
+      "fallbackSource": null,
+      "cisPdfSection": "1.1.5"
+    },
+    {
+      "ruleId": "1.1.6",
+      "title": "Relax minimum password length limits",
+      "verdict": "MANUAL",
+      "passed": false,
+      "expected": "Enabled",
+      "expectedRaw": 1,
+      "actual": "",
+      "scanStatus": "MissingOrError",
+      "checkType": "registry",
+      "source": "HKLM\\System\\CurrentControlSet\\Control\\SAM:RelaxMinimumPasswordLengthLimits",
+      "fallbackSource": null,
+      "cisPdfSection": "1.1.6"
+    },
+    {
+      "ruleId": "1.1.7",
+      "title": "Store passwords using reversible encryption",
+      "verdict": "MANUAL",
+      "passed": false,
+      "expected": "Disabled",
+      "expectedRaw": 0,
+      "actual": "",
+      "scanStatus": "MissingOrError",
+      "checkType": "secedit",
+      "source": "secedit:ClearTextPassword",
+      "fallbackSource": null,
+      "cisPdfSection": "1.1.7"
+    },
+    {
+      "ruleId": "1.2.1",
+      "title": "Account lockout duration",
+      "verdict": "FAIL",
+      "passed": false,
+      "expected": "15 or more minutes",
+      "expectedRaw": {
+        "min": 15
+      },
+      "actual": "10",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:LockoutDuration",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.2.1"
+    },
+    {
+      "ruleId": "1.2.2",
+      "title": "Account lockout threshold",
+      "verdict": "FAIL",
+      "passed": false,
+      "expected": "5 or fewer invalid logon attempts, but not 0",
+      "expectedRaw": {
+        "max": 5,
+        "gt": 0
+      },
+      "actual": "10",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:LockoutBadCount",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.2.2"
+    },
+    {
+      "ruleId": "1.2.3",
+      "title": "Allow Administrator account lockout",
+      "verdict": "MANUAL",
+      "passed": false,
+      "expected": "Enabled",
+      "expectedRaw": 1,
+      "actual": "",
+      "scanStatus": "MissingOrError",
+      "checkType": "secedit",
+      "source": "secedit:AllowAdministratorLockout",
+      "fallbackSource": null,
+      "cisPdfSection": "1.2.3"
+    },
+    {
+      "ruleId": "1.2.4",
+      "title": "Reset account lockout counter after",
+      "verdict": "FAIL",
+      "passed": false,
+      "expected": "15 or more minutes",
+      "expectedRaw": {
+        "min": 15
+      },
+      "actual": "10",
+      "scanStatus": "Collected",
+      "checkType": "secedit",
+      "source": "secedit:ResetLockoutCount",
+      "fallbackSource": "net_accounts",
+      "cisPdfSection": "1.2.4"
+    }
+  ],
+  "note": "expectedRaw/description align with CIS JSON rules; PDF: Reference/CIS_Microsoft_Windows_Server_2022_Stand-alone_Benchmark_v2.0.0.pdf"
+}

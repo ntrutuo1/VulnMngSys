@@ -1,0 +1,16 @@
+[
+  {
+    "id": "18.9.7.2",
+    "title": "Prevent automatic download of applications associated with device metadata",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata:PreventDeviceMetadataFromNetwork",
+    "registry_value": 1
+  },
+  {
+    "id": "18.9.13.1",
+    "title": "Boot-Start Driver Initialization Policy",
+    "recommended": "Enabled: Good, unknown and bad but critical",
+    "registry": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch:DriverLoadPolicy",
+    "registry_value": 3
+  }
+]

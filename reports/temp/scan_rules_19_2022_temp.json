@@ -1,0 +1,79 @@
+﻿[
+    {
+        "RuleID":  "19.5.1.1",
+        "PolicyName":  "Turn off toast notifications on the lock screen",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.6.6.1.1",
+        "PolicyName":  "Turn off Help Experience Improvement Program",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.5.1",
+        "PolicyName":  "Do not preserve zone information in file attachments",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "2 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.5.2",
+        "PolicyName":  "Notify antivirus programs when opening attachments",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "3 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.1",
+        "PolicyName":  "Configure Windows spotlight on lock screen",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "2 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.2",
+        "PolicyName":  "Do not suggest third-party content in Windows spotlight",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.3",
+        "PolicyName":  "Do not use diagnostic data for tailored experiences",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.4",
+        "PolicyName":  "Turn off all Windows spotlight features",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.5",
+        "PolicyName":  "Turn off Spotlight collection on Desktop",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.26.1",
+        "PolicyName":  "Prevent users from sharing files within their profile",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.46.2.1",
+        "PolicyName":  "Prevent Codec Download",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    }
+]

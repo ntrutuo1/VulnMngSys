@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('rules', 'rules'), ('react-ui/dist', 'react-ui/dist')],
+        datas=[('rules', 'rules'), ('react-ui/dist', 'react-ui/dist')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

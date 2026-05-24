@@ -1,0 +1,247 @@
+﻿[
+    {
+        "RuleID":  "18.10.36.1",
+        "PolicyName":  "Turn off location",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.40.1",
+        "PolicyName":  "Allow Message Service Cloud Sync",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.41.1",
+        "PolicyName":  "Block all consumer Microsoft account user authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.56.1",
+        "PolicyName":  "Turn off Push To Install service",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.2.2",
+        "PolicyName":  "Do not allow passwords to be saved",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.2.1",
+        "PolicyName":  "Restrict RDS users to a single session",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.1",
+        "PolicyName":  "Allow UI Automation redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.2",
+        "PolicyName":  "Do not allow COM port redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.3",
+        "PolicyName":  "Do not allow drive redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.4",
+        "PolicyName":  "Do not allow location redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.5",
+        "PolicyName":  "Do not allow LPT port redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.6",
+        "PolicyName":  "Do not allow supported Plug and Play device redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.7",
+        "PolicyName":  "Do not allow WebAuthn redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.1",
+        "PolicyName":  "Always prompt for password upon connection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.2",
+        "PolicyName":  "Require secure RPC communication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.3",
+        "PolicyName":  "Require use of specific security layer for RDP",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (SSL)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.4",
+        "PolicyName":  "Require Network Level Authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.5",
+        "PolicyName":  "Set client connection encryption level",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "3 (High Level)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.10.1",
+        "PolicyName":  "Set time limit for active but idle RDS sessions",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003c= 900000 and != 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.11.1",
+        "PolicyName":  "Do not delete temp folders upon exit",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.11.2",
+        "PolicyName":  "Do not use temporary folders per session",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.59.2",
+        "PolicyName":  "Allow Cloud Search",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.77.2.1",
+        "PolicyName":  "Configure Windows Defender SmartScreen",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "1 and Block",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.88.1",
+        "PolicyName":  "Turn on PowerShell Script Block Logging",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.88.2",
+        "PolicyName":  "Turn on PowerShell Transcription",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.90.x.1",
+        "PolicyName":  "WinRM: Allow Basic authentication",
+        "CurrentValue":  "Client: | Svc:",
+        "RecommendedValue":  "Both 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.90.x.2",
+        "PolicyName":  "WinRM: Allow unencrypted traffic",
+        "CurrentValue":  "Client: | Svc:",
+        "RecommendedValue":  "Both 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.90.2.2",
+        "PolicyName":  "Allow remote server management through WinRM",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.91.1",
+        "PolicyName":  "Allow Remote Shell Access",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.93.2.1",
+        "PolicyName":  "Prevent users from modifying settings",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.94.1.1",
+        "PolicyName":  "No auto-restart with logged on users...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.94.2.1",
+        "PolicyName":  "Configure Automatic Updates",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.94.2.2",
+        "PolicyName":  "Configure Automatic Updates: Scheduled install day",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.11.1",
+        "PolicyName":  "Disable HTTP proxy features: Disable WPAD",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.11.2",
+        "PolicyName":  "Disable HTTP proxy features: Disable proxy authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "256 or 287",
+        "Status":  "FAIL"
+    }
+]

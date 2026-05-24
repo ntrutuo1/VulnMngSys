@@ -1,0 +1,16 @@
+[
+  {
+    "id": "18.9.38.1",
+    "title": "Enable RPC Endpoint Mapper Client Authentication",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:EnableAuthEpResolution",
+    "registry_value": 1
+  },
+  {
+    "id": "18.9.49.5.1",
+    "title": "Microsoft Support Diagnostic Tool: Turn on MSDT interactive communication",
+    "recommended": "Disabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\ScriptedDiagnosticsProvider\\Policy:DisableQueryRemoteServer",
+    "registry_value": 0
+  }
+]

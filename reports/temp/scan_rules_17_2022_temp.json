@@ -1,0 +1,191 @@
+﻿[
+    {
+        "RuleID":  "17.1.1",
+        "PolicyName":  "Audit Credential Validation",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.2.1",
+        "PolicyName":  "Audit Application Group Management",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.2.2",
+        "PolicyName":  "Audit Security Group Management",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.2.3",
+        "PolicyName":  "Audit User Account Management",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.3.1",
+        "PolicyName":  "Audit PNP Activity",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.3.2",
+        "PolicyName":  "Audit Process Creation",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.1",
+        "PolicyName":  "Audit Account Lockout",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.2",
+        "PolicyName":  "Audit Group Membership",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.3",
+        "PolicyName":  "Audit Logoff",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.4",
+        "PolicyName":  "Audit Logon",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.5",
+        "PolicyName":  "Audit Other Logon/Logoff Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.6",
+        "PolicyName":  "Audit Special Logon",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.1",
+        "PolicyName":  "Audit Detailed File Share",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.2",
+        "PolicyName":  "Audit File Share",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.3",
+        "PolicyName":  "Audit Other Object Access Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.4",
+        "PolicyName":  "Audit Removable Storage",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.1",
+        "PolicyName":  "Audit Audit Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.2",
+        "PolicyName":  "Audit Authentication Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.3",
+        "PolicyName":  "Audit Authorization Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.4",
+        "PolicyName":  "Audit MPSSVC Rule-Level Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.5",
+        "PolicyName":  "Audit Other Policy Change Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.8.1",
+        "PolicyName":  "Audit Sensitive Privilege Use",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.1",
+        "PolicyName":  "Audit IPsec Driver",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.2",
+        "PolicyName":  "Audit Other System Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.3",
+        "PolicyName":  "Audit Security State Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.4",
+        "PolicyName":  "Audit Security System Extension",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.5",
+        "PolicyName":  "Audit System Integrity",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "18.10.16.1",
+    "title": "Allow Diagnostic Data (Telemetry)",
+    "recommended": "Enabled: Diagnostic data off or Send required diagnostic data",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:AllowTelemetry",
+    "registry_possible_values": [0,1]
+  },
+  {
+    "id": "18.10.26.2.2",
+    "title": "Security: Specify the maximum log file size (KB)",
+    "recommended": "Enabled: 196,608 or greater",
+    "registry": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:MaxSize",
+    "registry_value_min": 196608
+  }
+]

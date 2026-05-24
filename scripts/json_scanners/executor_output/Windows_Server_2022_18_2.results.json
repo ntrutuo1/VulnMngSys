@@ -1,0 +1,290 @@
+﻿[
+    {
+        "RuleId":  "18.9.7.2",
+        "Title":  "Prevent automatic download of device metadata applications",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata; value=PreventDeviceMetadataFromNetwork}"
+    },
+    {
+        "RuleId":  "18.9.13.1",
+        "Title":  "Boot-Start Driver Initialization Policy (DriverLoadPolicy)",
+        "Recommended":  "3",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch; value=DriverLoadPolicy}"
+    },
+    {
+        "RuleId":  "18.9.17.1",
+        "Title":  "Enable CLFS logfile authentication",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Policies; value=ClfsAuthenticationChecking}"
+    },
+    {
+        "RuleId":  "18.9.19.2",
+        "Title":  "Continue experiences on this device (EnableCdp)",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=EnableCdp}"
+    },
+    {
+        "RuleId":  "18.9.20.1.1",
+        "Title":  "Turn off downloading of print drivers over HTTP",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers; value=DisableWebPnPDownload}"
+    },
+    {
+        "RuleId":  "18.9.20.1.2",
+        "Title":  "Turn off handwriting personalization data sharing",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\TabletPC; value=PreventHandwritingDataSharing}"
+    },
+    {
+        "RuleId":  "18.9.20.1.3",
+        "Title":  "Turn off handwriting recognition error reporting",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\HandwritingErrorReports; value=PreventHandwritingErrorReports}"
+    },
+    {
+        "RuleId":  "18.9.20.1.4",
+        "Title":  "Turn off Internet Connection Wizard if URL refers to Microsoft.com",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Internet Connection Wizard; value=ExitOnMSICW}"
+    },
+    {
+        "RuleId":  "18.9.20.1.5",
+        "Title":  "Turn off Internet download for Web publishing and online ordering wizards",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer; value=NoWebServices}"
+    },
+    {
+        "RuleId":  "18.9.20.1.6",
+        "Title":  "Turn off printing over HTTP",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers; value=DisableHTTPPrinting}"
+    },
+    {
+        "RuleId":  "18.9.20.1.7",
+        "Title":  "Turn off Registration if URL refers to Microsoft.com",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Registration Wizard Control; value=NoRegistration}"
+    },
+    {
+        "RuleId":  "18.9.20.1.8",
+        "Title":  "Turn off Search Companion content file updates",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\SearchCompanion; value=DisableContentFileUpdates}"
+    },
+    {
+        "RuleId":  "18.9.20.1.9",
+        "Title":  "Turn off the \u0027Order Prints\u0027 picture task",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer; value=NoOnlinePrintsWizard}"
+    },
+    {
+        "RuleId":  "18.9.20.1.10",
+        "Title":  "Turn off the \u0027Publish to Web\u0027 task",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer; value=NoPublishingWizard}"
+    },
+    {
+        "RuleId":  "18.9.20.1.11",
+        "Title":  "Turn off Windows Messenger CEIP",
+        "Recommended":  "2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Messenger\\Client; value=CEIP}"
+    },
+    {
+        "RuleId":  "18.9.20.1.12",
+        "Title":  "Turn off Windows CEIP (SQMClient)",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows; value=CEIPEnable}"
+    },
+    {
+        "RuleId":  "18.9.20.1.13",
+        "Title":  "Turn off Windows Error Reporting",
+        "Recommended":  "1 0",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "18.9.24.1",
+        "Title":  "Kernel DMA Protection: DeviceEnumerationPolicy",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Kernel DMA Protection; value=DeviceEnumerationPolicy}"
+    },
+    {
+        "RuleId":  "18.9.27.1",
+        "Title":  "Configure LSASS to run as a protected process (RunAsPPL)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=RunAsPPL}"
+    },
+    {
+        "RuleId":  "18.9.28.1",
+        "Title":  "Disallow copying of user input methods to the system account for sign-in",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Control Panel\\International; value=BlockUserInputMethodsForSignIn}"
+    },
+    {
+        "RuleId":  "18.9.29.1",
+        "Title":  "Block user from showing account details on sign-in",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=BlockUserFromShowingAccountDetailsOnSignin}"
+    },
+    {
+        "RuleId":  "18.9.29.2",
+        "Title":  "Do not display network selection UI",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=DontDisplayNetworkSelectionUI}"
+    },
+    {
+        "RuleId":  "18.9.29.3",
+        "Title":  "Turn off app notifications on the lock screen",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=DisableLockScreenAppNotifications}"
+    },
+    {
+        "RuleId":  "18.9.29.4",
+        "Title":  "Turn on convenience PIN sign-in disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=AllowDomainPINLogon}"
+    },
+    {
+        "RuleId":  "18.9.33.1",
+        "Title":  "Allow Clipboard synchronization across devices disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=AllowCrossDeviceClipboard}"
+    },
+    {
+        "RuleId":  "18.9.33.2",
+        "Title":  "Allow upload of User Activities disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\System; value=UploadUserActivities}"
+    },
+    {
+        "RuleId":  "18.9.35.6.1",
+        "Title":  "Allow network connectivity during connected-standby (on battery) disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9; value=DCSettingIndex}"
+    },
+    {
+        "RuleId":  "18.9.35.6.2",
+        "Title":  "Allow network connectivity during connected-standby (plugged in) disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9; value=ACSettingIndex}"
+    },
+    {
+        "RuleId":  "18.9.35.6.3",
+        "Title":  "Require a password when a computer wakes (on battery)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51; value=DCSettingIndex}"
+    },
+    {
+        "RuleId":  "18.9.35.6.4",
+        "Title":  "Require a password when a computer wakes (plugged in)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51; value=ACSettingIndex}"
+    },
+    {
+        "RuleId":  "18.9.37.1",
+        "Title":  "Configure Offer Remote Assistance disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services; value=fAllowUnsolicited}"
+    },
+    {
+        "RuleId":  "18.9.37.2",
+        "Title":  "Configure Solicited Remote Assistance disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services; value=fAllowToGetHelp}"
+    }
+]

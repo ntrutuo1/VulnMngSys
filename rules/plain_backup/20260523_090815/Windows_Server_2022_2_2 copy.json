@@ -1,0 +1,39 @@
+[
+  {
+    "id": "2.3.10.1",
+    "title": "Network access: Allow anonymous SID/Name translation",
+    "recommended": "Disabled",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Allow anonymous SID/Name translation"
+  },
+  {
+    "id": "2.3.10.2",
+    "title": "Network access: Do not allow anonymous enumeration of SAM accounts",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:RestrictAnonymousSAM",
+    "registry_type": "REG_DWORD",
+    "registry_value": 1
+  },
+  {
+    "id": "2.3.10.4",
+    "title": "Network access: Do not allow storage of passwords and credentials for network authentication",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:DisableDomainCreds",
+    "registry_type": "REG_DWORD",
+    "registry_value": 1
+  },
+  {
+    "id": "2.3.10.5",
+    "title": "Network access: Let Everyone permissions apply to anonymous users",
+    "recommended": "Disabled",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:EveryoneIncludesAnonymous",
+    "registry_type": "REG_DWORD",
+    "registry_value": 0
+  },
+  {
+    "id": "2.3.11.1",
+    "title": "Network security: Allow Local System to use computer identity for NTLM",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:UseMachineId",
+    "registry_value": 1
+  }
+]

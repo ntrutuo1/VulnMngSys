@@ -1,0 +1,23 @@
+{
+  "profile": "Windows_Server_2022",
+  "quick": "Windows_Server_2022_1.json",
+  "full": [
+    "Windows_Server_2022_1.json",
+    "Windows_Server_2022_2.json",
+    "Windows_Server_2022_2_1 copy.json",
+    "Windows_Server_2022_2_2 copy.json",
+    "Windows_Server_2022_5 copy.json",
+    "Windows_Server_2022_17.json",
+    "Windows_Server_2022_18.json",
+    "Windows_Server_2022_18_1.json",
+    "Windows_Server_2022_18_2.json",
+    "Windows_Server_2022_18_3.json",
+    "Windows_Server_2022_18_4.json",
+    "Windows_Server_2022_18_5.json",
+    "Windows_Server_2022_19.json"
+  ],
+  "legacy": [
+    "Windows_Server_2022_rules.json",
+    "Windows_Server_2022_3.json"
+  ]
+}

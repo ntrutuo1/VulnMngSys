@@ -1,0 +1,23 @@
+[
+  {
+    "id": "18.1.1.1",
+    "title": "Prevent enabling lock screen camera",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization:NoLockScreenCamera",
+    "registry_value": 1
+  },
+  {
+    "id": "18.4.1",
+    "title": "Configure SMB v1 client driver (Disable driver)",
+    "recommended": "Enabled: Disable driver",
+    "registry": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10:Start",
+    "registry_value": 4
+  },
+  {
+    "id": "18.5.10",
+    "title": "MSS: KeepAliveTime",
+    "recommended": "300,000 (5 minutes)",
+    "registry": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:KeepAliveTime",
+    "registry_value": 300000
+  }
+]

@@ -1,0 +1,142 @@
+﻿[
+    {
+        "RuleID":  "2.3.1.1",
+        "PolicyName":  "Accounts: Guest account status",
+        "CurrentValue":  "Disabled",
+        "RecommendedValue":  "Disabled",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.1.2",
+        "PolicyName":  "Accounts: Limit local account use of blank passwords to console logon only",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.1.3",
+        "PolicyName":  "Accounts: Rename administrator account",
+        "CurrentValue":  "Administrator",
+        "RecommendedValue":  "Not \u0027Administrator\u0027",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.1.4",
+        "PolicyName":  "Accounts: Rename guest account",
+        "CurrentValue":  "Guest",
+        "RecommendedValue":  "Not \u0027Guest\u0027",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.2.1",
+        "PolicyName":  "Audit: Force audit policy subcategory settings...",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.2.2",
+        "PolicyName":  "Audit: Shut down system immediately if unable to log security audits",
+        "CurrentValue":  0,
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.4.1",
+        "PolicyName":  "Devices: Prevent users from installing printer drivers",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.1",
+        "PolicyName":  "Interactive logon: Do not require CTRL+ALT+DEL",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.2",
+        "PolicyName":  "Interactive logon: Don\u0027t display last signed-in",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.3",
+        "PolicyName":  "Interactive logon: Machine inactivity limit",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "\u003c= 900 and != 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.4",
+        "PolicyName":  "Interactive logon: Message text for users attempting to log on",
+        "CurrentValue":  "\u0000",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.7.5",
+        "PolicyName":  "Interactive logon: Message title for users attempting to log on",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.6",
+        "PolicyName":  "Interactive logon: Prompt user to change password before expiration",
+        "CurrentValue":  5,
+        "RecommendedValue":  "5 to 14 days",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.7.7",
+        "PolicyName":  "Interactive logon: Smart card removal behavior",
+        "CurrentValue":  "0",
+        "RecommendedValue":  "1, 2, or 3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.8.1",
+        "PolicyName":  "Microsoft network client: Digitally sign communications (always)",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.8.2",
+        "PolicyName":  "Microsoft network client: Send unencrypted password to third-party SMB servers",
+        "CurrentValue":  0,
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.9.1",
+        "PolicyName":  "Microsoft network server: Amount of idle time required before suspending session",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "\u003c= 15",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.9.2",
+        "PolicyName":  "Microsoft network server: Digitally sign communications (always)",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.9.3",
+        "PolicyName":  "Microsoft network server: Disconnect clients when logon hours expire",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.9.4",
+        "PolicyName":  "Microsoft network server: Server SPN target name validation level",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "1 or 2",
+        "Status":  "FAIL"
+    }
+]

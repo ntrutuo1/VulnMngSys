@@ -1,0 +1,182 @@
+﻿[
+    {
+        "RuleId":  "2.3.1.1",
+        "Title":  "Accounts: Guest account status",
+        "Recommended":  "Disabled",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "2.3.1.2",
+        "Title":  "Accounts: Limit local account use of blank passwords to console logon only",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=LimitBlankPasswordUse}"
+    },
+    {
+        "RuleId":  "2.3.1.3",
+        "Title":  "Accounts: Rename administrator account",
+        "Recommended":  "Not \u0027Administrator\u0027",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "2.3.1.4",
+        "Title":  "Accounts: Rename guest account",
+        "Recommended":  "Not \u0027Guest\u0027",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "2.3.2.1",
+        "Title":  "Audit: Force audit policy subcategory settings...",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=SCENoApplyLegacyAuditPolicy}"
+    },
+    {
+        "RuleId":  "2.3.2.2",
+        "Title":  "Audit: Shut down system immediately if unable to log security audits",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=CrashOnAuditFail}"
+    },
+    {
+        "RuleId":  "2.3.4.1",
+        "Title":  "Devices: Prevent users from installing printer drivers",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Print\\Providers\\LanMan Print Services\\Servers; value=AddPrinterDrivers}"
+    },
+    {
+        "RuleId":  "2.3.7.1",
+        "Title":  "Interactive logon: Do not require CTRL+ALT+DEL",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=DisableCAD}"
+    },
+    {
+        "RuleId":  "2.3.7.2",
+        "Title":  "Interactive logon: Don\u0027t display last signed-in",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=DontDisplayLastUserName}"
+    },
+    {
+        "RuleId":  "2.3.7.3",
+        "Title":  "Interactive logon: Machine inactivity limit",
+        "Recommended":  "@{max=900; gt=0}",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=InactivityTimeoutSecs}"
+    },
+    {
+        "RuleId":  "2.3.7.4",
+        "Title":  "Interactive logon: Message text for users attempting to log on",
+        "Recommended":  "configured_non_empty",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=LegalNoticeText}"
+    },
+    {
+        "RuleId":  "2.3.7.5",
+        "Title":  "Interactive logon: Message title for users attempting to log on",
+        "Recommended":  "configured_non_empty",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=LegalNoticeCaption}"
+    },
+    {
+        "RuleId":  "2.3.7.6",
+        "Title":  "Interactive logon: Prompt user to change password before expiration",
+        "Recommended":  "@{min=5; max=14}",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon; value=PasswordExpiryWarning}"
+    },
+    {
+        "RuleId":  "2.3.7.7",
+        "Title":  "Interactive logon: Smart card removal behavior",
+        "Recommended":  "1 2 3",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon; value=ScRemoveOption}"
+    },
+    {
+        "RuleId":  "2.3.8.1",
+        "Title":  "Microsoft network client: Digitally sign communications (always)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters; value=RequireSecuritySignature}"
+    },
+    {
+        "RuleId":  "2.3.8.2",
+        "Title":  "Microsoft network client: Send unencrypted password to third-party SMB servers",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters; value=EnablePlainTextPassword}"
+    },
+    {
+        "RuleId":  "2.3.9.1",
+        "Title":  "Microsoft network server: Amount of idle time required before suspending session",
+        "Recommended":  "@{max=15}",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=AutoDisconnect}"
+    },
+    {
+        "RuleId":  "2.3.9.2",
+        "Title":  "Microsoft network server: Digitally sign communications (always)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=RequireSecuritySignature}"
+    },
+    {
+        "RuleId":  "2.3.9.3",
+        "Title":  "Microsoft network server: Disconnect clients when logon hours expire",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=enableforcedlogoff}"
+    },
+    {
+        "RuleId":  "2.3.9.4",
+        "Title":  "Microsoft network server: Server SPN target name validation level",
+        "Recommended":  "1 2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=SMBServerNameHardeningLevel}"
+    }
+]

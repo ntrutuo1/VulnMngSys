@@ -1,0 +1,9 @@
+﻿{
+    "MinimumPasswordAge":  "0",
+    "MaximumPasswordAge":  "42",
+    "LockoutBadCount":  "10",
+    "ResetLockoutCount":  "10",
+    "LockoutDuration":  "10",
+    "PasswordHistorySize":  "None",
+    "MinimumPasswordLength":  "0"
+}

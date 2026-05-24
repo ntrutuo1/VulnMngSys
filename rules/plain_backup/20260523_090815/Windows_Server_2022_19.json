@@ -1,0 +1,16 @@
+[
+  {
+    "id": "19.5.1.1",
+    "title": "Turn off toast notifications on the lock screen",
+    "recommended": "Enabled",
+    "registry": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications:NoToastApplicationNotificationOnLockScreen",
+    "registry_value": 1
+  },
+  {
+    "id": "19.7.5.1",
+    "title": "Do not preserve zone information in file attachments",
+    "recommended": "Disabled",
+    "registry": "HKU\\[USER SID]\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments:SaveZoneInformation",
+    "registry_value": 2
+  }
+]

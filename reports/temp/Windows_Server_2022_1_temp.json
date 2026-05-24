@@ -1,0 +1,183 @@
+﻿[
+    {
+        "RuleId":  "1.1.1",
+        "Title":  "Enforce password history",
+        "Recommended":  "24 or more passwords retained in history",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "min":  24
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "24 or more passwords retained in history",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:PasswordHistorySize",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.1.2",
+        "Title":  "Maximum password age",
+        "Recommended":  "365 or fewer days, but not 0",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "max":  365,
+                         "gt":  0
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "365 or fewer days, but not 0",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:MaximumPasswordAge",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.1.3",
+        "Title":  "Minimum password age",
+        "Recommended":  "1 or more day(s)",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "min":  1
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "1 or more day(s)",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:MinimumPasswordAge",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.1.4",
+        "Title":  "Minimum password length",
+        "Recommended":  "14 or more characters",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "min":  14
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "14 or more characters",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:MinimumPasswordLength",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.1.5",
+        "Title":  "Password complexity",
+        "Recommended":  "Enabled",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  1,
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "Enabled",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:PasswordComplexity",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.1.6",
+        "Title":  "Relax minimum password length limits",
+        "Recommended":  "Enabled",
+        "CheckType":  "registry",
+        "RuleType":  "registry",
+        "Expected":  1,
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "Enabled",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "HKLM\\System\\CurrentControlSet\\Control\\SAM:RelaxMinimumPasswordLengthLimits",
+        "Error":  "The property \u0027Name\u0027 cannot be found on this object. Verify that the property exists."
+    },
+    {
+        "RuleId":  "1.1.7",
+        "Title":  "Store passwords using reversible encryption",
+        "Recommended":  "Disabled",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  0,
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "Disabled",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:ClearTextPassword",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.2.1",
+        "Title":  "Account lockout duration",
+        "Recommended":  "15 or more minutes",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "min":  15
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "15 or more minutes",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:LockoutDuration",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.2.2",
+        "Title":  "Account lockout threshold",
+        "Recommended":  "5 or fewer invalid logon attempts, but not 0",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "max":  5,
+                         "gt":  0
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "5 or fewer invalid logon attempts, but not 0",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:LockoutBadCount",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.2.3",
+        "Title":  "Allow Administrator account lockout",
+        "Recommended":  "Enabled",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  1,
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "Enabled",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:AllowAdministratorLockout",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "1.2.4",
+        "Title":  "Reset account lockout counter after",
+        "Recommended":  "15 or more minutes",
+        "CheckType":  "secedit",
+        "RuleType":  "secedit",
+        "Expected":  {
+                         "min":  15
+                     },
+        "Match":  "",
+        "RegistryValue":  null,
+        "Description":  "15 or more minutes",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "secedit:ResetLockoutCount",
+        "Error":  ""
+    }
+]

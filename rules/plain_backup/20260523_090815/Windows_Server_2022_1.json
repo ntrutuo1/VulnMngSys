@@ -1,0 +1,79 @@
+[
+  {
+    "id": "1.1.1",
+    "title": "Enforce password history",
+    "description": "Xác định số lượng mật khẩu cũ không được phép tái sử dụng",
+    "recommended": "24 or more password(s)",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Enforce password history"
+  },
+  {
+    "id": "1.1.2",
+    "title": "Maximum password age",
+    "description": "Khoảng thời gian mật khẩu hết hạn",
+    "recommended": "365 or fewer days, but not 0",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Maximum password age"
+  },
+  {
+    "id": "1.1.3",
+    "title": "Minimum password age",
+    "description": "Số ngày tối thiểu trước khi mật khẩu có thể thay đổi",
+    "recommended": "1 or more day(s)",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Minimum password age"
+  },
+  {
+    "id": "1.1.4",
+    "title": "Minimum password length",
+    "description": "Số lượng ký tự tối thiểu để tạo mật khẩu",
+    "recommended": "14 or more character(s)",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Minimum password length"
+  },
+  {
+    "id": "1.1.5",
+    "title": "Password must meet complexity requirements",
+    "description": "Yêu cầu mật khẩu mới đáp ứng các tiêu chuẩn độ phức tạp",
+    "recommended": "Enabled",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Password must meet complexity requirements"
+  },
+  {
+    "id": "1.1.6",
+    "title": "Relax minimum password length limits",
+    "description": "Cho phép nới lỏng giới hạn độ dài tối thiểu để hỗ trợ mật khẩu >14 ký tự",
+    "recommended": "Enabled",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Relax minimum password length limits"
+  },
+  {
+    "id": "1.1.7",
+    "title": "Store passwords using reversible encryption",
+    "description": "Cấm lưu mật khẩu dưới dạng mã hóa có thể dịch ngược",
+    "recommended": "Disabled",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Store passwords using reversible encryption"
+  },
+  {
+    "id": "1.2.1",
+    "title": "Account lockout duration",
+    "description": "Thời gian tài khoản bị khóa trước khi tự mở lại",
+    "recommended": "15 or more minute(s)",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policy\\Account lockout duration"
+  },
+  {
+    "id": "1.2.2",
+    "title": "Account lockout threshold",
+    "description": "Số lần đăng nhập sai cho phép trước khi khóa tài khoản",
+    "recommended": "5 or fewer invalid logon attempt(s), but not 0",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policy\\Account lockout threshold"
+  },
+  {
+    "id": "1.2.3",
+    "title": "Allow Administrator account lockout",
+    "description": "Áp dụng chính sách khóa tài khoản cho tài khoản Administrator",
+    "recommended": "Enabled",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policies\\Allow Administrator account lockout"
+  },
+  {
+    "id": "1.2.4",
+    "title": "Reset account lockout counter after",
+    "description": "Khoảng thời gian để đặt lại bộ đếm đăng nhập sai về 0",
+    "recommended": "15 or more minute(s)",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policy\\Reset account lockout counter after"
+  }
+]

@@ -1,0 +1,202 @@
+﻿[
+    {
+        "RuleId":  "2.3.1.1",
+        "Title":  "Accounts: Guest account status",
+        "Recommended":  "Disabled",
+        "CheckType":  "local_account",
+        "Actual":  "Disabled",
+        "Status":  "Collected",
+        "Source":  "LocalUser:Guest",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.1.2",
+        "Title":  "Accounts: Limit local account use of blank passwords to console logon only",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "1",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:LimitBlankPasswordUse",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.1.3",
+        "Title":  "Accounts: Rename administrator account",
+        "Recommended":  "Not \u0027Administrator\u0027",
+        "CheckType":  "local_account",
+        "Actual":  "Administrator",
+        "Status":  "Collected",
+        "Source":  "LocalUser:Administrator",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.1.4",
+        "Title":  "Accounts: Rename guest account",
+        "Recommended":  "Not \u0027Guest\u0027",
+        "CheckType":  "local_account",
+        "Actual":  "Guest",
+        "Status":  "Collected",
+        "Source":  "LocalUser:Guest",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.2.1",
+        "Title":  "Audit: Force audit policy subcategory settings...",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:SCENoApplyLegacyAuditPolicy",
+        "Error":  "Registry value not found: SCENoApplyLegacyAuditPolicy"
+    },
+    {
+        "RuleId":  "2.3.2.2",
+        "Title":  "Audit: Shut down system immediately if unable to log security audits",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:CrashOnAuditFail",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.4.1",
+        "Title":  "Devices: Prevent users from installing printer drivers",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\\Providers\\LanMan Print Services\\Servers:AddPrinterDrivers",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.7.1",
+        "Title":  "Interactive logon: Do not require CTRL+ALT+DEL",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DisableCAD",
+        "Error":  "Registry value not found: DisableCAD"
+    },
+    {
+        "RuleId":  "2.3.7.2",
+        "Title":  "Interactive logon: Don\u0027t display last signed-in",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DontDisplayLastUserName",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.7.3",
+        "Title":  "Interactive logon: Machine inactivity limit",
+        "Recommended":  "max=900, gt=0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:InactivityTimeoutSecs",
+        "Error":  "Registry value not found: InactivityTimeoutSecs"
+    },
+    {
+        "RuleId":  "2.3.7.4",
+        "Title":  "Interactive logon: Message text for users attempting to log on",
+        "Recommended":  "configured_non_empty",
+        "CheckType":  "registry",
+        "Actual":  "\u0000",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:LegalNoticeText",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.7.5",
+        "Title":  "Interactive logon: Message title for users attempting to log on",
+        "Recommended":  "configured_non_empty",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:LegalNoticeCaption",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.7.6",
+        "Title":  "Interactive logon: Prompt user to change password before expiration",
+        "Recommended":  "min=5, max=14",
+        "CheckType":  "registry",
+        "Actual":  "5",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:PasswordExpiryWarning",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.7.7",
+        "Title":  "Interactive logon: Smart card removal behavior",
+        "Recommended":  "1, 2, 3",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:ScRemoveOption",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.8.1",
+        "Title":  "Microsoft network client: Digitally sign communications (always)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters:RequireSecuritySignature",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.8.2",
+        "Title":  "Microsoft network client: Send unencrypted password to third-party SMB servers",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters:EnablePlainTextPassword",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.9.1",
+        "Title":  "Microsoft network server: Amount of idle time required before suspending session",
+        "Recommended":  "max=15",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:AutoDisconnect",
+        "Error":  "Registry value not found: AutoDisconnect"
+    },
+    {
+        "RuleId":  "2.3.9.2",
+        "Title":  "Microsoft network server: Digitally sign communications (always)",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "0",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:RequireSecuritySignature",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.9.3",
+        "Title":  "Microsoft network server: Disconnect clients when logon hours expire",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "1",
+        "Status":  "Collected",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:enableforcedlogoff",
+        "Error":  ""
+    },
+    {
+        "RuleId":  "2.3.9.4",
+        "Title":  "Microsoft network server: Server SPN target name validation level",
+        "Recommended":  "1, 2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "MissingOrError",
+        "Source":  "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:SMBServerNameHardeningLevel",
+        "Error":  "Registry value not found: SMBServerNameHardeningLevel"
+    }
+]

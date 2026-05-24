@@ -1,0 +1,10 @@
+__pycache__/
+node_modules/
+react-ui/node_modules/
+
+electron-dist/
+win-unpacked/
+dist/
+build/
+
+*.asar

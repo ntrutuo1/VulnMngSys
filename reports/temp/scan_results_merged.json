@@ -1,0 +1,1689 @@
+﻿[
+    {
+        "RuleID":  "17.1.1",
+        "PolicyName":  "Audit Credential Validation",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.2.1",
+        "PolicyName":  "Audit Application Group Management",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.2.2",
+        "PolicyName":  "Audit Security Group Management",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.2.3",
+        "PolicyName":  "Audit User Account Management",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.3.1",
+        "PolicyName":  "Audit PNP Activity",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.3.2",
+        "PolicyName":  "Audit Process Creation",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.1",
+        "PolicyName":  "Audit Account Lockout",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.2",
+        "PolicyName":  "Audit Group Membership",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.3",
+        "PolicyName":  "Audit Logoff",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.4",
+        "PolicyName":  "Audit Logon",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.5",
+        "PolicyName":  "Audit Other Logon/Logoff Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.5.6",
+        "PolicyName":  "Audit Special Logon",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.1",
+        "PolicyName":  "Audit Detailed File Share",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.2",
+        "PolicyName":  "Audit File Share",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.3",
+        "PolicyName":  "Audit Other Object Access Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.6.4",
+        "PolicyName":  "Audit Removable Storage",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.1",
+        "PolicyName":  "Audit Audit Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.2",
+        "PolicyName":  "Audit Authentication Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.3",
+        "PolicyName":  "Audit Authorization Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.4",
+        "PolicyName":  "Audit MPSSVC Rule-Level Policy Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.7.5",
+        "PolicyName":  "Audit Other Policy Change Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.8.1",
+        "PolicyName":  "Audit Sensitive Privilege Use",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.1",
+        "PolicyName":  "Audit IPsec Driver",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.2",
+        "PolicyName":  "Audit Other System Events",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.3",
+        "PolicyName":  "Audit Security State Change",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.4",
+        "PolicyName":  "Audit Security System Extension",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Includes Success",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "17.9.5",
+        "PolicyName":  "Audit System Integrity",
+        "CurrentValue":  "Not Defined / No Auditing",
+        "RecommendedValue":  "Success and Failure",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.4.1",
+        "PolicyName":  "Configure multicast DNS (mDNS) protocol",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.4.2",
+        "PolicyName":  "Turn off default IPv6 DNS Servers",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.5.1",
+        "PolicyName":  "Enable Font Providers",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.7.1",
+        "PolicyName":  "Mandate the minimum version of SMB",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "785 (3.1.1)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.8.1",
+        "PolicyName":  "Enable insecure guest logons",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.8.2",
+        "PolicyName":  "Require Encryption",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.9.1",
+        "PolicyName":  "Turn on Mapper I/O (LLTDIO) driver",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "All 0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.9.2",
+        "PolicyName":  "Turn on Responder (RSPNDR) driver",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "All 0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.10.2",
+        "PolicyName":  "Turn off Microsoft Peer-to-Peer Networking Services",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.11.2",
+        "PolicyName":  "Prohibit installation and configuration of Network Bridge...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.11.3",
+        "PolicyName":  "Prohibit use of Internet Connection Sharing...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.14.1",
+        "PolicyName":  "Hardened UNC Paths",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "Configured for NETLOGON \u0026 SYSVOL",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.19.2.1",
+        "PolicyName":  "Disable IPv6",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "255 (0xff)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.20.1",
+        "PolicyName":  "Configuration of wireless settings using Windows Connect Now",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "All 0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.20.2",
+        "PolicyName":  "Prohibit access of the Windows Connect Now wizards",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.6.21.1",
+        "PolicyName":  "Minimize the number of simultaneous connections...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.1",
+        "PolicyName":  "Allow Print Spooler to accept client connections",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.2",
+        "PolicyName":  "Configure Redirection Guard",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.3",
+        "PolicyName":  "Configure RPC connection settings: Protocol to use...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled: RPC over TCP)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.4",
+        "PolicyName":  "Configure RPC connection settings: Use authentication...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Default)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.5",
+        "PolicyName":  "Configure RPC listener settings: Protocols to allow...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "5 (RPC over TCP)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.6",
+        "PolicyName":  "Configure RPC listener settings: Authentication protocol...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 or 1",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.7",
+        "PolicyName":  "Configure RPC over TCP port",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.8",
+        "PolicyName":  "Configure RPC packet level privacy setting...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.9",
+        "PolicyName":  "Limits print driver installation to Administrators",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.10",
+        "PolicyName":  "Manage processing of Queue-specific files",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.11",
+        "PolicyName":  "Point and Print Restrictions: When installing drivers...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.7.12",
+        "PolicyName":  "Point and Print Restrictions: When updating drivers...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.8.1.1",
+        "PolicyName":  "Turn off notifications network usage",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.3.1",
+        "PolicyName":  "Include command line in process creation events",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.4.1",
+        "PolicyName":  "Encryption Oracle Remediation",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Force Updated Clients)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.4.2",
+        "PolicyName":  "Remote host allows delegation of non-exportable credentials",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.5.1",
+        "PolicyName":  "Turn On Virtualization Based Security",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.5.2",
+        "PolicyName":  "Turn On Virtualization Based Security: Select Platform Security Level",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 or 3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.5.3",
+        "PolicyName":  "Turn On Virtualization Based Security: Virtualization Based Protection of Code Integrity",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.5.4",
+        "PolicyName":  "Turn On Virtualization Based Security: Require UEFI Memory Attributes Table",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.5.5",
+        "PolicyName":  "Turn On Virtualization Based Security: Credential Guard Configuration",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.5.6",
+        "PolicyName":  "Turn On Virtualization Based Security: Secure Launch Configuration",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.1.1.1",
+        "PolicyName":  "Prevent enabling lock screen camera",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.1.1.2",
+        "PolicyName":  "Prevent enabling lock screen slide show",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.1.2.2",
+        "PolicyName":  "Allow users to enable online speech recognition services",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.1.3",
+        "PolicyName":  "Allow Online Tips",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.4.1",
+        "PolicyName":  "Configure SMB v1 client driver",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "4 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.4.2",
+        "PolicyName":  "Configure SMB v1 server",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.4.3",
+        "PolicyName":  "Enable Certificate Padding",
+        "CurrentValue":  "Native:  | Wow64: ",
+        "RecommendedValue":  "1 (Enabled) on both",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.4.4",
+        "PolicyName":  "Enable Structured Exception Handling Overwrite Protection (SEHOP)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.4.5",
+        "PolicyName":  "NetBT NodeType configuration",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (P-node)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.1",
+        "PolicyName":  "MSS: (AutoAdminLogon) Enable Automatic Logon",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.2",
+        "PolicyName":  "MSS: (DisableIPSourceRouting IPv6) IP source routing protection level",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (Highest protection)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.3",
+        "PolicyName":  "MSS: (DisableIPSourceRouting) IP source routing protection level",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (Highest protection)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.4",
+        "PolicyName":  "MSS: (EnableICMPRedirect) Allow ICMP redirects...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.5",
+        "PolicyName":  "MSS: (KeepAliveTime) How often keep-alive packets are sent",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "300000",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.6",
+        "PolicyName":  "MSS: (NoNameReleaseOnDemand) Allow the computer to ignore NetBIOS name release...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.7",
+        "PolicyName":  "MSS: (PerformRouterDiscovery) Allow IRDP to detect...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.8",
+        "PolicyName":  "MSS: (SafeDllSearchMode) Enable Safe DLL search mode",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.9",
+        "PolicyName":  "MSS: (TcpMaxDataRetransmissions IPv6)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.10",
+        "PolicyName":  "MSS: (TcpMaxDataRetransmissions)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.5.11",
+        "PolicyName":  "MSS: (WarningLevel) Percentage threshold for the security event log...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003c= 90",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.7.2",
+        "PolicyName":  "Prevent automatic download of applications associated with device metadata",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.13.1",
+        "PolicyName":  "Boot-Start Driver Initialization Policy",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.17.1",
+        "PolicyName":  "Enable / disable CLFS logfile authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.19.2",
+        "PolicyName":  "Continue experiences on this device",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.1",
+        "PolicyName":  "Turn off downloading of print drivers over HTTP",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.2",
+        "PolicyName":  "Turn off handwriting personalization data sharing",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.3",
+        "PolicyName":  "Turn off handwriting recognition error reporting",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.4",
+        "PolicyName":  "Turn off Internet Connection Wizard if URL connection is referring to Microsoft.com",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.5",
+        "PolicyName":  "Turn off Internet download for Web publishing...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.6",
+        "PolicyName":  "Turn off printing over HTTP",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.7",
+        "PolicyName":  "Turn off Registration if URL connection is referring to Microsoft.com",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.8",
+        "PolicyName":  "Turn off Search Companion content file updates",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.9",
+        "PolicyName":  "Turn off the Order Prints picture task",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.10",
+        "PolicyName":  "Turn off the Publish to Web task for files and folders",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.11",
+        "PolicyName":  "Turn off the Windows Messenger Customer Experience Improvement Program",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.12",
+        "PolicyName":  "Turn off Windows Customer Experience Improvement Program",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.20.1.13",
+        "PolicyName":  "Turn off Windows Error Reporting",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "Disabled=1, DoReport=0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.24.1",
+        "PolicyName":  "Enumeration policy for external devices incompatible with Kernel DMA Protection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Block All)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.27.1",
+        "PolicyName":  "Configures LSASS to run as a protected process",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.28.1",
+        "PolicyName":  "Disallow copying of user input methods to the system account for sign-in",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.29.1",
+        "PolicyName":  "Block user from showing account details on sign-in",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.29.2",
+        "PolicyName":  "Do not display network selection UI",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.29.3",
+        "PolicyName":  "Turn off app notifications on the lock screen",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.29.4",
+        "PolicyName":  "Turn on convenience PIN sign-in",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.33.1",
+        "PolicyName":  "Allow Clipboard synchronization across devices",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.33.2",
+        "PolicyName":  "Allow upload of User Activities",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.35.6.1",
+        "PolicyName":  "Allow network connectivity during connected-standby (on battery)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.35.6.2",
+        "PolicyName":  "Allow network connectivity during connected-standby (plugged in)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.35.6.3",
+        "PolicyName":  "Require a password when a computer wakes (on battery)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.35.6.4",
+        "PolicyName":  "Require a password when a computer wakes (plugged in)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.37.1",
+        "PolicyName":  "Configure Offer Remote Assistance",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.37.2",
+        "PolicyName":  "Configure Solicited Remote Assistance",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.38.1",
+        "PolicyName":  "Enable RPC Endpoint Mapper Client Authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.38.2",
+        "PolicyName":  "Restrict Unauthenticated RPC clients",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Authenticated)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.49.5.1",
+        "PolicyName":  "MSDT: Turn on MSDT interactive communication with support provider",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.49.11.1",
+        "PolicyName":  "Enable/Disable PerfTrack",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.51.1",
+        "PolicyName":  "Turn off the advertising ID",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.9.53.1.1",
+        "PolicyName":  "Enable Windows NTP Client",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.4.1",
+        "PolicyName":  "Allow a Windows app to share application data between users",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.6.1",
+        "PolicyName":  "Allow Microsoft accounts to be optional",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.8.1",
+        "PolicyName":  "Disallow Autoplay for non-volume devices",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.8.2",
+        "PolicyName":  "Set the default behavior for AutoRun",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Do not execute any autorun commands)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.8.3",
+        "PolicyName":  "Turn off Autoplay",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "255 (All drives)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.9.1.1",
+        "PolicyName":  "Configure enhanced anti-spoofing",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.11.1",
+        "PolicyName":  "Allow Use of Camera",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.13.1",
+        "PolicyName":  "Turn off cloud consumer account state content",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.13.2",
+        "PolicyName":  "Turn off cloud optimized content",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.14.1",
+        "PolicyName":  "Require pin for pairing",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 or 2",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.15.1",
+        "PolicyName":  "Do not display the password reveal button",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.15.2",
+        "PolicyName":  "Enumerate administrator accounts on elevation",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.16.1",
+        "PolicyName":  "Allow Diagnostic Data",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 or 1",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.16.2",
+        "PolicyName":  "Configure Authenticated Proxy usage...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.16.3",
+        "PolicyName":  "Do not show feedback notifications",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.16.4",
+        "PolicyName":  "Enable OneSettings Auditing",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.16.5",
+        "PolicyName":  "Limit Diagnostic Log Collection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.16.6",
+        "PolicyName":  "Limit Dump Collection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.1",
+        "PolicyName":  "Enable App Installer",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.2",
+        "PolicyName":  "Enable App Installer Experimental Features",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.3",
+        "PolicyName":  "Enable App Installer Hash Override",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.4",
+        "PolicyName":  "Enable App Installer Local Archive Malware Scan Override",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.5",
+        "PolicyName":  "Enable App Installer ms-appinstaller protocol",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.6",
+        "PolicyName":  "Enable App Installer Microsoft Store Source Certificate Validation Bypass",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.18.7",
+        "PolicyName":  "Enable Windows Package Manager command line interfaces",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.1.1",
+        "PolicyName":  "Application: Control Event Log behavior... reaches its maximum size",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u00270\u0027 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.1.2",
+        "PolicyName":  "Application: Specify the maximum log file size (KB)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003e= 32768",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.2.1",
+        "PolicyName":  "Security: Control Event Log behavior... reaches its maximum size",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u00270\u0027 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.2.2",
+        "PolicyName":  "Security: Specify the maximum log file size (KB)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003e= 196608",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.3.1",
+        "PolicyName":  "Setup: Control Event Log behavior... reaches its maximum size",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u00270\u0027 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.3.2",
+        "PolicyName":  "Setup: Specify the maximum log file size (KB)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003e= 32768",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.4.1",
+        "PolicyName":  "System: Control Event Log behavior... reaches its maximum size",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u00270\u0027 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.26.4.2",
+        "PolicyName":  "System: Specify the maximum log file size (KB)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003e= 32768",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.29.2",
+        "PolicyName":  "Do not apply the Mark of the Web tag to files copied from insecure sources",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.29.3",
+        "PolicyName":  "Turn off Data Execution Prevention for Explorer",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.29.4",
+        "PolicyName":  "Turn off heap termination on corruption",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.29.5",
+        "PolicyName":  "Turn off shell protocol protected mode",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.36.1",
+        "PolicyName":  "Turn off location",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.40.1",
+        "PolicyName":  "Allow Message Service Cloud Sync",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.41.1",
+        "PolicyName":  "Block all consumer Microsoft account user authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.56.1",
+        "PolicyName":  "Turn off Push To Install service",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.2.2",
+        "PolicyName":  "Do not allow passwords to be saved",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.2.1",
+        "PolicyName":  "Restrict RDS users to a single session",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.1",
+        "PolicyName":  "Allow UI Automation redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.2",
+        "PolicyName":  "Do not allow COM port redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.3",
+        "PolicyName":  "Do not allow drive redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.4",
+        "PolicyName":  "Do not allow location redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.5",
+        "PolicyName":  "Do not allow LPT port redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.6",
+        "PolicyName":  "Do not allow supported Plug and Play device redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.3.7",
+        "PolicyName":  "Do not allow WebAuthn redirection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.1",
+        "PolicyName":  "Always prompt for password upon connection",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.2",
+        "PolicyName":  "Require secure RPC communication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.3",
+        "PolicyName":  "Require use of specific security layer for RDP",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (SSL)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.4",
+        "PolicyName":  "Require Network Level Authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.9.5",
+        "PolicyName":  "Set client connection encryption level",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "3 (High Level)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.10.1",
+        "PolicyName":  "Set time limit for active but idle RDS sessions",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003c= 900000 and != 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.11.1",
+        "PolicyName":  "Do not delete temp folders upon exit",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.57.3.11.2",
+        "PolicyName":  "Do not use temporary folders per session",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.59.2",
+        "PolicyName":  "Allow Cloud Search",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.77.2.1",
+        "PolicyName":  "Configure Windows Defender SmartScreen",
+        "CurrentValue":  "Multi-Key Check",
+        "RecommendedValue":  "1 and Block",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.88.1",
+        "PolicyName":  "Turn on PowerShell Script Block Logging",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.88.2",
+        "PolicyName":  "Turn on PowerShell Transcription",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.90.x.1",
+        "PolicyName":  "WinRM: Allow Basic authentication",
+        "CurrentValue":  "Client: | Svc:",
+        "RecommendedValue":  "Both 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.90.x.2",
+        "PolicyName":  "WinRM: Allow unencrypted traffic",
+        "CurrentValue":  "Client: | Svc:",
+        "RecommendedValue":  "Both 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.90.2.2",
+        "PolicyName":  "Allow remote server management through WinRM",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.91.1",
+        "PolicyName":  "Allow Remote Shell Access",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.93.2.1",
+        "PolicyName":  "Prevent users from modifying settings",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.94.1.1",
+        "PolicyName":  "No auto-restart with logged on users...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.94.2.1",
+        "PolicyName":  "Configure Automatic Updates",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.10.94.2.2",
+        "PolicyName":  "Configure Automatic Updates: Scheduled install day",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.11.1",
+        "PolicyName":  "Disable HTTP proxy features: Disable WPAD",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "18.11.2",
+        "PolicyName":  "Disable HTTP proxy features: Disable proxy authentication",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "256 or 287",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.5.1.1",
+        "PolicyName":  "Turn off toast notifications on the lock screen",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.6.6.1.1",
+        "PolicyName":  "Turn off Help Experience Improvement Program",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.5.1",
+        "PolicyName":  "Do not preserve zone information in file attachments",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "2 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.5.2",
+        "PolicyName":  "Notify antivirus programs when opening attachments",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "3 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.1",
+        "PolicyName":  "Configure Windows spotlight on lock screen",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "2 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.2",
+        "PolicyName":  "Do not suggest third-party content in Windows spotlight",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.3",
+        "PolicyName":  "Do not use diagnostic data for tailored experiences",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.4",
+        "PolicyName":  "Turn off all Windows spotlight features",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.8.5",
+        "PolicyName":  "Turn off Spotlight collection on Desktop",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.26.1",
+        "PolicyName":  "Prevent users from sharing files within their profile",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "19.7.46.2.1",
+        "PolicyName":  "Prevent Codec Download",
+        "CurrentValue":  "Failures on: S-1-5-21-1056091241-301449236-636514732-1001 (Empty)",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.1.1",
+        "PolicyName":  "Accounts: Guest account status",
+        "CurrentValue":  "Disabled",
+        "RecommendedValue":  "Disabled",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.1.2",
+        "PolicyName":  "Accounts: Limit local account use of blank passwords to console logon only",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.1.3",
+        "PolicyName":  "Accounts: Rename administrator account",
+        "CurrentValue":  "Administrator",
+        "RecommendedValue":  "Not \u0027Administrator\u0027",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.1.4",
+        "PolicyName":  "Accounts: Rename guest account",
+        "CurrentValue":  "Guest",
+        "RecommendedValue":  "Not \u0027Guest\u0027",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.2.1",
+        "PolicyName":  "Audit: Force audit policy subcategory settings...",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.2.2",
+        "PolicyName":  "Audit: Shut down system immediately if unable to log security audits",
+        "CurrentValue":  0,
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.4.1",
+        "PolicyName":  "Devices: Prevent users from installing printer drivers",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.1",
+        "PolicyName":  "Interactive logon: Do not require CTRL+ALT+DEL",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.2",
+        "PolicyName":  "Interactive logon: Don\u0027t display last signed-in",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.3",
+        "PolicyName":  "Interactive logon: Machine inactivity limit",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "\u003c= 900 and != 0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.4",
+        "PolicyName":  "Interactive logon: Message text for users attempting to log on",
+        "CurrentValue":  "\u0000",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.7.5",
+        "PolicyName":  "Interactive logon: Message title for users attempting to log on",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.7.6",
+        "PolicyName":  "Interactive logon: Prompt user to change password before expiration",
+        "CurrentValue":  5,
+        "RecommendedValue":  "5 to 14 days",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.7.7",
+        "PolicyName":  "Interactive logon: Smart card removal behavior",
+        "CurrentValue":  "0",
+        "RecommendedValue":  "1, 2, or 3",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.8.1",
+        "PolicyName":  "Microsoft network client: Digitally sign communications (always)",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.8.2",
+        "PolicyName":  "Microsoft network client: Send unencrypted password to third-party SMB servers",
+        "CurrentValue":  0,
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.9.1",
+        "PolicyName":  "Microsoft network server: Amount of idle time required before suspending session",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "\u003c= 15",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.9.2",
+        "PolicyName":  "Microsoft network server: Digitally sign communications (always)",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.9.3",
+        "PolicyName":  "Microsoft network server: Disconnect clients when logon hours expire",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.9.4",
+        "PolicyName":  "Microsoft network server: Server SPN target name validation level",
+        "CurrentValue":  "Not Defined",
+        "RecommendedValue":  "1 or 2",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "5.1",
+        "PolicyName":  "Ensure \u0027Print Spooler (Spooler)\u0027 is set to \u0027Disabled\u0027",
+        "CurrentValue":  2,
+        "RecommendedValue":  "4 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.1",
+        "PolicyName":  "Windows Firewall: Private: Firewall state",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (On)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.2",
+        "PolicyName":  "Windows Firewall: Private: Inbound connections",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Block)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.3",
+        "PolicyName":  "Windows Firewall: Private: Settings: Display a notification",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (No)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.4",
+        "PolicyName":  "Windows Firewall: Private: Logging: Name",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.5",
+        "PolicyName":  "Windows Firewall: Private: Logging: Size limit (KB)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003e= 16384",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.6",
+        "PolicyName":  "Windows Firewall: Private: Logging: Log dropped packets",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Yes)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.2.7",
+        "PolicyName":  "Windows Firewall: Private: Logging: Log successful connections",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Yes)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.1",
+        "PolicyName":  "Windows Firewall: Public: Firewall state",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (On)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.2",
+        "PolicyName":  "Windows Firewall: Public: Inbound connections",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Block)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.3",
+        "PolicyName":  "Windows Firewall: Public: Settings: Display a notification",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (No)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.4",
+        "PolicyName":  "Windows Firewall: Public: Logging: Name",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.5",
+        "PolicyName":  "Windows Firewall: Public: Logging: Size limit (KB)",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "\u003e= 16384",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.6",
+        "PolicyName":  "Windows Firewall: Public: Logging: Log dropped packets",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Yes)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "9.3.7",
+        "PolicyName":  "Windows Firewall: Public: Logging: Log successful connections",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Yes)",
+        "Status":  "FAIL"
+    }
+]

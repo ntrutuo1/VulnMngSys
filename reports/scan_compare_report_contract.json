@@ -1,0 +1,209 @@
+﻿{
+  "status": "Vulnerable",
+  "total_rules": 11,
+  "total": 11,
+  "passed": 0,
+  "failed": 0,
+  "manual": 11,
+  "reportFile": "D:\\VulnMngSys\\VulnMngSys\\reports\\scan_compare_report_contract.json",
+  "items": [
+    {
+      "ruleId": "1.1.1",
+      "rule_id": "1.1.1",
+      "title": "Enforce password history",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "24 or more passwords retained in history",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:PasswordHistorySize",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:PasswordHistorySize",
+        "Thiết lập theo khuyến nghị: 24 or more passwords retained in history",
+        "Xác nhận lại policy: Enforce password history"
+      ]
+    },
+    {
+      "ruleId": "1.1.2",
+      "rule_id": "1.1.2",
+      "title": "Maximum password age",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "365 or fewer days, but not 0",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:MaximumPasswordAge",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:MaximumPasswordAge",
+        "Thiết lập theo khuyến nghị: 365 or fewer days, but not 0",
+        "Xác nhận lại policy: Maximum password age"
+      ]
+    },
+    {
+      "ruleId": "1.1.3",
+      "rule_id": "1.1.3",
+      "title": "Minimum password age",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "1 or more day(s)",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:MinimumPasswordAge",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:MinimumPasswordAge",
+        "Thiết lập theo khuyến nghị: 1 or more day(s)",
+        "Xác nhận lại policy: Minimum password age"
+      ]
+    },
+    {
+      "ruleId": "1.1.4",
+      "rule_id": "1.1.4",
+      "title": "Minimum password length",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "14 or more characters",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:MinimumPasswordLength",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:MinimumPasswordLength",
+        "Thiết lập theo khuyến nghị: 14 or more characters",
+        "Xác nhận lại policy: Minimum password length"
+      ]
+    },
+    {
+      "ruleId": "1.1.5",
+      "rule_id": "1.1.5",
+      "title": "Password complexity",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "Enabled",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:PasswordComplexity",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:PasswordComplexity",
+        "Thiết lập theo khuyến nghị: Enabled",
+        "Xác nhận lại policy: Password complexity"
+      ]
+    },
+    {
+      "ruleId": "1.1.6",
+      "rule_id": "1.1.6",
+      "title": "Relax minimum password length limits",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "Enabled",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "registry",
+      "check_type": "registry",
+      "source": "HKLM\\System\\CurrentControlSet\\Control\\SAM:RelaxMinimumPasswordLengthLimits",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: HKLM\\System\\CurrentControlSet\\Control\\SAM:RelaxMinimumPasswordLengthLimits",
+        "Thiết lập theo khuyến nghị: Enabled",
+        "Xác nhận lại policy: Relax minimum password length limits"
+      ]
+    },
+    {
+      "ruleId": "1.1.7",
+      "rule_id": "1.1.7",
+      "title": "Store passwords using reversible encryption",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "Disabled",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:ClearTextPassword",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:ClearTextPassword",
+        "Thiết lập theo khuyến nghị: Disabled",
+        "Xác nhận lại policy: Store passwords using reversible encryption"
+      ]
+    },
+    {
+      "ruleId": "1.2.1",
+      "rule_id": "1.2.1",
+      "title": "Account lockout duration",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "15 or more minutes",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:LockoutDuration",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:LockoutDuration",
+        "Thiết lập theo khuyến nghị: 15 or more minutes",
+        "Xác nhận lại policy: Account lockout duration"
+      ]
+    },
+    {
+      "ruleId": "1.2.2",
+      "rule_id": "1.2.2",
+      "title": "Account lockout threshold",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "5 or fewer invalid logon attempts, but not 0",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:LockoutBadCount",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:LockoutBadCount",
+        "Thiết lập theo khuyến nghị: 5 or fewer invalid logon attempts, but not 0",
+        "Xác nhận lại policy: Account lockout threshold"
+      ]
+    },
+    {
+      "ruleId": "1.2.3",
+      "rule_id": "1.2.3",
+      "title": "Allow Administrator account lockout",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "Enabled",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:AllowAdministratorLockout",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:AllowAdministratorLockout",
+        "Thiết lập theo khuyến nghị: Enabled",
+        "Xác nhận lại policy: Allow Administrator account lockout"
+      ]
+    },
+    {
+      "ruleId": "1.2.4",
+      "rule_id": "1.2.4",
+      "title": "Reset account lockout counter after",
+      "passed": false,
+      "verdict": "MANUAL",
+      "expected": "15 or more minutes",
+      "actual": "",
+      "status": "MissingOrError",
+      "checkType": "secedit",
+      "check_type": "secedit",
+      "source": "secedit:ResetLockoutCount",
+      "guidance": [
+        "Kiểm tra nguồn cấu hình: secedit:ResetLockoutCount",
+        "Thiết lập theo khuyến nghị: 15 or more minutes",
+        "Xác nhận lại policy: Reset account lockout counter after"
+      ]
+    }
+  ]
+}

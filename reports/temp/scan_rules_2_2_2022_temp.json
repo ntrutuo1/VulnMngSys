@@ -1,0 +1,247 @@
+﻿[
+    {
+        "RuleID":  "2.3.10.1",
+        "PolicyName":  "Network access: Allow anonymous SID/Name translation",
+        "CurrentValue":  "0",
+        "RecommendedValue":  "Disabled (0)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.2",
+        "PolicyName":  "Network access: Do not allow anonymous enumeration of SAM accounts",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.3",
+        "PolicyName":  "Network access: Do not allow anonymous enumeration of SAM accounts and shares",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.10.4",
+        "PolicyName":  "Network access: Do not allow storage of passwords and credentials...",
+        "CurrentValue":  0,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.10.5",
+        "PolicyName":  "Network access: Let Everyone permissions apply to anonymous users",
+        "CurrentValue":  0,
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.6",
+        "PolicyName":  "Network access: Named Pipes that can be accessed anonymously",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "None or \u0027BROWSER\u0027",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.7",
+        "PolicyName":  "Network access: Remotely accessible registry paths",
+        "CurrentValue":  "System\\CurrentControlSet\\Control\\ProductOptions, System\\CurrentControlSet\\Control\\Server Applications, Software\\Microsoft\\Windows NT\\CurrentVersion",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.8",
+        "PolicyName":  "Network access: Remotely accessible registry paths and sub-paths",
+        "CurrentValue":  "System\\CurrentControlSet\\Control\\Print\\Printers, System\\CurrentControlSet\\Services\\Eventlog, Software\\Microsoft\\OLAP Server, Software\\Microsoft\\Windows NT\\CurrentVersion\\Print, Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows, System\\CurrentControlSet\\Control\\ContentIndex, System\\CurrentControlSet\\Control\\Terminal Server, System\\CurrentControlSet\\Control\\Terminal Server\\UserConfig, System\\CurrentControlSet\\Control\\Terminal Server\\DefaultUserConfiguration, Software\\Microsoft\\Windows NT\\CurrentVersion\\Perflib, System\\CurrentControlSet\\Services\\SysmonLog",
+        "RecommendedValue":  "Configured (Not Empty)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.9",
+        "PolicyName":  "Network access: Restrict anonymous access to Named Pipes and Shares",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.10",
+        "PolicyName":  "Network access: Restrict clients allowed to make remote calls to SAM",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "O:BAG:BAD:(A;;RC;;;BA)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.10.11",
+        "PolicyName":  "Network access: Shares that can be accessed anonymously",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "None (Empty)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.10.12",
+        "PolicyName":  "Network access: Sharing and security model for local accounts",
+        "CurrentValue":  0,
+        "RecommendedValue":  "0 (Classic)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.11.1",
+        "PolicyName":  "Network security: Allow Local System to use computer identity for NTLM",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.2",
+        "PolicyName":  "Network security: Allow LocalSystem NULL session fallback",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.3",
+        "PolicyName":  "Network Security: Allow PKU2U authentication requests...",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.4",
+        "PolicyName":  "Network security: Configure encryption types allowed for Kerberos",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2147483640",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.5",
+        "PolicyName":  "Network security: Do not store LAN Manager hash value on next password change",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.11.6",
+        "PolicyName":  "Network security: Force logoff when logon hours expire",
+        "CurrentValue":  "0",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.7",
+        "PolicyName":  "Network security: LAN Manager authentication level",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "5 (Send NTLMv2 response only...)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.8",
+        "PolicyName":  "Network security: LDAP client signing requirements",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 or 2",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.11.9",
+        "PolicyName":  "Network security: Minimum session security for NTLM SSP based clients",
+        "CurrentValue":  536870912,
+        "RecommendedValue":  "537395200",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.10",
+        "PolicyName":  "Network security: Minimum session security for NTLM SSP based servers",
+        "CurrentValue":  536870912,
+        "RecommendedValue":  "537395200",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.11",
+        "PolicyName":  "Network security: Restrict NTLM: Audit Incoming NTLM Traffic",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "2 (Enable auditing...)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.11.12",
+        "PolicyName":  "Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 or 2",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.13.1",
+        "PolicyName":  "Shutdown: Allow system to be shut down without having to log on",
+        "CurrentValue":  1,
+        "RecommendedValue":  "0 (Disabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.15.1",
+        "PolicyName":  "System objects: Require case insensitivity for non-Windows subsystems",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.15.2",
+        "PolicyName":  "System objects: Strengthen default permissions of internal system objects",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.17.1",
+        "PolicyName":  "UAC: Admin Approval Mode for the Built-in Administrator account",
+        "CurrentValue":  "Not Defined / Empty",
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.17.2",
+        "PolicyName":  "UAC: Behavior of the elevation prompt for administrators...",
+        "CurrentValue":  5,
+        "RecommendedValue":  "1 or 2",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.17.3",
+        "PolicyName":  "UAC: Behavior of the elevation prompt for standard users",
+        "CurrentValue":  3,
+        "RecommendedValue":  "0",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.3.17.4",
+        "PolicyName":  "UAC: Detect application installations and prompt for elevation",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.17.5",
+        "PolicyName":  "UAC: Only elevate UIAccess applications that are installed in secure locations",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.17.6",
+        "PolicyName":  "UAC: Run all administrators in Admin Approval Mode",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.17.7",
+        "PolicyName":  "UAC: Switch to the secure desktop when prompting for elevation",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.3.17.8",
+        "PolicyName":  "UAC: Virtualize file and registry write failures to per-user locations",
+        "CurrentValue":  1,
+        "RecommendedValue":  "1 (Enabled)",
+        "Status":  "PASS"
+    }
+]

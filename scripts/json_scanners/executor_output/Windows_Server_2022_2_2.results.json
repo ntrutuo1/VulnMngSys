@@ -1,0 +1,317 @@
+﻿[
+    {
+        "RuleId":  "2.3.10.1",
+        "Title":  "Network access: Allow anonymous SID/Name translation",
+        "Recommended":  "0",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "2.3.10.2",
+        "Title":  "Network access: Do not allow anonymous enumeration of SAM accounts",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=RestrictAnonymousSAM}"
+    },
+    {
+        "RuleId":  "2.3.10.3",
+        "Title":  "Network access: Do not allow anonymous enumeration of SAM accounts and shares",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=RestrictAnonymous}"
+    },
+    {
+        "RuleId":  "2.3.10.4",
+        "Title":  "Network access: Do not allow storage of passwords and credentials",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=DisableDomainCreds}"
+    },
+    {
+        "RuleId":  "2.3.10.5",
+        "Title":  "Network access: Let Everyone permissions apply to anonymous users",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=EveryoneIncludesAnonymous}"
+    },
+    {
+        "RuleId":  "2.3.10.6",
+        "Title":  "Network access: Named Pipes that can be accessed anonymously",
+        "Recommended":  "None or \u0027BROWSER\u0027",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=NullSessionPipes}"
+    },
+    {
+        "RuleId":  "2.3.10.7",
+        "Title":  "Network access: Remotely accessible registry paths (AllowedExactPaths)",
+        "Recommended":  "configured_non_empty",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths; value=Machine}"
+    },
+    {
+        "RuleId":  "2.3.10.8",
+        "Title":  "Network access: Remotely accessible registry paths and sub-paths (AllowedPaths)",
+        "Recommended":  "configured_non_empty",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedPaths; value=Machine}"
+    },
+    {
+        "RuleId":  "2.3.10.9",
+        "Title":  "Network access: Restrict anonymous access to Named Pipes and Shares",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=RestrictNullSessAccess}"
+    },
+    {
+        "RuleId":  "2.3.10.10",
+        "Title":  "Network access: Restrict clients allowed to make remote calls to SAM",
+        "Recommended":  "O:BAG:BAD:(A;;RC;;;BA)",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=restrictremotesam}"
+    },
+    {
+        "RuleId":  "2.3.10.11",
+        "Title":  "Network access: Shares that can be accessed anonymously",
+        "Recommended":  "None (Empty)",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters; value=NullSessionShares}"
+    },
+    {
+        "RuleId":  "2.3.10.12",
+        "Title":  "Network access: Sharing and security model for local accounts",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=ForceGuest}"
+    },
+    {
+        "RuleId":  "2.3.11.1",
+        "Title":  "Network security: Allow Local System to use computer identity for NTLM",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=UseMachineId}"
+    },
+    {
+        "RuleId":  "2.3.11.2",
+        "Title":  "Network security: Allow LocalSystem NULL session fallback",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0; value=AllowNullSessionFallback}"
+    },
+    {
+        "RuleId":  "2.3.11.3",
+        "Title":  "Network Security: Allow PKU2U authentication requests",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa\\pku2u; value=AllowOnlineID}"
+    },
+    {
+        "RuleId":  "2.3.11.4",
+        "Title":  "Network security: Configure encryption types allowed for Kerberos",
+        "Recommended":  "2147483640",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters; value=SupportedEncryptionTypes}"
+    },
+    {
+        "RuleId":  "2.3.11.5",
+        "Title":  "Network security: Do not store LAN Manager hash value on next password change",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=NoLMHash}"
+    },
+    {
+        "RuleId":  "2.3.11.6",
+        "Title":  "Network security: Force logoff when logon hours expire",
+        "Recommended":  "1",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "2.3.11.7",
+        "Title":  "Network security: LAN Manager authentication level",
+        "Recommended":  "5",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa; value=LmCompatibilityLevel}"
+    },
+    {
+        "RuleId":  "2.3.11.8",
+        "Title":  "Network security: LDAP client signing requirements",
+        "Recommended":  "1 2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Services\\LDAP; value=LDAPClientIntegrity}"
+    },
+    {
+        "RuleId":  "2.3.11.9",
+        "Title":  "Network security: Minimum session security for NTLM SSP based clients",
+        "Recommended":  "537395200",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0; value=NTLMMinClientSec}"
+    },
+    {
+        "RuleId":  "2.3.11.10",
+        "Title":  "Network security: Minimum session security for NTLM SSP based servers",
+        "Recommended":  "537395200",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0; value=NTLMMinServerSec}"
+    },
+    {
+        "RuleId":  "2.3.11.11",
+        "Title":  "Network security: Restrict NTLM: Audit Incoming NTLM Traffic",
+        "Recommended":  "2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0; value=AuditReceivingNTLMTraffic}"
+    },
+    {
+        "RuleId":  "2.3.11.12",
+        "Title":  "Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers",
+        "Recommended":  "1 2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0; value=RestrictSendingNTLMTraffic}"
+    },
+    {
+        "RuleId":  "2.3.13.1",
+        "Title":  "Shutdown: Allow system to be shut down without having to log on",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=ShutdownWithoutLogon}"
+    },
+    {
+        "RuleId":  "2.3.15.1",
+        "Title":  "System objects: Require case insensitivity for non-Windows subsystems",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Kernel; value=ObCaseInsensitive}"
+    },
+    {
+        "RuleId":  "2.3.15.2",
+        "Title":  "System objects: Strengthen default permissions of internal system objects",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SYSTEM\\CurrentControlSet\\Control\\Session Manager; value=ProtectionMode}"
+    },
+    {
+        "RuleId":  "2.3.17.1",
+        "Title":  "UAC: Admin Approval Mode for the Built-in Administrator account",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=FilterAdministratorToken}"
+    },
+    {
+        "RuleId":  "2.3.17.2",
+        "Title":  "UAC: Behavior of the elevation prompt for administrators",
+        "Recommended":  "1 2",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=ConsentPromptBehaviorAdmin}"
+    },
+    {
+        "RuleId":  "2.3.17.3",
+        "Title":  "UAC: Behavior of the elevation prompt for standard users",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=ConsentPromptBehaviorUser}"
+    },
+    {
+        "RuleId":  "2.3.17.4",
+        "Title":  "UAC: Detect application installations and prompt for elevation",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=EnableInstallerDetection}"
+    },
+    {
+        "RuleId":  "2.3.17.5",
+        "Title":  "UAC: Only elevate UIAccess applications that are installed in secure locations",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=EnableSecureUIAPaths}"
+    },
+    {
+        "RuleId":  "2.3.17.6",
+        "Title":  "UAC: Run all administrators in Admin Approval Mode",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=EnableLUA}"
+    },
+    {
+        "RuleId":  "2.3.17.7",
+        "Title":  "UAC: Switch to the secure desktop when prompting for elevation",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=PromptOnSecureDesktop}"
+    },
+    {
+        "RuleId":  "2.3.17.8",
+        "Title":  "UAC: Virtualize file and registry write failures to per-user locations",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System; value=EnableVirtualization}"
+    }
+]

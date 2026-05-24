@@ -1,0 +1,17 @@
+[
+  {
+    "id": "2.2.1",
+    "title": "Access Credential Manager as a trusted caller",
+    "recommended": "No One"
+  },
+  {
+    "id": "2.2.2",
+    "title": "Access this computer from the network",
+    "recommended": "Administrators, Authenticated Users"
+  },
+  {
+    "id": "2.2.3",
+    "title": "Act as part of the operating system",
+    "recommended": "No One"
+  }
+]

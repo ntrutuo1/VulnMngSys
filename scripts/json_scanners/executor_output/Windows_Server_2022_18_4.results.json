@@ -1,0 +1,146 @@
+﻿[
+    {
+        "RuleId":  "18.10.16.1",
+        "Title":  "Allow Diagnostic Data (AllowTelemetry)",
+        "Recommended":  "0 1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection; value=AllowTelemetry}"
+    },
+    {
+        "RuleId":  "18.10.16.2",
+        "Title":  "Disable Enterprise Auth Proxy for Connected User Experience",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection; value=DisableEnterpriseAuthProxy}"
+    },
+    {
+        "RuleId":  "18.10.16.3",
+        "Title":  "Do not show feedback notifications",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection; value=DoNotShowFeedbackNotifications}"
+    },
+    {
+        "RuleId":  "18.10.16.4",
+        "Title":  "Enable OneSettings Auditing",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection; value=EnableOneSettingsAuditing}"
+    },
+    {
+        "RuleId":  "18.10.16.5",
+        "Title":  "Limit Diagnostic Log Collection",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection; value=LimitDiagnosticLogCollection}"
+    },
+    {
+        "RuleId":  "18.10.16.6",
+        "Title":  "Limit Dump Collection",
+        "Recommended":  "1",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection; value=LimitDumpCollection}"
+    },
+    {
+        "RuleId":  "18.10.18.1",
+        "Title":  "Enable App Installer disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller; value=EnableAppInstaller}"
+    },
+    {
+        "RuleId":  "18.10.18.2",
+        "Title":  "App Installer Experimental Features disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller; value=EnableExperimentalFeatures}"
+    },
+    {
+        "RuleId":  "18.10.26.1.1",
+        "Title":  "Application Event Log Retention disabled (Retention = \"0\")",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application; value=Retention}"
+    },
+    {
+        "RuleId":  "18.10.26.1.2",
+        "Title":  "Application Event Log MaxSize \u003e= 32768 KB",
+        "Recommended":  "@{min=32768}",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application; value=MaxSize}"
+    },
+    {
+        "RuleId":  "18.10.26.2.1",
+        "Title":  "Security Event Log Retention disabled (Retention = \"0\")",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security; value=Retention}"
+    },
+    {
+        "RuleId":  "18.10.26.2.2",
+        "Title":  "Security Event Log MaxSize \u003e= 196608 KB",
+        "Recommended":  "@{min=196608}",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security; value=MaxSize}"
+    },
+    {
+        "RuleId":  "18.10.29.2",
+        "Title":  "Do not apply Mark of the Web to insecure path copies",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer; value=DisableMotWOnInsecurePathCopy}"
+    },
+    {
+        "RuleId":  "18.10.29.3",
+        "Title":  "Turn off Data Execution Prevention for Explorer disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer; value=NoDataExecutionPrevention}"
+    },
+    {
+        "RuleId":  "18.10.29.4",
+        "Title":  "Turn off heap termination on corruption disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer; value=NoHeapTerminationOnCorruption}"
+    },
+    {
+        "RuleId":  "18.10.29.5",
+        "Title":  "Turn off shell protocol protected mode disabled",
+        "Recommended":  "0",
+        "CheckType":  "registry",
+        "Actual":  "",
+        "Status":  "UnsupportedRegistrySpec",
+        "Source":  "@{hive=HKLM; path=SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer; value=PreXPSP2ShellProtocolBehavior}"
+    }
+]

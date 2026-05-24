@@ -1,0 +1,245 @@
+﻿[
+    {
+        "RuleId":  "17.1.1",
+        "Title":  "Audit Credential Validation",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.2.1",
+        "Title":  "Audit Application Group Management",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.2.2",
+        "Title":  "Audit Security Group Management",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.2.3",
+        "Title":  "Audit User Account Management",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.3.1",
+        "Title":  "Audit PNP Activity",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.3.2",
+        "Title":  "Audit Process Creation",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.5.1",
+        "Title":  "Audit Account Lockout",
+        "Recommended":  "Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.5.2",
+        "Title":  "Audit Group Membership",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.5.3",
+        "Title":  "Audit Logoff",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.5.4",
+        "Title":  "Audit Logon",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.5.5",
+        "Title":  "Audit Other Logon/Logoff Events",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.5.6",
+        "Title":  "Audit Special Logon",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.6.1",
+        "Title":  "Audit Detailed File Share",
+        "Recommended":  "Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.6.2",
+        "Title":  "Audit File Share",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.6.3",
+        "Title":  "Audit Other Object Access Events",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.6.4",
+        "Title":  "Audit Removable Storage",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.7.1",
+        "Title":  "Audit Audit Policy Change",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.7.2",
+        "Title":  "Audit Authentication Policy Change",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.7.3",
+        "Title":  "Audit Authorization Policy Change",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.7.4",
+        "Title":  "Audit MPSSVC Rule-Level Policy Change",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.7.5",
+        "Title":  "Audit Other Policy Change Events",
+        "Recommended":  "Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.8.1",
+        "Title":  "Audit Sensitive Privilege Use",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.9.1",
+        "Title":  "Audit IPsec Driver",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.9.2",
+        "Title":  "Audit Other System Events",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.9.3",
+        "Title":  "Audit Security State Change",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.9.4",
+        "Title":  "Audit Security System Extension",
+        "Recommended":  "Success",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    },
+    {
+        "RuleId":  "17.9.5",
+        "Title":  "Audit System Integrity",
+        "Recommended":  "Success and Failure",
+        "CheckType":  "manual_or_gp_path",
+        "Actual":  "N/A (manual check)",
+        "Status":  "NoDirectProbe",
+        "Source":  ""
+    }
+]

@@ -1,0 +1,254 @@
+﻿[
+    {
+        "RuleID":  "2.2.1",
+        "PolicyName":  "Access Credential Manager as a trusted caller",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.2",
+        "PolicyName":  "Access this computer from the network",
+        "CurrentValue":  "*S-1-1-0, *S-1-5-32-545, *S-1-5-32-551, Administrators",
+        "RecommendedValue":  "Administrators, Authenticated Users",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.3",
+        "PolicyName":  "Act as part of the operating system",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.4",
+        "PolicyName":  "Adjust memory quotas for a process",
+        "CurrentValue":  "Administrators, LOCAL SERVICE, NETWORK SERVICE",
+        "RecommendedValue":  "Administrators, LOCAL SERVICE, NETWORK SERVICE",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.5",
+        "PolicyName":  "Allow log on locally",
+        "CurrentValue":  "*S-1-5-32-545, *S-1-5-32-551, __vmware__, Administrators, Guest",
+        "RecommendedValue":  "Administrators",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.6",
+        "PolicyName":  "Allow log on through Remote Desktop Services",
+        "CurrentValue":  "Administrators, Remote Desktop Users",
+        "RecommendedValue":  "Administrators, Remote Desktop Users",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.7",
+        "PolicyName":  "Back up files and directories",
+        "CurrentValue":  "*S-1-5-32-551, Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.8",
+        "PolicyName":  "Change the system time",
+        "CurrentValue":  "Administrators, LOCAL SERVICE",
+        "RecommendedValue":  "Administrators, LOCAL SERVICE",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.9",
+        "PolicyName":  "Create a pagefile",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.10",
+        "PolicyName":  "Create a token object",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.11",
+        "PolicyName":  "Create global objects",
+        "CurrentValue":  "Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",
+        "RecommendedValue":  "Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.12",
+        "PolicyName":  "Create permanent shared objects",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.13",
+        "PolicyName":  "Create symbolic links",
+        "CurrentValue":  "Administrators, NT VIRTUAL MACHINE\\Virtual Machines",
+        "RecommendedValue":  "Administrators, NT VIRTUAL MACHINE\\Virtual Machines",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.14",
+        "PolicyName":  "Debug programs",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.15",
+        "PolicyName":  "Deny access to this computer from the network",
+        "CurrentValue":  "Guest",
+        "RecommendedValue":  "Includes: Guests",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.16",
+        "PolicyName":  "Deny log on as a batch job",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "Includes: Guests",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.17",
+        "PolicyName":  "Deny log on as a service",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "Includes: Guests",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.18",
+        "PolicyName":  "Deny log on locally",
+        "CurrentValue":  "Guest",
+        "RecommendedValue":  "Includes: Guests",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.19",
+        "PolicyName":  "Deny log on through Remote Desktop Services",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "Guests",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.20",
+        "PolicyName":  "Enable computer and user accounts to be trusted for delegation",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.21",
+        "PolicyName":  "Force shutdown from a remote system",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.22",
+        "PolicyName":  "Generate security audits",
+        "CurrentValue":  "*S-1-5-99-216390572-1995538116-3857911515-2404958512-2623887229, LOCAL SERVICE, NETWORK SERVICE",
+        "RecommendedValue":  "LOCAL SERVICE, NETWORK SERVICE",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.23",
+        "PolicyName":  "Impersonate a client after authentication",
+        "CurrentValue":  "*S-1-5-99-216390572-1995538116-3857911515-2404958512-2623887229, Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",
+        "RecommendedValue":  "Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.24",
+        "PolicyName":  "Increase scheduling priority",
+        "CurrentValue":  "Administrators, Window Manager\\Window Manager Group",
+        "RecommendedValue":  "Administrators, Window Manager\\Window Manager Group",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.25",
+        "PolicyName":  "Load and unload device drivers",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.26",
+        "PolicyName":  "Lock pages in memory",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.27",
+        "PolicyName":  "Manage auditing and security log",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.28",
+        "PolicyName":  "Modify an object label",
+        "CurrentValue":  "No One",
+        "RecommendedValue":  "No One",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.29",
+        "PolicyName":  "Modify firmware environment values",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.30",
+        "PolicyName":  "Perform volume maintenance tasks",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.31",
+        "PolicyName":  "Profile single process",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.32",
+        "PolicyName":  "Profile system performance",
+        "CurrentValue":  "*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420, Administrators",
+        "RecommendedValue":  "Administrators, NT SERVICE\\WdiServiceHost",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.33",
+        "PolicyName":  "Replace a process level token",
+        "CurrentValue":  "LOCAL SERVICE, NETWORK SERVICE",
+        "RecommendedValue":  "LOCAL SERVICE, NETWORK SERVICE",
+        "Status":  "PASS"
+    },
+    {
+        "RuleID":  "2.2.34",
+        "PolicyName":  "Restore files and directories",
+        "CurrentValue":  "*S-1-5-32-551, Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.35",
+        "PolicyName":  "Shut down the system",
+        "CurrentValue":  "*S-1-5-32-545, *S-1-5-32-551, Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "FAIL"
+    },
+    {
+        "RuleID":  "2.2.36",
+        "PolicyName":  "Take ownership of files or other objects",
+        "CurrentValue":  "Administrators",
+        "RecommendedValue":  "Administrators",
+        "Status":  "PASS"
+    }
+]

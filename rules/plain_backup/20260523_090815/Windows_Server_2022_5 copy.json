@@ -1,0 +1,20 @@
+[
+  {
+    "id": "5.1",
+    "title": "Print Spooler (Spooler)",
+    "description": "Vô hiệu hóa dịch vụ Print Spooler để giảm bề mặt tấn công",
+    "recommended": "Disabled",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Spooler",
+    "registry_keys": {
+      "Start": { "type": "REG_DWORD", "value": 4 }
+    },
+    "powershell_equivalent": "Set-Service -Name Spooler -StartupType Disabled"
+  },
+  {
+    "id": "9.2.1",
+    "title": "Windows Firewall: Private: Firewall state",
+    "recommended": "On (recommended)",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:EnableFirewall",
+    "registry_value": 1
+  }
+]

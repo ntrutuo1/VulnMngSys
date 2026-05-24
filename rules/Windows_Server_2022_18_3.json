@@ -1,0 +1,20 @@
+[
+  {"id":"18.9.38.1","title":"Enable RPC Endpoint Mapper Client Authentication","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:EnableAuthEpResolution"},
+  {"id":"18.9.38.2","title":"Restrict Unauthenticated RPC clients","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:RestrictRemoteClients"},
+  {"id":"18.9.49.5.1","title":"Turn on MSDT interactive communication with support provider","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\ScriptedDiagnosticsProvider\\Policy:DisableQueryRemoteServer"},
+  {"id":"18.9.49.11.1","title":"Enable/Disable PerfTrack","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WDI\\{9c5a40da-b965-4fc3-8781-88dd50a6299d}:ScenarioExecutionEnabled"},
+  {"id":"18.9.51.1","title":"Turn off the advertising ID","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo:DisabledByGroupPolicy"},
+  {"id":"18.9.53.1.1","title":"Enable Windows NTP Client","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient:Enabled"},
+  {"id":"18.10.4.1","title":"Allow a Windows app to share application data between users","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\AppModel\\StateManager:AllowSharedLocalAppData"},
+  {"id":"18.10.6.1","title":"Allow Microsoft accounts to be optional","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:MSAOptional"},
+  {"id":"18.10.8.1","title":"Disallow Autoplay for non-volume devices","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoAutoplayfornonVolume"},
+  {"id":"18.10.8.2","title":"Set the default behavior for AutoRun","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoAutorun"},
+  {"id":"18.10.8.3","title":"Turn off Autoplay","expected":"255","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoDriveTypeAutoRun"},
+  {"id":"18.10.9.1.1","title":"Configure enhanced anti-spoofing","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures:EnhancedAntiSpoofing"},
+  {"id":"18.10.11.1","title":"Allow Use of Camera","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Camera:AllowCamera"},
+  {"id":"18.10.13.1","title":"Turn off cloud consumer account state content","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableConsumerAccountStateContent"},
+  {"id":"18.10.13.2","title":"Turn off cloud optimized content","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableCloudOptimizedContent"},
+  {"id":"18.10.14.1","title":"Require pin for pairing","expected":"1 or 2","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect:RequirePinForPairing"},
+  {"id":"18.10.15.1","title":"Do not display the password reveal button","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredUI:DisablePasswordReveal"},
+  {"id":"18.10.15.2","title":"Enumerate administrator accounts on elevation","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI:EnumerateAdministrators"}
+]

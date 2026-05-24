@@ -1,0 +1,20 @@
+[
+  {
+    "id": "17.1.1",
+    "title": "Audit Credential Validation",
+    "recommended": "Success and Failure",
+    "auditpol": "auditpol /get /subcategory:\"{0cce923f-69ae-11d9-bed3-505054503030}\""
+  },
+  {
+    "id": "17.2.1",
+    "title": "Audit Application Group Management",
+    "recommended": "Success and Failure",
+    "auditpol": "auditpol /get /subcategory:\"{0cce9239-69ae-11d9-bed3-505054503030}\""
+  },
+  {
+    "id": "17.3.2",
+    "title": "Audit Process Creation",
+    "recommended": "Include Success",
+    "auditpol": "auditpol /get /subcategory:\"{0cce922b-69ae-11d9-bed3-505054503030}\""
+  }
+]

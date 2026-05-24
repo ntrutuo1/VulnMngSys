@@ -1,0 +1,23 @@
+[
+  {
+    "id": "18.10.36.1",
+    "title": "Turn off location",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors:DisableLocation",
+    "registry_value": 1
+  },
+  {
+    "id": "18.10.57.3.9.4",
+    "title": "Require user authentication for remote connections by using Network Level Authentication",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:UserAuthentication",
+    "registry_value": 1
+  },
+  {
+    "id": "18.10.94.2.1",
+    "title": "Configure Automatic Updates",
+    "recommended": "Enabled",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:NoAutoUpdate",
+    "registry_value": 0
+  }
+]
