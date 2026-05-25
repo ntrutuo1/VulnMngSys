@@ -1,13 +1,79 @@
 [
-  {"id":"1.1.1","title":"Enforce password history","expected":"24","powershell_check":"(net accounts | Select-String 'Length of password history maintained' | Out-String) -replace '[^0-9]',''"},
-  {"id":"1.1.2","title":"Maximum password age","expected":"365","powershell_check":"(net accounts | Select-String 'Maximum password age' | Out-String) -replace '[^0-9]',''"},
-  {"id":"1.1.3","title":"Minimum password age","expected":"1","powershell_check":"(net accounts | Select-String 'Minimum password age' | Out-String) -replace '[^0-9]',''"},
-  {"id":"1.1.4","title":"Minimum password length","expected":"14","powershell_check":"(net accounts | Select-String 'Minimum password length' | Out-String) -replace '[^0-9]',''"},
-  {"id":"1.1.5","title":"Password must meet complexity requirements","expected":"Enabled","gp_path":"Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Password must meet complexity requirements"},
-  {"id":"1.1.6","title":"Relax minimum password length limits","expected":"1","registry":"HKLM\\System\\CurrentControlSet\\Control\\SAM:RelaxMinimumPasswordLengthLimits"},
-  {"id":"1.1.7","title":"Store passwords using reversible encryption","expected":"Disabled","gp_path":"Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Store passwords using reversible encryption"},
-  {"id":"1.2.1","title":"Account lockout duration","expected":"15","powershell_check":"(net accounts | Select-String 'Lockout duration' | Out-String) -replace '[^0-9]',''"},
-  {"id":"1.2.2","title":"Account lockout threshold","expected":"5","powershell_check":"(net accounts | Select-String 'Lockout threshold' | Out-String) -replace '[^0-9]',''"},
-  {"id":"1.2.3","title":"Allow Administrator account lockout","expected":"Enabled","gp_path":"Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policies\\Allow Administrator account lockout"},
-  {"id":"1.2.4","title":"Reset account lockout counter after","expected":"15","powershell_check":"(net accounts | Select-String 'Lockout observation window' | Out-String) -replace '[^0-9]',''"}
+  {
+    "id": "1.1.1",
+    "title": "Ensure 'Enforce password history' is set to '24 or more password(s)'",
+    "expected": 24,
+    "operator": ">=",
+    "powershell_check": "(net accounts | Select-String 'Length of password history maintained' | Out-String) -replace '[^0-9]',''"
+  },
+  {
+    "id": "1.1.2",
+    "title": "Ensure 'Maximum password age' is set to '365 or fewer days, but not 0'",
+    "expected": 365,
+    "operator": "<=_not_0",
+    "powershell_check": "(net accounts | Select-String 'Maximum password age' | Out-String) -replace '[^0-9]',''"
+  },
+  {
+    "id": "1.1.3",
+    "title": "Ensure 'Minimum password age' is set to '1 or more day(s)'",
+    "expected": 1,
+    "operator": ">=",
+    "powershell_check": "(net accounts | Select-String 'Minimum password age' | Out-String) -replace '[^0-9]',''"
+  },
+  {
+    "id": "1.1.4",
+    "title": "Ensure 'Minimum password length' is set to '14 or more character(s)'",
+    "expected": 14,
+    "operator": ">=",
+    "powershell_check": "(net accounts | Select-String 'Minimum password length' | Out-String) -replace '[^0-9]',''"
+  },
+  {
+    "id": "1.1.5",
+    "title": "Ensure 'Password must meet complexity requirements' is set to 'Enabled'",
+    "expected": "Enabled",
+    "operator": "==",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Password must meet complexity requirements"
+  },
+  {
+    "id": "1.1.6",
+    "title": "Ensure 'Relax minimum password length limits' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\System\\CurrentControlSet\\Control\\SAM:RelaxMinimumPasswordLengthLimits"
+  },
+  {
+    "id": "1.1.7",
+    "title": "Ensure 'Store passwords using reversible encryption' is set to 'Disabled'",
+    "expected": "Disabled",
+    "operator": "==",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Store passwords using reversible encryption"
+  },
+  {
+    "id": "1.2.1",
+    "title": "Ensure 'Account lockout duration' is set to '15 or more minute(s)'",
+    "expected": 15,
+    "operator": ">=",
+    "powershell_check": "(net accounts | Select-String 'Lockout duration' | Out-String) -replace '[^0-9]',''"
+  },
+  {
+    "id": "1.2.2",
+    "title": "Ensure 'Account lockout threshold' is set to '5 or fewer invalid logon attempt(s), but not 0'",
+    "expected": 5,
+    "operator": "<=_not_0",
+    "powershell_check": "(net accounts | Select-String 'Lockout threshold' | Out-String) -replace '[^0-9]',''"
+  },
+  {
+    "id": "1.2.3",
+    "title": "Ensure 'Allow Administrator account lockout' is set to 'Enabled'",
+    "expected": "Enabled",
+    "operator": "==",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policies\\Allow Administrator account lockout"
+  },
+  {
+    "id": "1.2.4",
+    "title": "Ensure 'Reset account lockout counter after' is set to '15 or more minute(s)'",
+    "expected": 15,
+    "operator": ">=",
+    "powershell_check": "(net accounts | Select-String 'Lockout observation window' | Out-String) -replace '[^0-9]',''"
+  }
 ]

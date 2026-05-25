@@ -1,0 +1,103 @@
+{
+  "description": "Mapping between CIS Benchmark Sections (Source Document) and corresponding Metasploit Modules (External Knowledge).",
+  "cis_to_metasploit_mapping": {
+    "Section_1_Account_Policies": {
+      "cis_reference": "Section 1 includes Password Policy (1.1) and Account Lockout Policy (1.2).",
+      "module_type": "post",
+      "module_name": "post/windows/gather/enum_domain",
+      "external_knowledge_description": "Gather information about password policy, minimum length, and account lockout limits directly from the compromised system.",
+      "parameters": {
+        "SESSION": "<Meterpreter Session ID>"
+      }
+    },
+    "Section_2_1_Audit_Policy": {
+      "cis_reference": "This section is intentionally blank and exists to ensure the structure of Windows benchmarks is consistent.",
+      "status": "No action required"
+    },
+    "Section_2_2_User_Rights_Assignment": {
+      "cis_reference": "Defines user and group rights assignments on the server.",
+      "module_type": "post",
+      "module_name": "post/windows/gather/user_rights",
+      "external_knowledge_description": "Check which groups or users are assigned sensitive privileges (such as SeDebugPrivilege, SeAssignPrimaryTokenPrivilege).",
+      "parameters": {
+        "SESSION": "<Meterpreter Session ID>"
+      }
+    },
+    "Section_2_3_Security_Options": {
+      "cis_reference": "Includes Microsoft network client/server configurations (e.g., SMB Signing) and interactive logon settings.",
+      "module_type": "auxiliary",
+      "module_name": "scanner/smb/smb_version",
+      "external_knowledge_description": "Remotely scan to check if the SMB service requires signatures (Require Security Signature) to prevent Man-in-the-Middle attacks.",
+      "parameters": {
+        "RHOSTS": "<Target IP or Subnet>",
+        "RPORT": "445",
+        "THREADS": "10"
+      }
+    },
+    "Section_5_System_Services": {
+      "cis_reference": "Rule 5.1 Ensure 'Print Spooler (Spooler)' is set to 'Disabled'.",
+      "module_type": "exploit",
+      "module_name": "exploit/windows/dcerpc/cve_2021_34527_printnightmare",
+      "external_knowledge_description": "Check if the Print Spooler service is running and vulnerable to PrintNightmare.",
+      "parameters": {
+        "RHOSTS": "<Target IP or Subnet>",
+        "RPORT": "445",
+        "SMBUser": "<Username>",
+        "SMBPass": "<Password>"
+      }
+    },
+    "Section_9_Windows_Defender_Firewall": {
+      "cis_reference": "Configure firewall state to On and block unmatched inbound connections.",
+      "module_type": "auxiliary",
+      "module_name": "scanner/portscan/tcp",
+      "external_knowledge_description": "Scan TCP ports to determine if Windows Firewall is appropriately blocking unauthorized external traffic.",
+      "parameters": {
+        "RHOSTS": "<Target IP or Subnet>",
+        "PORTS": "1-1024,3389,5985",
+        "THREADS": "20"
+      }
+    },
+    "Section_17_Advanced_Audit_Policy_Configuration": {
+      "cis_reference": "Specifies system events (Logon, Object Access, Privilege Use, etc.) that must be logged.",
+      "module_type": "post",
+      "module_name": "post/windows/gather/audit_policy",
+      "external_knowledge_description": "Extract current Audit Policy configuration via Meterpreter to compare against CIS standards.",
+      "parameters": {
+        "SESSION": "<Meterpreter Session ID>"
+      }
+    },
+    "Section_18_Administrative_Templates_Network_Lanman": {
+      "cis_reference": "Section 18.6: Requires SMB encryption and disables SMBv1 server/client.",
+      "module_type": "auxiliary",
+      "module_name": "scanner/smb/smb1",
+      "external_knowledge_description": "Remotely scan the network to detect servers running the insecure SMBv1 protocol.",
+      "parameters": {
+        "RHOSTS": "<Target IP or Subnet>",
+        "RPORT": "445",
+        "THREADS": "15"
+      }
+    },
+    "Section_18_Administrative_Templates_Remote_Desktop": {
+      "cis_reference": "Section 18.10.57: Requires high-level RDP encryption and Network Level Authentication (NLA).",
+      "module_type": "auxiliary",
+      "module_name": "scanner/rdp/rdp_scanner",
+      "external_knowledge_description": "Determine if the RDP port is open and whether security levels (NLA/SSL) are enforced according to CIS standards.",
+      "parameters": {
+        "RHOSTS": "<Target IP or Subnet>",
+        "RPORT": "3389",
+        "THREADS": "15"
+      }
+    },
+    "Section_18_Administrative_Templates_WinRM": {
+      "cis_reference": "Section 18.10.90: Disallows Basic Authentication and Unencrypted Traffic on WinRM.",
+      "module_type": "auxiliary",
+      "module_name": "scanner/winrm/winrm_auth_methods",
+      "external_knowledge_description": "Scan the WinRM service to enumerate allowed authentication methods (flags if Basic/Unencrypted is enabled).",
+      "parameters": {
+        "RHOSTS": "<Target IP or Subnet>",
+        "RPORT": "5985",
+        "THREADS": "10"
+      }
+    }
+  }
+}

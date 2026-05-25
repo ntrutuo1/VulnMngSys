@@ -4,6 +4,24 @@ import re
 from typing import Any
 
 
+AUDITPOL_BITMASKS = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+}
+
+AUDITPOL_TEXT_TO_MASK = {
+    "no auditing": 0,
+    "success": 1,
+    "failure": 2,
+    "success and failure": 3,
+    "success/failure": 3,
+    "success, failure": 3,
+    "failure and success": 3,
+}
+
+
 def format_expected_display(expected: Any, description: str = "") -> str:
     if description and str(description).strip():
         return str(description).strip()
@@ -93,6 +111,32 @@ def evaluate_local_account_expected(rule: dict[str, Any], actual: str) -> bool:
 def evaluate_auditpol_expected(expected: Any, actual: str) -> bool:
     if expected is None:
         return True
+
+    def _auditpol_mask(value: Any) -> int | None:
+        if value is None:
+            return None
+        if isinstance(value, bool):
+            return None
+        if isinstance(value, (int, float)):
+            numeric = int(value)
+            return AUDITPOL_BITMASKS.get(numeric, numeric if numeric >= 0 else None)
+
+        text = str(value).strip().lower()
+        if not text:
+            return None
+        if text in AUDITPOL_TEXT_TO_MASK:
+            return AUDITPOL_TEXT_TO_MASK[text]
+        if text.isdigit():
+            numeric = int(text)
+            return AUDITPOL_BITMASKS.get(numeric, numeric if numeric >= 0 else None)
+        return None
+
+    expected_mask = _auditpol_mask(expected)
+    actual_mask = _auditpol_mask(actual)
+
+    if expected_mask is not None and actual_mask is not None:
+        return (actual_mask & expected_mask) == expected_mask
+
     expected_text = str(expected).strip().lower()
     actual_lower = actual.lower()
     tokens = [token.strip() for token in re.split(r",| and |/", expected_text) if token.strip()]

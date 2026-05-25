@@ -1,20 +1,149 @@
 [
-  {"id":"18.9.38.1","title":"Enable RPC Endpoint Mapper Client Authentication","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:EnableAuthEpResolution"},
-  {"id":"18.9.38.2","title":"Restrict Unauthenticated RPC clients","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:RestrictRemoteClients"},
-  {"id":"18.9.49.5.1","title":"Turn on MSDT interactive communication with support provider","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\ScriptedDiagnosticsProvider\\Policy:DisableQueryRemoteServer"},
-  {"id":"18.9.49.11.1","title":"Enable/Disable PerfTrack","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WDI\\{9c5a40da-b965-4fc3-8781-88dd50a6299d}:ScenarioExecutionEnabled"},
-  {"id":"18.9.51.1","title":"Turn off the advertising ID","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo:DisabledByGroupPolicy"},
-  {"id":"18.9.53.1.1","title":"Enable Windows NTP Client","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient:Enabled"},
-  {"id":"18.10.4.1","title":"Allow a Windows app to share application data between users","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\AppModel\\StateManager:AllowSharedLocalAppData"},
-  {"id":"18.10.6.1","title":"Allow Microsoft accounts to be optional","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:MSAOptional"},
-  {"id":"18.10.8.1","title":"Disallow Autoplay for non-volume devices","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoAutoplayfornonVolume"},
-  {"id":"18.10.8.2","title":"Set the default behavior for AutoRun","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoAutorun"},
-  {"id":"18.10.8.3","title":"Turn off Autoplay","expected":"255","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoDriveTypeAutoRun"},
-  {"id":"18.10.9.1.1","title":"Configure enhanced anti-spoofing","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures:EnhancedAntiSpoofing"},
-  {"id":"18.10.11.1","title":"Allow Use of Camera","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Camera:AllowCamera"},
-  {"id":"18.10.13.1","title":"Turn off cloud consumer account state content","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableConsumerAccountStateContent"},
-  {"id":"18.10.13.2","title":"Turn off cloud optimized content","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableCloudOptimizedContent"},
-  {"id":"18.10.14.1","title":"Require pin for pairing","expected":"1 or 2","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect:RequirePinForPairing"},
-  {"id":"18.10.15.1","title":"Do not display the password reveal button","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredUI:DisablePasswordReveal"},
-  {"id":"18.10.15.2","title":"Enumerate administrator accounts on elevation","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI:EnumerateAdministrators"}
+  {
+    "id": "18.9.38.1",
+    "title": "Ensure 'Enable RPC Endpoint Mapper Client Authentication' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:EnableAuthEpResolution",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Procedure Call\\Enable RPC Endpoint Mapper Client Authentication to 'Enabled'"
+  },
+  {
+    "id": "18.9.38.2",
+    "title": "Ensure 'Restrict Unauthenticated RPC clients' is set to 'Enabled: Authenticated'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc:RestrictRemoteClients",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Procedure Call\\Restrict Unauthenticated RPC clients to 'Enabled: Authenticated'"
+  },
+  {
+    "id": "18.9.49.5.1",
+    "title": "Ensure 'Microsoft Support Diagnostic Tool: Turn on MSDT interactive communication with support provider' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\ScriptedDiagnosticsProvider\\Policy:DisableQueryRemoteServer",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Troubleshooting and Diagnostics\\Microsoft Support Diagnostic Tool\\Microsoft Support Diagnostic Tool: Turn on MSDT interactive communication with support provider to 'Disabled'"
+  },
+  {
+    "id": "18.9.49.11.1",
+    "title": "Ensure 'Enable/Disable PerfTrack' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WDI\\{9c5a40da-b965-4fc3-8781-88dd50a6299d}:ScenarioExecutionEnabled",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Troubleshooting and Diagnostics\\Windows Performance PerfTrack\\Enable/Disable PerfTrack to 'Disabled'"
+  },
+  {
+    "id": "18.9.51.1",
+    "title": "Ensure 'Turn off the advertising ID' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo:DisabledByGroupPolicy",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\User Profiles\\Turn off the advertising ID to 'Enabled'"
+  },
+  {
+    "id": "18.9.53.1.1",
+    "title": "Ensure 'Enable Windows NTP Client' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient:Enabled",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Windows Time Service\\Time Providers\\Enable Windows NTP Client to 'Enabled'"
+  },
+  {
+    "id": "18.10.4.1",
+    "title": "Ensure 'Allow a Windows app to share application data between users' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\AppModel\\StateManager:AllowSharedLocalAppData",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\App Package Deployment\\Allow a Windows app to share application data between users to 'Disabled'"
+  },
+  {
+    "id": "18.10.6.1",
+    "title": "Ensure 'Allow Microsoft accounts to be optional' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:MSAOptional",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\App runtime\\Allow Microsoft accounts to be optional to 'Enabled'"
+  },
+  {
+    "id": "18.10.8.1",
+    "title": "Ensure 'Disallow Autoplay for non-volume devices' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoAutoplayfornonVolume",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Disallow Autoplay for non-volume devices to 'Enabled'"
+  },
+  {
+    "id": "18.10.8.2",
+    "title": "Ensure 'Set the default behavior for AutoRun' is set to 'Enabled: Do not execute any autorun commands'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoAutorun",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Set the default behavior for AutoRun to 'Enabled: Do not execute any autorun commands'"
+  },
+  {
+    "id": "18.10.8.3",
+    "title": "Ensure 'Turn off Autoplay' is set to 'Enabled: All drives'",
+    "expected": 255,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoDriveTypeAutoRun",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Turn off Autoplay to 'Enabled: All drives'"
+  },
+  {
+    "id": "18.10.9.1.1",
+    "title": "Ensure 'Configure enhanced anti-spoofing' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures:EnhancedAntiSpoofing",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Biometrics\\Facial Features\\Configure enhanced anti-spoofing to 'Enabled'"
+  },
+  {
+    "id": "18.10.11.1",
+    "title": "Ensure 'Allow Use of Camera' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Camera:AllowCamera",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Camera\\Allow Use of Camera to 'Disabled'"
+  },
+  {
+    "id": "18.10.13.1",
+    "title": "Ensure 'Turn off cloud consumer account state content' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableConsumerAccountStateContent",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Turn off cloud consumer account state content to 'Enabled'"
+  },
+  {
+    "id": "18.10.13.2",
+    "title": "Ensure 'Turn off cloud optimized content' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent:DisableCloudOptimizedContent",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Turn off cloud optimized content to 'Enabled'"
+  },
+  {
+    "id": "18.10.14.1",
+    "title": "Ensure 'Require pin for pairing' is set to 'Enabled: First Time' OR 'Enabled: Always'",
+    "expected": [
+      1,
+      2
+    ],
+    "operator": "InList",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect:RequirePinForPairing",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Connect\\Require pin for pairing to 'Enabled: First Time' OR 'Enabled: Always'"
+  },
+  {
+    "id": "18.10.15.1",
+    "title": "Ensure 'Do not display the password reveal button' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredUI:DisablePasswordReveal",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Credential User Interface\\Do not display the password reveal button to 'Enabled'"
+  },
+  {
+    "id": "18.10.15.2",
+    "title": "Ensure 'Enumerate administrator accounts on elevation' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI:EnumerateAdministrators",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Credential User Interface\\Enumerate administrator accounts on elevation to 'Disabled'"
+  }
 ]

@@ -1,22 +1,165 @@
 [
-  {"id":"2.3.1.1","title":"Accounts: Guest account status","expected":"Disabled","gp_path":"Accounts: Guest account status"},
-  {"id":"2.3.1.2","title":"Accounts: Limit local account use of blank passwords to console logon only","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:LimitBlankPasswordUse"},
-  {"id":"2.3.1.3","title":"Accounts: Rename administrator account","expected":"Renamed","gp_path":"Accounts: Rename administrator account"},
-  {"id":"2.3.1.4","title":"Accounts: Rename guest account","expected":"Renamed","gp_path":"Accounts: Rename guest account"},
-  {"id":"2.3.2.1","title":"Audit: Force audit policy subcategory settings to override","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:SCENoApplyLegacyAuditPolicy"},
-  {"id":"2.3.2.2","title":"Audit: Shut down system immediately if unable to log security audits","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:CrashOnAuditFail"},
-  {"id":"2.3.4.1","title":"Devices: Prevent users from installing printer drivers","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\\Providers\\LanMan Print Services\\Servers:AddPrinterDrivers"},
-  {"id":"2.3.7.1","title":"Interactive logon: Do not require CTRL+ALT+DEL","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DisableCAD"},
-  {"id":"2.3.7.2","title":"Interactive logon: Don't display last signed-in","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DontDisplayLastUserName"},
-  {"id":"2.3.7.3","title":"Interactive logon: Machine inactivity limit","expected":"<=900","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:InactivityTimeoutSecs"},
-  {"id":"2.3.7.4","title":"Interactive logon: Message text for users attempting to log on","expected":"Configured","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:LegalNoticeText"},
-  {"id":"2.3.7.5","title":"Interactive logon: Message title for users attempting to log on","expected":"Configured","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:LegalNoticeCaption"},
-  {"id":"2.3.7.6","title":"Interactive logon: Prompt user to change password before expiration","expected":"5-14","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:PasswordExpiryWarning"},
-  {"id":"2.3.7.7","title":"Interactive logon: Smart card removal behavior","expected":"1, 2, or 3","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:ScRemoveOption"},
-  {"id":"2.3.8.1","title":"Microsoft network client: Digitally sign communications (always)","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters:RequireSecuritySignature"},
-  {"id":"2.3.8.2","title":"Microsoft network client: Send unencrypted password to third-party SMB servers","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters:EnablePlainTextPassword"},
-  {"id":"2.3.9.1","title":"Microsoft network server: Amount of idle time required before suspending session","expected":"<=15","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:AutoDisconnect"},
-  {"id":"2.3.9.2","title":"Microsoft network server: Digitally sign communications (always)","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:RequireSecuritySignature"},
-  {"id":"2.3.9.3","title":"Microsoft network server: Disconnect clients when logon hours expire","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:enableforcedlogoff"},
-  {"id":"2.3.9.4","title":"Microsoft network server: Server SPN target name validation level","expected":"1 or 2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:SMBServerNameHardeningLevel"}
+  {
+    "id": "2.3.1.1",
+    "title": "Ensure 'Accounts: Guest account status' is set to 'Disabled'",
+    "expected": "False",
+    "operator": "==",
+    "powershell_check": "(Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-21-*-501' }).Enabled -as [string]",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Accounts: Guest account status to 'Disabled'"
+  },
+  {
+    "id": "2.3.1.2",
+    "title": "Ensure 'Accounts: Limit local account use of blank passwords to console logon only' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:LimitBlankPasswordUse",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Accounts: Limit local account use of blank passwords to console logon only to 'Enabled'"
+  },
+  {
+    "id": "2.3.1.3",
+    "title": "Configure 'Accounts: Rename administrator account'",
+    "expected": "Administrator",
+    "operator": "NotEqual",
+    "powershell_check": "(Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-21-*-500' }).Name",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Accounts: Rename administrator account"
+  },
+  {
+    "id": "2.3.1.4",
+    "title": "Configure 'Accounts: Rename guest account'",
+    "expected": "Guest",
+    "operator": "NotEqual",
+    "powershell_check": "(Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-21-*-501' }).Name",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Accounts: Rename guest account"
+  },
+  {
+    "id": "2.3.2.1",
+    "title": "Ensure 'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:SCENoApplyLegacyAuditPolicy",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings to 'Enabled'"
+  },
+  {
+    "id": "2.3.2.2",
+    "title": "Ensure 'Audit: Shut down system immediately if unable to log security audits' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:CrashOnAuditFail",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Audit: Shut down system immediately if unable to log security audits to 'Disabled'"
+  },
+  {
+    "id": "2.3.4.1",
+    "title": "Ensure 'Devices: Prevent users from installing printer drivers' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\\Providers\\LanMan Print Services\\Servers:AddPrinterDrivers",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Devices: Prevent users from installing printer drivers to 'Enabled'"
+  },
+  {
+    "id": "2.3.7.1",
+    "title": "Ensure 'Interactive logon: Do not require CTRL+ALT+DEL' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DisableCAD",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Do not require CTRL+ALT+DEL to 'Disabled'"
+  },
+  {
+    "id": "2.3.7.2",
+    "title": "Ensure 'Interactive logon: Don't display last signed-in' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DontDisplayLastUserName",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Don't display last signed-in to 'Enabled'"
+  },
+  {
+    "id": "2.3.7.3",
+    "title": "Ensure 'Interactive logon: Machine inactivity limit' is set to '900 or fewer second(s), but not 0'",
+    "expected": 900,
+    "operator": "<=_not_0",
+    "registry": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:InactivityTimeoutSecs",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Machine inactivity limit to '900 or fewer seconds, but not 0'"
+  },
+  {
+    "id": "2.3.7.4",
+    "title": "Configure 'Interactive logon: Message text for users attempting to log on'",
+    "expected": "^.+$",
+    "operator": "RegexMatch",
+    "registry": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:LegalNoticeText",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Message text for users attempting to log on"
+  },
+  {
+    "id": "2.3.7.5",
+    "title": "Configure 'Interactive logon: Message title for users attempting to log on'",
+    "expected": "^.+$",
+    "operator": "RegexMatch",
+    "registry": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:LegalNoticeCaption",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Message title for users attempting to log on"
+  },
+  {
+    "id": "2.3.7.6",
+    "title": "Ensure 'Interactive logon: Prompt user to change password before expiration' is set to 'between 5 and 14 days'",
+    "expected": [1, 2],
+    "operator": "Between",
+    "registry": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:PasswordExpiryWarning",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Prompt user to change password before expiration to a value between 5 and 14 days"
+  },
+  {
+    "id": "2.3.7.7",
+    "title": "Ensure 'Interactive logon: Smart card removal behavior' is set to 'Lock Workstation' or higher",
+    "expected": ["1", "2", "3"],
+    "operator": "InList",
+    "registry": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:ScRemoveOption",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Smart card removal behavior to 'Lock Workstation', 'Force Logoff', or 'Disconnect...'"
+  },
+  {
+    "id": "2.3.8.1",
+    "title": "Ensure 'Microsoft network client: Digitally sign communications (always)' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters:RequireSecuritySignature",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network client: Digitally sign communications (always) to 'Enabled'"
+  },
+  {
+    "id": "2.3.8.2",
+    "title": "Ensure 'Microsoft network client: Send unencrypted password to third-party SMB servers' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters:EnablePlainTextPassword",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network client: Send unencrypted password to third-party SMB servers to 'Disabled'"
+  },
+  {
+    "id": "2.3.9.1",
+    "title": "Ensure 'Microsoft network server: Amount of idle time required before suspending session' is set to '15 or fewer minute(s)'",
+    "expected": 15,
+    "operator": "<=",
+    "registry": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:AutoDisconnect",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network server: Amount of idle time required before suspending session to '15 or fewer minute(s)'"
+  },
+  {
+    "id": "2.3.9.2",
+    "title": "Ensure 'Microsoft network server: Digitally sign communications (always)' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:RequireSecuritySignature",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network server: Digitally sign communications (always) to 'Enabled'"
+  },
+  {
+    "id": "2.3.9.3",
+    "title": "Ensure 'Microsoft network server: Disconnect clients when logon hours expire' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:enableforcedlogoff",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network server: Disconnect clients when logon hours expire to 'Enabled'"
+  },
+  {
+    "id": "2.3.9.4",
+    "title": "Ensure 'Microsoft network server: Server SPN target name validation level' is set to 'Accept if provided by client' or higher",
+    "expected": [
+      1,
+      2
+    ],
+    "operator": "InList",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:SMBServerNameHardeningLevel",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network server: Server SPN target name validation level to 'Accept if provided by client' or 'Required from client'"
+  }
 ]

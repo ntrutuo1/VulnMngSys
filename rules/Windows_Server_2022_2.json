@@ -1,38 +1,364 @@
 [
-  {"id":"2.2.1","title":"Access Credential Manager as a trusted caller","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Access Credential Manager as a trusted caller"},
-  {"id":"2.2.2","title":"Access this computer from the network","expected":"Administrators, Authenticated Users","gp_path":"Local Policies\\User Rights Assignment\\Access this computer from the network"},
-  {"id":"2.2.3","title":"Act as part of the operating system","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Act as part of the operating system"},
-  {"id":"2.2.4","title":"Adjust memory quotas for a process","expected":"Administrators, LOCAL SERVICE, NETWORK SERVICE","gp_path":"Local Policies\\User Rights Assignment\\Adjust memory quotas for a process"},
-  {"id":"2.2.5","title":"Allow log on locally","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Allow log on locally"},
-  {"id":"2.2.6","title":"Allow log on through Remote Desktop Services","expected":"Administrators, Remote Desktop Users","gp_path":"Local Policies\\User Rights Assignment\\Allow log on through Remote Desktop Services"},
-  {"id":"2.2.7","title":"Back up files and directories","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Back up files and directories"},
-  {"id":"2.2.8","title":"Change the system time","expected":"Administrators, LOCAL SERVICE","gp_path":"Local Policies\\User Rights Assignment\\Change the system time"},
-  {"id":"2.2.9","title":"Create a pagefile","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Create a pagefile"},
-  {"id":"2.2.10","title":"Create a token object","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Create a token object"},
-  {"id":"2.2.11","title":"Create global objects","expected":"Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE","gp_path":"Local Policies\\User Rights Assignment\\Create global objects"},
-  {"id":"2.2.12","title":"Create permanent shared objects","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Create permanent shared objects"},
-  {"id":"2.2.13","title":"Create symbolic links","expected":"Administrators, NT VIRTUAL MACHINE\\Virtual Machines","gp_path":"Local Policies\\User Rights Assignment\\Create symbolic links"},
-  {"id":"2.2.14","title":"Debug programs","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Debug programs"},
-  {"id":"2.2.15","title":"Deny access to this computer from the network","expected":"Guests","gp_path":"Local Policies\\User Rights Assignment\\Deny access to this computer from the network"},
-  {"id":"2.2.16","title":"Deny log on as a batch job","expected":"Guests","gp_path":"Local Policies\\User Rights Assignment\\Deny log on as a batch job"},
-  {"id":"2.2.17","title":"Deny log on as a service","expected":"Guests","gp_path":"Local Policies\\User Rights Assignment\\Deny log on as a service"},
-  {"id":"2.2.18","title":"Deny log on locally","expected":"Guests","gp_path":"Local Policies\\User Rights Assignment\\Deny log on locally"},
-  {"id":"2.2.19","title":"Deny log on through Remote Desktop Services","expected":"Guests","gp_path":"Local Policies\\User Rights Assignment\\Deny log on through Remote Desktop Services"},
-  {"id":"2.2.20","title":"Enable computer and user accounts to be trusted for delegation","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Enable computer and user accounts to be trusted for delegation"},
-  {"id":"2.2.21","title":"Force shutdown from a remote system","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Force shutdown from a remote system"},
-  {"id":"2.2.22","title":"Generate security audits","expected":"LOCAL SERVICE, NETWORK SERVICE","gp_path":"Local Policies\\User Rights Assignment\\Generate security audits"},
-  {"id":"2.2.23","title":"Impersonate a client after authentication","expected":"Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE","gp_path":"Local Policies\\User Rights Assignment\\Impersonate a client after authentication"},
-  {"id":"2.2.24","title":"Increase scheduling priority","expected":"Administrators, Window Manager\\Window Manager Group","gp_path":"Local Policies\\User Rights Assignment\\Increase scheduling priority"},
-  {"id":"2.2.25","title":"Load and unload device drivers","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Load and unload device drivers"},
-  {"id":"2.2.26","title":"Lock pages in memory","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Lock pages in memory"},
-  {"id":"2.2.27","title":"Manage auditing and security log","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Manage auditing and security log"},
-  {"id":"2.2.28","title":"Modify an object label","expected":"No One","gp_path":"Local Policies\\User Rights Assignment\\Modify an object label"},
-  {"id":"2.2.29","title":"Modify firmware environment values","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Modify firmware environment values"},
-  {"id":"2.2.30","title":"Perform volume maintenance tasks","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Perform volume maintenance tasks"},
-  {"id":"2.2.31","title":"Profile single process","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Profile single process"},
-  {"id":"2.2.32","title":"Profile system performance","expected":"Administrators, NT SERVICE\\WdiServiceHost","gp_path":"Local Policies\\User Rights Assignment\\Profile system performance"},
-  {"id":"2.2.33","title":"Replace a process level token","expected":"LOCAL SERVICE, NETWORK SERVICE","gp_path":"Local Policies\\User Rights Assignment\\Replace a process level token"},
-  {"id":"2.2.34","title":"Restore files and directories","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Restore files and directories"},
-  {"id":"2.2.35","title":"Shut down the system","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Shut down the system"},
-  {"id":"2.2.36","title":"Take ownership of files or other objects","expected":"Administrators","gp_path":"Local Policies\\User Rights Assignment\\Take ownership of files or other objects"}
+  {
+    "id": "2.2.1",
+    "title": "Ensure 'Access Credential Manager as a trusted caller' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [""],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Access Credential Manager as a trusted caller",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeTrustedCredManAccessPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.2",
+    "title": "Ensure 'Access this computer from the network' is set to 'Administrators, Authenticated Users'",
+    "expected_names": "Administrators, Authenticated Users",
+    "expected_sids": ["*S-1-5-32-544", "*S-1-5-11"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Access this computer from the network",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeNetworkLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.3",
+    "title": "Ensure 'Act as part of the operating system' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [""],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Act as part of the operating system",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeTcbPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.4",
+    "title": "Ensure 'Adjust memory quotas for a process' is set to 'Administrators, LOCAL SERVICE, NETWORK SERVICE'",
+    "expected_names": "Administrators, LOCAL SERVICE, NETWORK SERVICE",
+    "expected_sids": ["*S-1-5-32-544", "*S-1-5-19", "*S-1-5-20"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Adjust memory quotas for a process",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeIncreaseQuotaPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.5",
+    "title": "Ensure 'Allow log on locally' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": ["*S-1-5-32-544"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Allow log on locally",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeInteractiveLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.6",
+    "title": "Ensure 'Allow log on through Remote Desktop Services' is set to 'Administrators, Remote Desktop Users'",
+    "expected_names": "Administrators, Remote Desktop Users",
+    "expected_sids": ["*S-1-5-32-544", "*S-1-5-32-555"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Allow log on through Remote Desktop Services",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeRemoteInteractiveLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.7",
+    "title": "Ensure 'Back up files and directories' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": ["*S-1-5-32-544"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Back up files and directories",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeBackupPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.8",
+    "title": "Ensure 'Change the system time' is set to 'Administrators, LOCAL SERVICE'",
+    "expected_names": "Administrators, LOCAL SERVICE",
+    "expected_sids": ["*S-1-5-32-544", "*S-1-5-19"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Change the system time",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeSystemtimePrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.9",
+    "title": "Ensure 'Create a pagefile' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": ["*S-1-5-32-544"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Create a pagefile",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeCreatePagefilePrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.10",
+    "title": "Ensure 'Create a token object' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [""],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Create a token object",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeCreateTokenPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.11",
+    "title": "Ensure 'Create global objects' is set to 'Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE'",
+    "expected_names": "Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",
+    "expected_sids": ["*S-1-5-32-544", "*S-1-5-19", "*S-1-5-20", "*S-1-5-6"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Create global objects",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeCreateGlobalPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.12",
+    "title": "Ensure 'Create permanent shared objects' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [""],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Create permanent shared objects",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeCreatePermanentPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.13",
+    "title": "Ensure 'Create symbolic links' is set to 'Administrators, NT VIRTUAL MACHINE\\Virtual Machines'",
+    "expected_names": "Administrators, NT VIRTUAL MACHINE\\Virtual Machines",
+    "expected_sids": ["*S-1-5-32-544", "*S-1-5-83-0"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Create symbolic links",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeCreateSymbolicLinkPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.14",
+    "title": "Ensure 'Debug programs' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": ["*S-1-5-32-544"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Debug programs",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeDebugPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.15",
+    "title": "Ensure 'Deny access to this computer from the network' to include 'Guests'",
+    "expected_names": "Guests",
+    "expected_sids": ["*S-1-5-32-546"],
+    "operator": "Contains",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Deny access to this computer from the network",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeDenyNetworkLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.16",
+    "title": "Ensure 'Deny log on as a batch job' to include 'Guests'",
+    "expected_names": "Guests",
+    "expected_sids": ["*S-1-5-32-546"],
+    "operator": "Contains",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Deny log on as a batch job",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeDenyBatchLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.17",
+    "title": "Ensure 'Deny log on as a service' to include 'Guests'",
+    "expected_names": "Guests",
+    "expected_sids": ["*S-1-5-32-546"],
+    "operator": "Contains",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Deny log on as a service",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeDenyServiceLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.18",
+    "title": "Ensure 'Deny log on locally' to include 'Guests'",
+    "expected_names": "Guests",
+    "expected_sids": ["*S-1-5-32-546"],
+    "operator": "Contains",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Deny log on locally",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeDenyInteractiveLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.19",
+    "title": "Ensure 'Deny log on through Remote Desktop Services' is set to 'Guests'",
+    "expected_names": "Guests",
+    "expected_sids": ["*S-1-5-32-546"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Deny log on through Remote Desktop Services",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeDenyRemoteInteractiveLogonRight' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.20",
+    "title": "Ensure 'Enable computer and user accounts to be trusted for delegation' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [""],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Enable computer and user accounts to be trusted for delegation",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeEnableDelegationPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+  {
+    "id": "2.2.21",
+    "title": "Ensure 'Force shutdown from a remote system' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": ["*S-1-5-32-544"],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Force shutdown from a remote system",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeRemoteShutdownPrivilege' | ForEach-Object { ($_ -split '=')[22].Trim() })"
+  },
+   {
+    "id": "2.2.22",
+    "title": "Ensure 'Generate security audits' is set to 'LOCAL SERVICE, NETWORK SERVICE'",
+    "expected_names": "LOCAL SERVICE, NETWORK SERVICE",
+    "expected_sids": [
+      "*S-1-5-19",
+      "*S-1-5-20"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Generate security audits",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeAuditPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.23",
+    "title": "Ensure 'Impersonate a client after authentication' is set to 'Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE'",
+    "expected_names": "Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE",
+    "expected_sids": [
+      "*S-1-5-32-544",
+      "*S-1-5-19",
+      "*S-1-5-20",
+      "*S-1-5-6"
+    ],
+    "operator": "ExactMatch_With_IIS_Exception",
+    "exception_sid": "*S-1-5-32-568",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Impersonate a client after authentication",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeImpersonatePrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.24",
+    "title": "Ensure 'Increase scheduling priority' is set to 'Administrators, Window Manager\\Window Manager Group'",
+    "expected_names": "Administrators, Window Manager\\Window Manager Group",
+    "expected_sids": [
+      "*S-1-5-32-544",
+      "*S-1-5-90-0"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Increase scheduling priority",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeIncreaseBasePriorityPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.25",
+    "title": "Ensure 'Load and unload device drivers' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Load and unload device drivers",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeLoadDriverPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.26",
+    "title": "Ensure 'Lock pages in memory' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [
+      ""
+    ],
+    "operator": "ExactMatch_With_SQL_Exception",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Lock pages in memory",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeLockMemoryPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.27",
+    "title": "Ensure 'Manage auditing and security log' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Manage auditing and security log",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeSecurityPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.28",
+    "title": "Ensure 'Modify an object label' is set to 'No One'",
+    "expected_names": "No One",
+    "expected_sids": [
+      ""
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Modify an object label",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeRelabelPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.29",
+    "title": "Ensure 'Modify firmware environment values' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Modify firmware environment values",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeSystemEnvironmentPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.30",
+    "title": "Ensure 'Perform volume maintenance tasks' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch_With_SQL_Exception",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Perform volume maintenance tasks",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeManageVolumePrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.31",
+    "title": "Ensure 'Profile single process' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Profile single process",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeProfileSingleProcessPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.32",
+    "title": "Ensure 'Profile system performance' is set to 'Administrators, NT SERVICE\\WdiServiceHost'",
+    "expected_names": "Administrators, NT SERVICE\\WdiServiceHost",
+    "expected_sids": [
+      "*S-1-5-32-544",
+      "*S-1-5-80-3139157870-2992839675-2363441192-3372822096-3264426543"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Profile system performance",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeSystemProfilePrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.33",
+    "title": "Ensure 'Replace a process level token' is set to 'LOCAL SERVICE, NETWORK SERVICE'",
+    "expected_names": "LOCAL SERVICE, NETWORK SERVICE",
+    "expected_sids": [
+      "*S-1-5-19",
+      "*S-1-5-20"
+    ],
+    "operator": "ExactMatch_With_Exceptions",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Replace a process level token",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeAssignPrimaryTokenPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.34",
+    "title": "Ensure 'Restore files and directories' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Restore files and directories",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeRestorePrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.35",
+    "title": "Ensure 'Shut down the system' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Shut down the system",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeShutdownPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  },
+  {
+    "id": "2.2.36",
+    "title": "Ensure 'Take ownership of files or other objects' is set to 'Administrators'",
+    "expected_names": "Administrators",
+    "expected_sids": [
+      "*S-1-5-32-544"
+    ],
+    "operator": "ExactMatch",
+    "gp_path": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\User Rights Assignment\\Take ownership of files or other objects",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^SeTakeOwnershipPrivilege' | ForEach-Object { ($_ -split '='[-1]).Trim() })"
+  }
 ]

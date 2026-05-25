@@ -1,37 +1,275 @@
 [
-  {"id":"2.3.10.1","title":"Network access: Allow anonymous SID/Name translation","expected":"Disabled","gp_path":"Network access: Allow anonymous SID/Name translation"},
-  {"id":"2.3.10.2","title":"Network access: Do not allow anonymous enumeration of SAM accounts","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:RestrictAnonymousSAM"},
-  {"id":"2.3.10.3","title":"Network access: Do not allow anonymous enumeration of SAM accounts and shares","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:RestrictAnonymous"},
-  {"id":"2.3.10.4","title":"Network access: Do not allow storage of passwords and credentials for network authentication","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:DisableDomainCreds"},
-  {"id":"2.3.10.5","title":"Network access: Let Everyone permissions apply to anonymous users","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:EveryoneIncludesAnonymous"},
-  {"id":"2.3.10.6","title":"Network access: Named Pipes that can be accessed anonymously","expected":"None","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:NullSessionPipes"},
-  {"id":"2.3.10.7","title":"Network access: Remotely accessible registry paths","expected":"Configured","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths:Machine"},
-  {"id":"2.3.10.8","title":"Network access: Remotely accessible registry paths and sub-paths","expected":"Configured","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedPaths:Machine"},
-  {"id":"2.3.10.9","title":"Network access: Restrict anonymous access to Named Pipes and Shares","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:RestrictNullSessAccess"},
-  {"id":"2.3.10.10","title":"Network access: Restrict clients allowed to make remote calls to SAM","expected":"O:BAG:BAD:(A;;RC;;;BA)","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:restrictremotesam"},
-  {"id":"2.3.10.11","title":"Network access: Shares that can be accessed anonymously","expected":"None","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:NullSessionShares"},
-  {"id":"2.3.10.12","title":"Network access: Sharing and security model for local accounts","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:ForceGuest"},
-  {"id":"2.3.11.1","title":"Network security: Allow Local System to use computer identity for NTLM","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:UseMachineId"},
-  {"id":"2.3.11.2","title":"Network security: Allow LocalSystem NULL session fallback","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:AllowNullSessionFallback"},
-  {"id":"2.3.11.3","title":"Network Security: Allow PKU2U authentication requests to this computer to use online identities","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\pku2u:AllowOnlineID"},
-  {"id":"2.3.11.4","title":"Network security: Configure encryption types allowed for Kerberos","expected":"2147483640","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters:SupportedEncryptionTypes"},
-  {"id":"2.3.11.5","title":"Network security: Do not store LAN Manager hash value on next password change","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:NoLMHash"},
-  {"id":"2.3.11.6","title":"Network security: Force logoff when logon hours expire","expected":"Enabled","gp_path":"Network security: Force logoff when logon hours expire"},
-  {"id":"2.3.11.7","title":"Network security: LAN Manager authentication level","expected":"5","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:LmCompatibilityLevel"},
-  {"id":"2.3.11.8","title":"Network security: LDAP client signing requirements","expected":"1 or 2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP:LDAPClientIntegrity"},
-  {"id":"2.3.11.9","title":"Network security: Minimum session security for NTLM SSP based clients","expected":"537395200","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:NTLMMinClientSec"},
-  {"id":"2.3.11.10","title":"Network security: Minimum session security for NTLM SSP based servers","expected":"537395200","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:NTLMMinServerSec"},
-  {"id":"2.3.11.11","title":"Network security: Restrict NTLM: Audit Incoming NTLM Traffic","expected":"2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:AuditReceivingNTLMTraffic"},
-  {"id":"2.3.11.12","title":"Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers","expected":"1 or 2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:RestrictSendingNTLMTraffic"},
-  {"id":"2.3.13.1","title":"Shutdown: Allow system to be shut down without having to log on","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:ShutdownWithoutLogon"},
-  {"id":"2.3.15.1","title":"System objects: Require case insensitivity for non-Windows subsystems","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Kernel:ObCaseInsensitive"},
-  {"id":"2.3.15.2","title":"System objects: Strengthen default permissions of internal system objects","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager:ProtectionMode"},
-  {"id":"2.3.17.1","title":"User Account Control: Admin Approval Mode for the Built-in Administrator account","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:FilterAdministratorToken"},
-  {"id":"2.3.17.2","title":"User Account Control: Behavior of the elevation prompt for administrators","expected":"1 or 2","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:ConsentPromptBehaviorAdmin"},
-  {"id":"2.3.17.3","title":"User Account Control: Behavior of the elevation prompt for standard users","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:ConsentPromptBehaviorUser"},
-  {"id":"2.3.17.4","title":"User Account Control: Detect application installations and prompt for elevation","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableInstallerDetection"},
-  {"id":"2.3.17.5","title":"User Account Control: Only elevate UIAccess applications that are installed in secure locations","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableSecureUIAPaths"},
-  {"id":"2.3.17.6","title":"User Account Control: Run all administrators in Admin Approval Mode","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableLUA"},
-  {"id":"2.3.17.7","title":"User Account Control: Switch to the secure desktop when prompting for elevation","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:PromptOnSecureDesktop"},
-  {"id":"2.3.17.8","title":"User Account Control: Virtualize file and registry write failures to per-user locations","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableVirtualization"}
+  {
+    "id": "2.3.10.1",
+    "title": "Ensure 'Network access: Allow anonymous SID/Name translation' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:LsaAnonymousNameLookup",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Allow anonymous SID/Name translation to 'Disabled'"
+  },
+  {
+    "id": "2.3.10.2",
+    "title": "Ensure 'Network access: Do not allow anonymous enumeration of SAM accounts' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:RestrictAnonymousSAM",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Do not allow anonymous enumeration of SAM accounts to 'Enabled'"
+  },
+  {
+    "id": "2.3.10.3",
+    "title": "Ensure 'Network access: Do not allow anonymous enumeration of SAM accounts and shares' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:RestrictAnonymous",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Do not allow anonymous enumeration of SAM accounts and shares to 'Enabled'"
+  },
+  {
+    "id": "2.3.10.4",
+    "title": "Ensure 'Network access: Do not allow storage of passwords and credentials for network authentication' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:DisableDomainCreds",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Do not allow storage of passwords and credentials for network authentication to 'Enabled'"
+  },
+  {
+    "id": "2.3.10.5",
+    "title": "Ensure 'Network access: Let Everyone permissions apply to anonymous users' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:EveryoneIncludesAnonymous",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Let Everyone permissions apply to anonymous users to 'Disabled'"
+  },
+  {
+    "id": "2.3.10.6",
+    "title": "Ensure 'Network access: Named Pipes that can be accessed anonymously' is configured",
+    "expected": [
+      "",
+      "BROWSER"
+    ],
+    "operator": "Subset",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:NullSessionPipes",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Named Pipes that can be accessed anonymously to 'None' or 'BROWSER' (if Computer Browser service is required)"
+  },
+  {
+    "id": "2.3.10.7",
+    "title": "Ensure 'Network access: Remotely accessible registry paths' is configured",
+    "expected": [
+      "System\\CurrentControlSet\\Control\\ProductOptions",
+      "System\\CurrentControlSet\\Control\\Server Applications",
+      "Software\\Microsoft\\Windows NT\\CurrentVersion"
+    ],
+    "operator": "ExactMatch_Array",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths:Machine",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Remotely accessible registry paths to the authorized paths."
+  },
+  {
+    "id": "2.3.10.8",
+    "title": "Ensure 'Network access: Remotely accessible registry paths and sub-paths' is configured",
+    "expected": [
+      "System\\CurrentControlSet\\Control\\Print\\Printers",
+      "System\\CurrentControlSet\\Services\\Eventlog",
+      "Software\\Microsoft\\OLAP Server",
+      "Software\\Microsoft\\Windows NT\\CurrentVersion\\Print",
+      "Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows",
+      "System\\CurrentControlSet\\Control\\ContentIndex",
+      "System\\CurrentControlSet\\Control\\Terminal Server",
+      "System\\CurrentControlSet\\Control\\Terminal Server\\UserConfig",
+      "System\\CurrentControlSet\\Control\\Terminal Server\\DefaultUserConfiguration",
+      "Software\\Microsoft\\Windows NT\\CurrentVersion\\Perflib",
+      "System\\CurrentControlSet\\Services\\SysmonLog"
+    ],
+    "operator": "ExactMatch_Array_With_Exceptions",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedPaths:Machine",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Remotely accessible registry paths and sub-paths to the authorized list (plus CertSvc or WINS if applicable)."
+  },
+  {
+    "id": "2.3.10.9",
+    "title": "Ensure 'Network access: Restrict anonymous access to Named Pipes and Shares' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:RestrictNullSessAccess",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Restrict anonymous access to Named Pipes and Shares to 'Enabled'"
+  },
+  {
+    "id": "2.3.10.10",
+    "title": "Ensure 'Network access: Restrict clients allowed to make remote calls to SAM' is set to 'Administrators: Remote Access: Allow'",
+    "expected": "O:BAG:BAD:(A;;RC;;;BA)",
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:restrictremotesam",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Restrict clients allowed to make remote calls to SAM to 'Administrators: Remote Access: Allow'"
+  },
+  {
+    "id": "2.3.10.11",
+    "title": "Ensure 'Network access: Shares that can be accessed anonymously' is set to 'None'",
+    "expected": "",
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters:NullSessionShares",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Shares that can be accessed anonymously to 'None'"
+  },
+  {
+    "id": "2.3.10.12",
+    "title": "Ensure 'Network access: Sharing and security model for local accounts' is set to 'Classic - local users authenticate as themselves'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:ForceGuest",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Sharing and security model for local accounts to 'Classic - local users authenticate as themselves'"
+  },
+  {
+    "id": "2.3.11.1",
+    "title": "Ensure 'Network security: Allow Local System to use computer identity for NTLM' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:UseMachineId",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Allow Local System to use computer identity for NTLM to 'Enabled'"
+  },
+  {
+    "id": "2.3.11.2",
+    "title": "Ensure 'Network security: Allow LocalSystem NULL session fallback' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:AllowNullSessionFallback",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Allow LocalSystem NULL session fallback to 'Disabled'"
+  },
+  {
+    "id": "2.3.11.3",
+    "title": "Ensure 'Network Security: Allow PKU2U authentication requests to this computer to use online identities' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\pku2u:AllowOnlineID",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network Security: Allow PKU2U authentication requests to this computer to use online identities to 'Disabled'"
+  },
+  {
+    "id": "2.3.11.4",
+    "title": "Ensure 'Network security: Configure encryption types allowed for Kerberos' is set to 'AES128_HMAC_SHA1, AES256_HMAC_SHA1, Future encryption types'",
+    "expected": 2147483640,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters:SupportedEncryptionTypes",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Configure encryption types allowed for Kerberos to 'AES128_HMAC_SHA1, AES256_HMAC_SHA1, Future encryption types'"
+  },
+  {
+    "id": "2.3.11.5",
+    "title": "Ensure 'Network security: Do not store LAN Manager hash value on next password change' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa:NoLMHash",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Do not store LAN Manager hash value on next password change to 'Enabled'"
+  },
+  {
+    "id": "2.3.11.6",
+    "title": "Ensure 'Network security: Force logoff when logon hours expire' is set to 'Enabled'",
+    "expected": "1",
+    "operator": "==",
+    "powershell_check": "(Select-String -Path C:\\temp\\secpol.inf -Pattern '^ForceLogoffWhenHourExpire' | ForEach-Object { ($_ -split '=')[-1].Trim() })",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Force logoff when logon hours expire to 'Enabled'"
+  },
+  {
+    "id": "2.3.11.11",
+    "title": "Ensure 'Network security: Restrict NTLM: Audit Incoming NTLM Traffic' is set to 'Enable auditing for all accounts'",
+    "expected": 2,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:AuditReceivingNTLMTraffic",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Restrict NTLM: Audit Incoming NTLM Traffic to 'Enable auditing for all accounts'"
+  },
+  {
+    "id": "2.3.11.12",
+    "title": "Ensure 'Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers' is set to 'Audit all' or higher",
+    "expected": [
+      1,
+      2
+    ],
+    "operator": "InList",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0:RestrictSendingNTLMTraffic",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers to 'Audit all' or 'Deny all'"
+  },
+  {
+    "id": "2.3.13.1",
+    "title": "Ensure 'Shutdown: Allow system to be shut down without having to log on' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:ShutdownWithoutLogon",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Shutdown: Allow system to be shut down without having to log on to 'Disabled'"
+  },
+  {
+    "id": "2.3.15.1",
+    "title": "Ensure 'System objects: Require case insensitivity for non-Windows subsystems' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Kernel:ObCaseInsensitive",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\System objects: Require case insensitivity for non-Windows subsystems to 'Enabled'"
+  },
+  {
+    "id": "2.3.15.2",
+    "title": "Ensure 'System objects: Strengthen default permissions of internal system objects (e.g. Symbolic Links)' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager:ProtectionMode",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\System objects: Strengthen default permissions of internal system objects (e.g. Symbolic Links) to 'Enabled'"
+  },
+  {
+    "id": "2.3.17.1",
+    "title": "Ensure 'User Account Control: Admin Approval Mode for the Built-in Administrator account' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:FilterAdministratorToken",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Admin Approval Mode for the Built-in Administrator account to 'Enabled'"
+  },
+  {
+    "id": "2.3.17.2",
+    "title": "Ensure 'User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode' is set to 'Prompt for consent on the secure desktop' or higher",
+    "expected": [
+      1,
+      2
+    ],
+    "operator": "InList",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:ConsentPromptBehaviorAdmin",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode to 'Prompt for consent on the secure desktop' or 'Prompt for credentials on the secure desktop'"
+  },
+  {
+    "id": "2.3.17.3",
+    "title": "Ensure 'User Account Control: Behavior of the elevation prompt for standard users' is set to 'Automatically deny elevation requests'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:ConsentPromptBehaviorUser",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Behavior of the elevation prompt for standard users to 'Automatically deny elevation requests'"
+  },
+  {
+    "id": "2.3.17.4",
+    "title": "Ensure 'User Account Control: Detect application installations and prompt for elevation' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableInstallerDetection",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Detect application installations and prompt for elevation to 'Enabled'"
+  },
+  {
+    "id": "2.3.17.5",
+    "title": "Ensure 'User Account Control: Only elevate UIAccess applications that are installed in secure locations' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableSecureUIAPaths",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Only elevate UIAccess applications that are installed in secure locations to 'Enabled'"
+  },
+  {
+    "id": "2.3.17.6",
+    "title": "Ensure 'User Account Control: Run all administrators in Admin Approval Mode' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableLUA",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Run all administrators in Admin Approval Mode to 'Enabled'"
+  },
+  {
+    "id": "2.3.17.7",
+    "title": "Ensure 'User Account Control: Switch to the secure desktop when prompting for elevation' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:PromptOnSecureDesktop",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Switch to the secure desktop when prompting for elevation to 'Enabled'"
+  },
+  {
+    "id": "2.3.17.8",
+    "title": "Ensure 'User Account Control: Virtualize file and registry write failures to per-user locations' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableVirtualization",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Virtualize file and registry write failures to per-user locations to 'Enabled'"
+  }
 ]

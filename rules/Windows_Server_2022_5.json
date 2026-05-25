@@ -2,17 +2,89 @@
   {
     "id": "5.1",
     "title": "Ensure 'Print Spooler (Spooler)' is set to 'Disabled'",
-    "expected": "4",
-    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Spooler:Start"
+    "expected": 4,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Spooler:Start",
+    "remediation": "Execute PowerShell command: Set-Service -Name Spooler -StartupType Disabled"
   },
-  {"id":"9.2.1","title":"Windows Firewall: Private: Firewall state","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:EnableFirewall"},
-  {"id":"9.2.2","title":"Windows Firewall: Private: Inbound connections","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:DefaultInboundAction"},
-  {"id":"9.2.3","title":"Windows Firewall: Private: Settings: Display a notification","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:DisableNotifications"},
-  {"id":"9.2.6","title":"Windows Firewall: Private: Logging: Log dropped packets","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging:LogDroppedPackets"},
-  {"id":"9.2.7","title":"Windows Firewall: Private: Logging: Log successful connections","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging:LogSuccessfulConnections"},
-  {"id":"9.3.1","title":"Windows Firewall: Public: Firewall state","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile:EnableFirewall"},
-  {"id":"9.3.2","title":"Windows Firewall: Public: Inbound connections","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile:DefaultInboundAction"},
-  {"id":"9.3.3","title":"Windows Firewall: Public: Settings: Display a notification","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile:DisableNotifications"},
-  {"id":"9.3.6","title":"Windows Firewall: Public: Logging: Log dropped packets","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging:LogDroppedPackets"},
-  {"id":"9.3.7","title":"Windows Firewall: Public: Logging: Log successful connections","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging:LogSuccessfulConnections"}
+  {
+    "id": "9.2.1",
+    "title": "Ensure 'Windows Firewall: Private: Firewall state' is set to 'On (recommended)'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:EnableFirewall",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Private Profile\\Firewall state to 'On'"
+  },
+  {
+    "id": "9.2.2",
+    "title": "Ensure 'Windows Firewall: Private: Inbound connections' is set to 'Block (default)'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:DefaultInboundAction",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Private Profile\\Inbound connections to 'Block (default)'"
+  },
+  {
+    "id": "9.2.3",
+    "title": "Ensure 'Windows Firewall: Private: Settings: Display a notification' is set to 'No'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile:DisableNotifications",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Private Profile\\Settings Customize\\Display a notification to 'No'"
+  },
+  {
+    "id": "9.2.6",
+    "title": "Ensure 'Windows Firewall: Private: Logging: Log dropped packets' is set to 'Yes'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging:LogDroppedPackets",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Private Profile\\Logging Customize\\Log dropped packets to 'Yes'"
+  },
+  {
+    "id": "9.2.7",
+    "title": "Ensure 'Windows Firewall: Private: Logging: Log successful connections' is set to 'Yes'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging:LogSuccessfulConnections",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Private Profile\\Logging Customize\\Log successful connections to 'Yes'"
+  },
+  {
+    "id": "9.3.1",
+    "title": "Ensure 'Windows Firewall: Public: Firewall state' is set to 'On (recommended)'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile:EnableFirewall",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Public Profile\\Firewall state to 'On'"
+  },
+  {
+    "id": "9.3.2",
+    "title": "Ensure 'Windows Firewall: Public: Inbound connections' is set to 'Block (default)'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile:DefaultInboundAction",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Public Profile\\Inbound connections to 'Block (default)'"
+  },
+  {
+    "id": "9.3.3",
+    "title": "Ensure 'Windows Firewall: Public: Settings: Display a notification' is set to 'No'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile:DisableNotifications",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Public Profile\\Settings Customize\\Display a notification to 'No'"
+  },
+  {
+    "id": "9.3.6",
+    "title": "Ensure 'Windows Firewall: Public: Logging: Log dropped packets' is set to 'Yes'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging:LogDroppedPackets",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Public Profile\\Logging Customize\\Log dropped packets to 'Yes'"
+  },
+  {
+    "id": "9.3.7",
+    "title": "Ensure 'Windows Firewall: Public: Logging: Log successful connections' is set to 'Yes'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging:LogSuccessfulConnections",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Windows Defender Firewall with Advanced Security\\Windows Defender Firewall Properties\\Public Profile\\Logging Customize\\Log successful connections to 'Yes'"
+  }
 ]

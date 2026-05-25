@@ -1,22 +1,162 @@
 [
-  {"id":"18.1.1.1","title":"Prevent enabling lock screen camera","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization:NoLockScreenCamera"},
-  {"id":"18.1.1.2","title":"Prevent enabling lock screen slide show","expected":"1","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization:NoLockScreenSlideshow"},
-  {"id":"18.1.2.2","title":"Allow users to enable online speech recognition services","expected":"0","registry":"HKLM\\SOFTWARE\\Policies\\Microsoft\\InputPersonalization:AllowInputPersonalization"},
-  {"id":"18.1.3","title":"Allow Online Tips","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:AllowOnlineTips"},
-  {"id":"18.4.1","title":"Configure SMB v1 client driver","expected":"4","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10:Start"},
-  {"id":"18.4.2","title":"Configure SMB v1 server","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters:SMB1"},
-  {"id":"18.4.3","title":"Enable Certificate Padding","expected":"1","registry":"HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Wintrust\\Config:EnableCertPaddingCheck"},
-  {"id":"18.4.4","title":"Enable Structured Exception Handling Overwrite Protection (SEHOP)","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel:DisableExceptionChainValidation"},
-  {"id":"18.4.5","title":"NetBT NodeType configuration","expected":"2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\NetBT\\Parameters:NodeType"},
-  {"id":"18.5.1","title":"MSS: (AutoAdminLogon) Enable Automatic Logon","expected":"0","registry":"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:AutoAdminLogon"},
-  {"id":"18.5.2","title":"MSS: (DisableIPSourceRouting IPv6) IP source routing protection level","expected":"2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters:DisableIPSourceRouting"},
-  {"id":"18.5.3","title":"MSS: (DisableIPSourceRouting) IP source routing protection level","expected":"2","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:DisableIPSourceRouting"},
-  {"id":"18.5.4","title":"MSS: (EnableICMPRedirect) Allow ICMP redirects","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:EnableICMPRedirect"},
-  {"id":"18.5.5","title":"MSS: (KeepAliveTime) How often keep-alive packets are sent","expected":"300000","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:KeepAliveTime"},
-  {"id":"18.5.6","title":"MSS: (NoNameReleaseOnDemand) Allow the computer to ignore NetBIOS name release requests","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\NetBT\\Parameters:NoNameReleaseOnDemand"},
-  {"id":"18.5.7","title":"MSS: (PerformRouterDiscovery) Allow IRDP to detect Default Gateway","expected":"0","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:PerformRouterDiscovery"},
-  {"id":"18.5.8","title":"MSS: (SafeDllSearchMode) Enable Safe DLL search mode","expected":"1","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager:SafeDllSearchMode"},
-  {"id":"18.5.9","title":"MSS: (TcpMaxDataRetransmissions IPv6)","expected":"3","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters:TcpMaxDataRetransmissions"},
-  {"id":"18.5.10","title":"MSS: (TcpMaxDataRetransmissions)","expected":"3","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:TcpMaxDataRetransmissions"},
-  {"id":"18.5.11","title":"MSS: (WarningLevel) Percentage threshold for the security event log","expected":"<=90","registry":"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Eventlog\\Security:WarningLevel"}
+  {
+    "id": "18.1.1.1",
+    "title": "Ensure 'Prevent enabling lock screen camera' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization:NoLockScreenCamera",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Control Panel\\Personalization\\Prevent enabling lock screen camera"
+  },
+  {
+    "id": "18.1.1.2",
+    "title": "Ensure 'Prevent enabling lock screen slide show' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization:NoLockScreenSlideshow",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Control Panel\\Personalization\\Prevent enabling lock screen slide show"
+  },
+  {
+    "id": "18.1.2.2",
+    "title": "Ensure 'Allow users to enable online speech recognition services' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\InputPersonalization:AllowInputPersonalization",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Control Panel\\Regional and Language Options\\Allow users to enable online speech recognition services"
+  },
+  {
+    "id": "18.1.3",
+    "title": "Ensure 'Allow Online Tips' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:AllowOnlineTips",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Control Panel\\Allow Online Tips"
+  },
+  {
+    "id": "18.4.1",
+    "title": "Ensure 'Configure SMB v1 client driver' is set to 'Enabled: Disable driver (recommended)'",
+    "expected": 4,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10:Start",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Configure SMB v1 client driver"
+  },
+  {
+    "id": "18.4.2",
+    "title": "Ensure 'Configure SMB v1 server' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters:SMB1",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Configure SMB v1 server"
+  },
+  {
+    "id": "18.4.3",
+    "title": "Ensure 'Enable Certificate Padding' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Wintrust\\Config:EnableCertPaddingCheck",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Enable Certificate Padding"
+  },
+  {
+    "id": "18.4.4",
+    "title": "Ensure 'Enable Structured Exception Handling Overwrite Protection (SEHOP)' is set to 'Enabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel:DisableExceptionChainValidation",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Enable Structured Exception Handling Overwrite Protection (SEHOP)"
+  },
+  {
+    "id": "18.4.5",
+    "title": "Ensure 'NetBT NodeType configuration' is set to 'Enabled: P-node (recommended)'",
+    "expected": 2,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\NetBT\\Parameters:NodeType",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\NetBT NodeType configuration"
+  },
+  {
+    "id": "18.5.1",
+    "title": "Ensure 'MSS: (AutoAdminLogon) Enable Automatic Logon' is set to 'Disabled'",
+    "expected": "0",
+    "operator": "==",
+    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon:AutoAdminLogon",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (AutoAdminLogon) Enable Automatic Logon"
+  },
+  {
+    "id": "18.5.2",
+    "title": "Ensure 'MSS: (DisableIPSourceRouting IPv6) IP source routing protection level' is set to 'Enabled: Highest protection, source routing is completely disabled'",
+    "expected": 2,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters:DisableIPSourceRouting",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (DisableIPSourceRouting IPv6) IP source routing protection level"
+  },
+  {
+    "id": "18.5.3",
+    "title": "Ensure 'MSS: (DisableIPSourceRouting) IP source routing protection level' is set to 'Enabled: Highest protection, source routing is completely disabled'",
+    "expected": 2,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:DisableIPSourceRouting",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (DisableIPSourceRouting) IP source routing protection level"
+  },
+  {
+    "id": "18.5.4",
+    "title": "Ensure 'MSS: (EnableICMPRedirect) Allow ICMP redirects to override OSPF generated routes' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:EnableICMPRedirect",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (EnableICMPRedirect) Allow ICMP redirects to override OSPF generated routes"
+  },
+  {
+    "id": "18.5.5",
+    "title": "Ensure 'MSS: (KeepAliveTime) How often keep-alive packets are sent in milliseconds' is set to 'Enabled: 300,000 or 5 minutes'",
+    "expected": 300000,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:KeepAliveTime",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (KeepAliveTime) How often keep-alive packets are sent in milliseconds"
+  },
+  {
+    "id": "18.5.6",
+    "title": "Ensure 'MSS: (NoNameReleaseOnDemand) Allow the computer to ignore NetBIOS name release requests except from WINS servers' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\NetBT\\Parameters:NoNameReleaseOnDemand",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (NoNameReleaseOnDemand) Allow the computer to ignore NetBIOS name release requests except from WINS servers"
+  },
+  {
+    "id": "18.5.7",
+    "title": "Ensure 'MSS: (PerformRouterDiscovery) Allow IRDP to detect and configure Default Gateway addresses' is set to 'Disabled'",
+    "expected": 0,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:PerformRouterDiscovery",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (PerformRouterDiscovery) Allow IRDP to detect and configure Default Gateway addresses"
+  },
+  {
+    "id": "18.5.8",
+    "title": "Ensure 'MSS: (SafeDllSearchMode) Enable Safe DLL search mode' is set to 'Enabled'",
+    "expected": 1,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager:SafeDllSearchMode",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (SafeDllSearchMode) Enable Safe DLL search mode"
+  },
+  {
+    "id": "18.5.9",
+    "title": "Ensure 'MSS: (TcpMaxDataRetransmissions IPv6) How many times unacknowledged data is retransmitted' is set to 'Enabled: 3'",
+    "expected": 3,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters:TcpMaxDataRetransmissions",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS:(TcpMaxDataRetransmissions IPv6) How many times unacknowledged data is retransmitted"
+  },
+  {
+    "id": "18.5.10",
+    "title": "Ensure 'MSS: (TcpMaxDataRetransmissions) How many times unacknowledged data is retransmitted' is set to 'Enabled: 3'",
+    "expected": 3,
+    "operator": "==",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters:TcpMaxDataRetransmissions",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS:(TcpMaxDataRetransmissions) How many times unacknowledged data is retransmitted"
+  },
+  {
+    "id": "18.5.11",
+    "title": "Ensure 'MSS: (WarningLevel) Percentage threshold for the security event log at which the system will generate a warning' is set to 'Enabled: 90% or less'",
+    "expected": 90,
+    "operator": "<=",
+    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Eventlog\\Security:WarningLevel",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MSS (Legacy)\\MSS: (WarningLevel) Percentage threshold for the security event log at which the system will generate a warning"
+  }
 ]
