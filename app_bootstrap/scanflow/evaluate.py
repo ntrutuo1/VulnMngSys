@@ -186,10 +186,10 @@ def evaluate_rule_verdict(
     if status not in {"Collected"}:
         return False, "MANUAL", expected_display
 
-    rule_type = str(rule.get("type") or check_type or "").lower()
+    rule_type = str(rule.get("check_type") or rule.get("type") or check_type or "").lower()
     passed = False
 
-    if rule_type in {"secedit", "security_policy"}:
+    if rule_type in {"secedit", "security_policy", "securityoptions", "security_option"}:
         passed = evaluate_numeric_expected(rule.get("expected"), actual)
     elif rule_type == "user_right":
         passed = evaluate_user_right_expected(rule, actual)
@@ -197,7 +197,7 @@ def evaluate_rule_verdict(
         passed = evaluate_local_account_expected(rule, actual)
     elif rule_type == "auditpol":
         passed = evaluate_auditpol_expected(rule.get("expected"), actual)
-    elif rule_type == "registry-multi":
+    elif rule_type in {"registry-multi", "registry"} or check_type.startswith("registry"):
         expected_list = rule.get("expected")
         if isinstance(expected_list, list):
             # registry-multi emits one row per candidate; each row uses its own Recommended.
@@ -205,8 +205,6 @@ def evaluate_rule_verdict(
             passed = str(expected_display).strip().lower() in str(actual).strip().lower()
         else:
             passed = evaluate_registry_expected(rule, actual)
-    elif rule_type == "registry" or check_type == "registry":
-        passed = evaluate_registry_expected(rule, actual)
     elif "registry_value" in rule:
         passed = evaluate_registry_expected(rule, actual)
         expected_display = str(rule.get("registry_value"))

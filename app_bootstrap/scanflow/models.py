@@ -34,6 +34,7 @@ class RuleComparisonResult:
     check_type: str
     source: str
     guidance: list[str] = field(default_factory=list)
+    service_name: str = ""
 
 
 @dataclass(slots=True, frozen=True)

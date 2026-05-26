@@ -53,6 +53,70 @@ body,
   border: 1px solid var(--card-edge);
 }
 
+.glass-card .ant-card-body {
+  padding: 18px 20px;
+}
+
+.service-checkbox {
+  width: 100%;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+}
+
+.service-option-copy {
+  max-width: 100%;
+}
+
+.service-option-title,
+.service-option-subtitle {
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.result-rule-cell {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.result-rule-cell:hover .result-rule-title,
+.result-rule-cell:hover .result-rule-id {
+  color: #0f766e;
+}
+
+.result-rule-title {
+  display: block;
+  max-width: 100%;
+}
+
+.rule-details-modal .ant-descriptions-item-content {
+  word-break: break-word;
+}
+
+.rule-details-modal .ant-typography,
+.rule-details-modal .ant-descriptions-item-content {
+  max-width: 100%;
+}
+
+.rule-details-modal .ant-modal-body {
+  max-height: 72vh;
+  overflow: auto;
+}
+
+.result-table-wrap .ant-table-cell {
+  vertical-align: top;
+}
+
 @media (max-width: 900px) {
   .content-shell {
     padding: 18px 12px 24px;
@@ -65,5 +129,9 @@ body,
 
   .header-actions {
     align-items: flex-start;
+  }
+
+  .glass-card .ant-card-body {
+    padding: 14px 14px;
   }
 }

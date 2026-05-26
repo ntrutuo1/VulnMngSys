@@ -8,26 +8,30 @@ from .evaluate import format_expected_display
 def build_guidance(rule: dict[str, Any], source: str, expected: str) -> list[str]:
     lines: list[str] = []
 
-    gp_path = str(rule.get("gp_path") or "").strip()
-    if gp_path:
-        lines.append(f"Mở Group Policy theo đường dẫn: {gp_path}")
+    registry_path = str(rule.get("registry_path") or rule.get("registry") or rule.get("gp_path") or "").strip()
+    if registry_path and not registry_path.upper().startswith(("HK", "HKEY_")):
+        lines.append(f"Open the policy path: {registry_path}")
 
     if source:
-        lines.append(f"Kiểm tra nguồn cấu hình: {source}")
+        lines.append(f"Check the configuration source: {source}")
 
     display_expected = expected or format_expected_display(
         rule.get("expected"),
-        str(rule.get("description") or ""),
+        str(rule.get("title") or ""),
     )
-    if display_expected and not display_expected.startswith("@"):
-        lines.append(f"Thiết lập theo khuyến nghị: {display_expected}")
+    if display_expected:
+        lines.append(f"Expected value: {display_expected}")
 
-    note = str(rule.get("note") or "").strip()
-    if note:
-        lines.append(f"Lưu ý: {note}")
+    reason = str(rule.get("reason") or "").strip()
+    if reason:
+        lines.append(f"Reason: {reason}")
 
     title = str(rule.get("title") or "").strip()
     if title:
-        lines.append(f"Xác nhận lại policy: {title}")
+        lines.append(f"Rule: {title}")
+
+    remediation = str(rule.get("remediation") or "").strip()
+    if remediation:
+        lines.append(f"Remediation: {remediation}")
 
     return lines

@@ -29,15 +29,24 @@ const resources = {
       },
       scan: {
         controlsTitle: 'Scan controls',
+        servicesTitle: 'Detected services to scan',
+        servicesDescription:
+          'Choose the services you want to include in the scan. The engine will prune service-owned rules that are not selected.',
         quick: 'Quick',
         full: 'Full',
         start: 'Start scan',
+        selectAll: 'Select all',
+        clearSelection: 'Clear',
+        serviceCount: '{{selected}} / {{total}} selected',
+        noServicesDetected: 'No services detected on this machine.',
+        selectedServicesSummary: '{{count}} selected services were included in the scan',
         resultsTitle: 'Scan results',
         profileMode: 'Profile: {{profile}} | Mode: {{mode}}',
         noResult: 'No scan result yet. Click Start scan to run scan_executor.ps1.',
       },
       messages: {
         inventoryLoadFailed: 'Failed to load machine inventory: {{error}}',
+        selectServicesFirst: 'Select at least one detected service before starting the scan.',
         scanDone: 'Scan completed: {{passed}}/{{total}} PASS rules',
         scanFailed: 'Scan failed',
         scanFailedWithError: 'Scan failed: {{error}}',
@@ -50,68 +59,24 @@ const resources = {
         na: 'N/A',
       },
       table: {
+        rule: 'Rule',
         result: 'Result',
+        expected: 'Expected',
+        actual: 'Actual',
+        status: 'Status',
+        service: 'Service',
+        checkType: 'Check type',
+        source: 'Source',
+        registryPath: 'Registry path',
+        powershellCheck: 'PowerShell check',
+        remediation: 'Remediation',
+        reason: 'Reason',
+        guidance: 'Guidance',
+        details: 'Details',
         totalRules: '{{from}}-{{to}} / {{total}} rules',
       },
       language: {
         label: 'Language',
-        vi: 'VI',
-        en: 'EN',
-      },
-    },
-  },
-  vi: {
-    translation: {
-      app: {
-        title: 'VulnMngSys',
-        subtitle: 'Cong cu phat hien lo hong cau hinh Windows Server',
-        statusReady: 'API san sang',
-        statusNotReady: 'API khong kha dung',
-      },
-      banner: {
-        readyTitle: 'Luong scan da san sang',
-        readyDescription:
-          'Ung dung goi truc tiep scripts/scan_executor.ps1, nhan JSON PASS/FAIL tu scan_rules_*.ps1 va hien thi ket qua tren UI.',
-      },
-      alerts: {
-        nonServerTitle: 'May hien tai khong phai Windows Server',
-        nonServerDescription: 'Cong cu duoc thiet ke cho Windows Server. Ket qua scan co the khong day du.',
-      },
-      cards: {
-        osTitle: 'He dieu hanh',
-        serviceTitle: 'Dich vu phat hien',
-        unknown: 'Khong xac dinh',
-        notServer: 'Khong phai Server',
-      },
-      scan: {
-        controlsTitle: 'Dieu khien scan',
-        quick: 'Nhanh',
-        full: 'Day du',
-        start: 'Bat dau scan',
-        resultsTitle: 'Ket qua scan',
-        profileMode: 'Profile: {{profile}} | Mode: {{mode}}',
-        noResult: 'Chua co ket qua scan. Bam Bat dau scan de chay scan_executor.ps1.',
-      },
-      messages: {
-        inventoryLoadFailed: 'Khong tai duoc thong tin may: {{error}}',
-        scanDone: 'Da scan xong: {{passed}}/{{total}} rule PASS',
-        scanFailed: 'Scan that bai',
-        scanFailedWithError: 'Scan that bai: {{error}}',
-      },
-      report: {
-        summary: '{{status}} | {{passed}}/{{total}} PASS',
-        fileLabel: 'File JSON: {{path}}',
-        modeQuick: 'Nhanh',
-        modeFull: 'Day du',
-        na: 'N/A',
-      },
-      table: {
-        result: 'Ket qua',
-        totalRules: '{{from}}-{{to}} / {{total}} rules',
-      },
-      language: {
-        label: 'Ngon ngu',
-        vi: 'VI',
         en: 'EN',
       },
     },
@@ -119,7 +84,7 @@ const resources = {
 }
 
 const initialLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY)
-const fallbackLanguage = initialLanguage === 'vi' || initialLanguage === 'en' ? initialLanguage : 'vi'
+const fallbackLanguage = initialLanguage === 'en' ? initialLanguage : 'en'
 
 i18n.use(initReactI18next).init({
   resources,
@@ -131,7 +96,7 @@ i18n.use(initReactI18next).init({
 })
 
 i18n.on('languageChanged', (language) => {
-  localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, language === 'en' ? 'en' : 'en')
 })
 
 export default i18n

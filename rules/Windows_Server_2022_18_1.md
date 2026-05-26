@@ -180,3 +180,4 @@
 * **18.9.5.6 Ensure 'Turn On Virtualization Based Security: Secure Launch Configuration' is set to 'Enabled' (Automated)**
   * **Trạng thái khuyến nghị:** Enabled.
   * **Đường dẫn Registry:** `HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard:ConfigureSystemGuardLaunch` (Giá trị `REG_DWORD`: `1`).
+  

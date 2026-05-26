@@ -22,7 +22,7 @@ def _load_rules(path: Path) -> RuleLookupIndex:
 
 
 def _net_fallback_actual(rule: dict, net_map: dict[str, str]) -> str | None:
-    key = str(rule.get("key") or "")
+    key = str(rule.get("id") or rule.get("key") or "")
     mapping = {
         "PasswordHistorySize": "PasswordHistorySize",
         "MaximumPasswordAge": "MaximumPasswordAge",
@@ -69,15 +69,15 @@ def main() -> int:
     for row in scan_items:
         if not isinstance(row, dict):
             continue
-        rule_id = str(row.get("RuleId") or "").strip()
+        rule_id = str(row.get("id") or row.get("RuleId") or "").strip()
         rule = rule_index.get(rule_id) or {}
-        status = str(row.get("Status") or "")
-        actual = str(row.get("Actual") or "").strip()
-        check_type = str(row.get("CheckType") or "")
+        status = str(row.get("status") or row.get("Status") or "")
+        actual = str(row.get("actual") or row.get("Actual") or "").strip()
+        check_type = str(row.get("check_type") or row.get("CheckType") or "")
 
         fallback_source = None
-        if not actual and str(rule.get("type") or "") in {"secedit", "security_policy"}:
-            sec_key = str(rule.get("key") or "")
+        if not actual and str(rule.get("check_type") or rule.get("type") or "") in {"secedit", "security_policy", "securityoptions"}:
+            sec_key = str(rule.get("id") or rule.get("key") or "")
             if sec_key in sec_export:
                 actual = sec_export[sec_key]
                 fallback_source = "secedit_export"
@@ -103,16 +103,19 @@ def main() -> int:
 
         rows.append(
             {
+                "id": rule_id,
                 "ruleId": rule_id,
-                "title": rule.get("title") or row.get("Title"),
+                "title": rule.get("title") or row.get("title") or row.get("Title"),
                 "verdict": verdict,
                 "passed": passed,
                 "expected": expected,
                 "expectedRaw": rule.get("expected"),
                 "actual": actual,
                 "scanStatus": status,
+                "check_type": check_type,
                 "checkType": check_type,
-                "source": row.get("Source"),
+                "service": rule.get("service") or row.get("service") or row.get("serviceName"),
+                "source": row.get("source") or row.get("Source"),
                 "fallbackSource": fallback_source,
                 "cisPdfSection": rule_id,
             }

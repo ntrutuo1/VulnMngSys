@@ -1,386 +1,684 @@
 [
-{
+  {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.36.1",
     "title": "Ensure 'Turn off location' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors:DisableLocation",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors:DisableLocation",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Location and Sensors\\Turn off location to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors' -Name 'DisableLocation' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Location and Sensors\\Turn off location to 'Enabled'",
+    "reason": "This setting affects the location feature (e.g. GPS or other location tracking). From a security perspective, it’s not a good idea to reveal your location to software in most cases, but there are legitimate uses, such as mapping software. However, they should not be used in high security environments."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.40.1",
     "title": "Ensure 'Allow Message Service Cloud Sync' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Messaging:AllowMessageSync",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Messaging:AllowMessageSync",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Messaging\\Allow Message Service Cloud Sync to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Messaging' -Name 'AllowMessageSync' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Messaging\\Allow Message Service Cloud Sync to 'Disabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.41.1",
     "title": "Ensure 'Block all consumer Microsoft account user authentication' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount:DisableUserAuth",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount:DisableUserAuth",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft accounts\\Block all consumer Microsoft account user authentication to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount' -Name 'DisableUserAuth' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft accounts\\Block all consumer Microsoft account user authentication to 'Enabled'",
+    "reason": "Organizations that want to effectively implement identity management policies and maintain firm control of what accounts are used on their computers will probably want to block Microsoft accounts."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.56.1",
     "title": "Ensure 'Turn off Push To Install service' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\PushToInstall:DisablePushToInstall",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\PushToInstall:DisablePushToInstall",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Push to Install\\Turn off Push To Install service to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PushToInstall' -Name 'DisablePushToInstall' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Push to Install\\Turn off Push To Install service to 'Enabled'",
+    "reason": "In a high security managed environment, application installations should be managed centrally by IT staff, not by end users."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.2.2",
     "title": "Ensure 'Do not allow passwords to be saved' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:DisablePasswordSaving",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:DisablePasswordSaving",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Connection Client\\Do not allow passwords to be saved to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'DisablePasswordSaving' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Connection Client\\Do not allow passwords to be saved to 'Enabled'",
+    "reason": "A threat actor with physical access to the computer may be able to break the protection guarding saved passwords. A threat actor who compromises a user's account and connects to their computer could use saved passwords to gain access to additional hosts."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.2.1",
     "title": "Ensure 'Restrict Remote Desktop Services users to a single Remote Desktop Services session' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fSingleSessionPerUser",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fSingleSessionPerUser",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Connections\\Restrict Remote Desktop Services users to a single Remote Desktop Services session to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fSingleSessionPerUser' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Connections\\Restrict Remote Desktop Services users to a single Remote Desktop Services session to 'Enabled'",
+    "reason": "This setting ensures that users & administrators who Remote Desktop to a server will continue to use the same session - if they disconnect and reconnect, they will go back to the same session they were using before, preventing the creation of a second simultaneous session."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.1",
     "title": "Ensure 'Allow UI Automation redirection' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:EnableUiaRedirection",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:EnableUiaRedirection",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Allow UI Automation redirection to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'EnableUiaRedirection' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Allow UI Automation redirection to 'Disabled'",
+    "reason": "In a more security-sensitive environment, it is desirable to reduce the possible attack surface. The need for UI Automation redirection within a Remote Desktop session is rare, and not supported at this time, but it makes sense to reduce the number of unexpected avenues for malicious activity to occur."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.2",
     "title": "Ensure 'Do not allow COM port redirection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableCcm",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableCcm",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow COM port redirection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fDisableCcm' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow COM port redirection to 'Enabled'",
+    "reason": "The need for COM port redirection within a Remote Desktop session is very rare, so makes sense to reduce the number of unexpected avenues for data exfiltration and/or malicious code transfer."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.3",
     "title": "Ensure 'Do not allow drive redirection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableCdm",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableCdm",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow drive redirection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fDisableCdm' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow drive redirection to 'Enabled'",
+    "reason": "Data could be forwarded from the user's Remote Desktop Services session to the user's local computer without any direct user interaction. Malicious software already present on a compromised server would have direct and stealthy disk access to the user's local computer during the Remote Desktop session."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.4",
     "title": "Ensure 'Do not allow location redirection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableLocationRedir",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableLocationRedir",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow location redirection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fDisableLocationRedir' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow location redirection to 'Enabled'",
+    "reason": "In a more security-sensitive environment, it is desirable to reduce the possible attack surface. The need for location data redirection within a Remote Desktop session is rare, so it makes sense to reduce the number of unexpected avenues for malicious activity to occur."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.5",
     "title": "Ensure 'Do not allow LPT port redirection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableLPT",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableLPT",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow LPT port redirection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fDisableLPT' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow LPT port redirection to 'Enabled'",
+    "reason": "The need for LPT port redirection within a Remote Desktop session is very rare, so makes sense to reduce the number of unexpected avenues for data exfiltration and/or malicious code transfer."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.6",
     "title": "Ensure 'Do not allow supported Plug and Play device redirection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisablePNPRedir",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisablePNPRedir",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow supported Plug and Play device redirection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fDisablePNPRedir' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow supported Plug and Play device redirection to 'Enabled'",
+    "reason": "The need for Plug and Play device redirection within a Remote Desktop session is very rare, so makes sense to reduce the number of unexpected avenues for data exfiltration and/or malicious code transfer."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.3.7",
     "title": "Ensure 'Do not allow WebAuthn redirection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableWebAuthn",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fDisableWebAuthn",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow WebAuthn redirection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fDisableWebAuthn' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Device and Resource Redirection\\Do not allow WebAuthn redirection to 'Enabled'",
+    "reason": "To reduce the possible attack surface, resources inside the Remote Desktop session should not be allowed to use the local authenticator."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.9.1",
     "title": "Ensure 'Always prompt for password upon connection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fPromptForPassword",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fPromptForPassword",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Always prompt for password upon connection to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fPromptForPassword' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Always prompt for password upon connection to 'Enabled'",
+    "reason": "If the server allows users who have used the store password feature to log on to the server but not enter their password, then it is possible that a threat actor who has gained physical access to the user's computer could connect through the Remote Desktop Connection shortcut."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.9.2",
     "title": "Ensure 'Require secure RPC communication' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fEncryptRPCTraffic",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fEncryptRPCTraffic",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Require secure RPC communication to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fEncryptRPCTraffic' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Require secure RPC communication to 'Enabled'",
+    "reason": "Allowing unsecure RPC communication can exposes the server to man in the middle attacks and data disclosure attacks."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.9.3",
     "title": "Ensure 'Require use of specific security layer for remote (RDP) connections' is set to 'Enabled: SSL'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:SecurityLayer",
     "expected": 2,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:SecurityLayer",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Require use of specific security layer for remote (RDP) connections to 'Enabled: SSL'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'SecurityLayer' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Require use of specific security layer for remote (RDP) connections to 'Enabled: SSL'",
+    "reason": "The native RDP encryption is now considered a weak protocol, so enforcing the use of stronger TLS encryption for all RDP communications between clients and RD Session Host servers is preferred."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.9.4",
     "title": "Ensure 'Require user authentication for remote connections by using Network Level Authentication' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:UserAuthentication",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:UserAuthentication",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Require user authentication for remote connections by using Network Level Authentication to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'UserAuthentication' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Require user authentication for remote connections by using Network Level Authentication to 'Enabled'",
+    "reason": "Requiring that user authentication occur earlier in the remote connection process enhances security."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.9.5",
     "title": "Ensure 'Set client connection encryption level' is set to 'Enabled: High Level'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:MinEncryptionLevel",
     "expected": 3,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:MinEncryptionLevel",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Set client connection encryption level to 'Enabled: High Level'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'MinEncryptionLevel' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Security\\Set client connection encryption level to 'Enabled: High Level'",
+    "reason": "If Remote Desktop client connections that use low level encryption are allowed, it is more likely that a threat actor will be able to decrypt any captured Remote Desktop Services network traffic."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
+    "id": "18.10.57.3.10.1",
+    "title": "Ensure 'Set time limit for active but idle Remote Desktop Services sessions' is set to 'Enabled: 15 minutes or less, but not Never (0)'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:MaxIdleTime",
+    "expected": 900000,
+    "operator": "<=",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'MaxIdleTime' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Session Time Limits\\Set time limit for active but idle Remote Desktop Services sessions to 'Enabled: 15 minutes or less, but not Never (0)'",
+    "reason": "This setting helps to prevent active Remote Desktop sessions from tying up the computer for long periods of time while not in use, preventing computing resources from being consumed by large numbers of inactive sessions."
+  },
+  {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.11.1",
     "title": "Ensure 'Do not delete temp folders upon exit' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:DeleteTempDirsOnExit",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:DeleteTempDirsOnExit",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Temporary Folders\\Do not delete temp folders upon exit to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'DeleteTempDirsOnExit' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Temporary Folders\\Do not delete temp folders upon exit to 'Disabled'",
+    "reason": "Sensitive information could be contained inside the temporary folders and visible to other administrators that log into the system."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.10.57.3.11.2",
     "title": "Ensure 'Do not use temporary folders per session' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:PerSessionTempDir",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:PerSessionTempDir",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Temporary Folders\\Do not use temporary folders per session to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'PerSessionTempDir' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Temporary Folders\\Do not use temporary folders per session to 'Disabled'",
+    "reason": "Disabling this setting keeps the cached data independent for each session, both reducing the chance of problems from shared cached data between sessions, and keeping possibly sensitive data separate to each user session."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.58.1",
     "title": "Ensure 'Prevent downloading of enclosures' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds:DisableEnclosureDownload",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds:DisableEnclosureDownload",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\RSS Feeds\\Prevent downloading of enclosures to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds' -Name 'DisableEnclosureDownload' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\RSS Feeds\\Prevent downloading of enclosures to 'Enabled'",
+    "reason": "Allowing attachments to be downloaded through the RSS feed can introduce files that could have malicious intent."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.58.2",
     "title": "Ensure 'Turn on Basic feed authentication over HTTP' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Internet Explorer\\Feeds:AllowBasicAuthInClear",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds:AllowBasicAuthInClear",
-    "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\RSS Feeds\\Turn on Basic feed authentication over HTTP to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\Software\\Policies\\Microsoft\\Internet Explorer\\Feeds' -Name 'AllowBasicAuthInClear' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\RSS Feeds\\Turn on Basic feed authentication over HTTP to 'Disabled'",
+    "reason": "Allowing RSS feeds to use Basic authentication over HTTP will transmit user credentials in plain text, where they could be intercepted enroute by a threat actor."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.59.2",
     "title": "Ensure 'Allow Cloud Search' is set to 'Enabled: Disable Cloud Search'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search:AllowCloudSearch",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search:AllowCloudSearch",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow Cloud Search to 'Enabled: Disable Cloud Search'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'AllowCloudSearch' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow Cloud Search to 'Enabled: Disable Cloud Search'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.59.3",
     "title": "Ensure 'Allow indexing of encrypted files' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search:AllowIndexingEncryptedStoresOrItems",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search:AllowIndexingEncryptedStoresOrItems",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow indexing of encrypted files to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'AllowIndexingEncryptedStoresOrItems' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow indexing of encrypted files to 'Disabled'",
+    "reason": "Indexing and allowing users to search encrypted files could potentially reveal confidential data stored within the encrypted files."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.59.4",
     "title": "Ensure 'Allow search highlights' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search:EnableDynamicContentInWSB",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search:EnableDynamicContentInWSB",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow search highlights to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'EnableDynamicContentInWSB' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow search highlights to 'Disabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.63.1",
     "title": "Ensure 'Turn off KMS Client Online AVS Validation' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\CurrentVersion\\Software Protection Platform:NoGenTicket",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\CurrentVersion\\Software Protection Platform:NoGenTicket",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Software Protection Platform\\Turn off KMS Client Online AVS Validation to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\CurrentVersion\\Software Protection Platform' -Name 'NoGenTicket' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Software Protection Platform\\Turn off KMS Client Online AVS Validation to 'Enabled'",
+    "reason": "Even though the KMS licensing method does not require KMS clients to connect to Microsoft, they still send KMS client activation state data to Microsoft automatically. In high-security environments, data must never be shared with third-parties without explicit consent."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.77.2.1",
     "title": "Ensure 'Configure Windows Defender SmartScreen' is set to 'Enabled: Warn and prevent bypass'",
-    "expected": 1,
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:EnableSmartScreen",
+    "expected": true,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:EnableSmartScreen",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Defender SmartScreen\\Explorer\\Configure Windows Defender SmartScreen to 'Enabled: Warn and prevent bypass'"
+    "powershell_check": "$v1 = (Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'EnableSmartScreen' -ErrorAction SilentlyContinue); $v2 = (Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'ShellSmartScreenLevel' -ErrorAction SilentlyContinue); if ($v1 -eq 1 -and $v2 -eq 'Block') { $true } else { $false }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Defender SmartScreen\\Explorer\\Configure Windows Defender SmartScreen to 'Enabled: Warn and prevent bypass'",
+    "reason": "Windows SmartScreen helps keep PCs safer by warning users before running unrecognized programs downloaded from the Internet."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.81.1",
     "title": "Ensure 'Allow suggested apps in Windows Ink Workspace' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace:AllowSuggestedAppsInWindowsInkWorkspace",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace:AllowSuggestedAppsInWindowsInkWorkspace",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Ink Workspace\\Allow suggested apps in Windows Ink Workspace to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace' -Name 'AllowSuggestedAppsInWindowsInkWorkspace' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Ink Workspace\\Allow suggested apps in Windows Ink Workspace to 'Disabled'",
+    "reason": "This Microsoft feature is designed to collect data and suggest apps based on that data collected. Disabling this setting will help ensure your data is not shared with any third party."
   },
   {
+    "hash_id": "",
+    "service": "Core",
+    "id": "18.10.81.2",
+    "title": "Ensure 'Allow Windows Ink Workspace' is set to 'Enabled: On, but disallow access above lock' OR 'Enabled: Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace:AllowWindowsInkWorkspace",
+    "expected": [
+      0,
+      1
+    ],
+    "operator": "InList",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace' -Name 'AllowWindowsInkWorkspace' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Ink Workspace\\Allow Windows Ink Workspace to 'Enabled: On, but disallow access above lock' OR 'Enabled: Disabled'",
+    "reason": "Allowing any apps to be accessed while system is locked is not recommended. If this feature is permitted, it should only be accessible once a user authenticates with the proper credentials."
+  },
+  {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.82.1",
     "title": "Ensure 'Allow user control over installs' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:EnableUserControl",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:EnableUserControl",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Allow user control over installs to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'EnableUserControl' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Allow user control over installs to 'Disabled'",
+    "reason": "In an enterprise managed environment, only IT staff with administrative rights should be installing or changing software on a system. Allowing users the ability to have any control over installs can risk unapproved software from being installed or removed from a system, which could cause the system to become vulnerable to compromise."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.82.2",
     "title": "Ensure 'Always install with elevated privileges' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:AlwaysInstallElevated",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:AlwaysInstallElevated",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Always install with elevated privileges to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'AlwaysInstallElevated' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Always install with elevated privileges to 'Disabled'",
+    "reason": "Users with limited privileges can exploit this feature by creating a Windows Installer installation package that creates a new local account that belongs to the local built-in Administrators group, adds their current account to the local built-in Administrators group, installs malicious software, or performs other unauthorized activities."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.82.3",
     "title": "Ensure 'Prevent Internet Explorer security prompt for Windows Installer scripts' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:SafeForScripting",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:SafeForScripting",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Prevent Internet Explorer security prompt for Windows Installer scripts to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'SafeForScripting' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Prevent Internet Explorer security prompt for Windows Installer scripts to 'Disabled'",
+    "reason": "Suppressing the system warning can pose a security risk and increase the attack surface on the system."
   },
- {
+  {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.10.83.1",
     "title": "Ensure 'Configure the transmission of the user's password in the content of MPR notifications sent by winlogon.' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableMPR",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:EnableMPR",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Logon Options\\Configure the transmission of the user's password in the content of MPR notifications sent by winlogon. to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'EnableMPR' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Logon Options\\Configure the transmission of the user's password in the content of MPR notifications sent by winlogon. to 'Disabled'",
+    "reason": "MPR is a legacy utility that provides notifications to registered credential managers or network providers when there is a logon event, or a password change event. Although MPR can be used by legitimate applications, the user's password field of these notifications should be empty to prevent abuse by threat actors."
   },
   {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.10.83.2",
     "title": "Ensure 'Sign-in and lock last interactive user automatically after a restart' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DisableAutomaticRestartSignOn",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:DisableAutomaticRestartSignOn",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Logon Options\\Sign-in and lock last interactive user automatically after a restart to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'DisableAutomaticRestartSignOn' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Logon Options\\Sign-in and lock last interactive user automatically after a restart to 'Disabled'",
+    "reason": "Disabling this feature will prevent the caching of user's credentials and unauthorized use of the device, and also ensure the user is aware of the restart."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.88.1",
     "title": "Ensure 'Turn on PowerShell Script Block Logging' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging:EnableScriptBlockLogging",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging:EnableScriptBlockLogging",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows PowerShell\\Turn on PowerShell Script Block Logging to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging' -Name 'EnableScriptBlockLogging' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows PowerShell\\Turn on PowerShell Script Block Logging to 'Enabled'",
+    "reason": "Logs of PowerShell script input can be very valuable when performing forensic investigations of PowerShell attack incidents to determine what occurred."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.88.2",
     "title": "Ensure 'Turn on PowerShell Transcription' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription:EnableTranscripting",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription:EnableTranscripting",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows PowerShell\\Turn on PowerShell Transcription to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription' -Name 'EnableTranscripting' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows PowerShell\\Turn on PowerShell Transcription to 'Enabled'",
+    "reason": "PowerShell transcript input can be very valuable when performing forensic investigations of PowerShell attack incidents to determine what occurred."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.1.1",
-    "title": "Ensure 'WinRM Client: Allow Basic authentication' is set to 'Disabled'",
+    "title": "Ensure 'Allow Basic authentication' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client:AllowBasic",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client:AllowBasic",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Client\\Allow Basic authentication to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client' -Name 'AllowBasic' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Client\\Allow Basic authentication to 'Disabled'",
+    "reason": "Basic authentication is less robust than other authentication methods available in WinRM because credentials including passwords are transmitted in plain text. A threat actor who is able to capture packets on the network where WinRM is running may be able to determine the credentials used for accessing remote hosts via WinRM."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.1.2",
-    "title": "Ensure 'WinRM Client: Allow unencrypted traffic' is set to 'Disabled'",
+    "title": "Ensure 'Allow unencrypted traffic' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client:AllowUnencryptedTraffic",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client:AllowUnencryptedTraffic",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Client\\Allow unencrypted traffic to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client' -Name 'AllowUnencryptedTraffic' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Client\\Allow unencrypted traffic to 'Disabled'",
+    "reason": "Encrypting WinRM network traffic reduces the risk of a threat actor viewing or modifying WinRM messages as they transit the network."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.1.3",
-    "title": "Ensure 'WinRM Client: Disallow Digest authentication' is set to 'Enabled'",
+    "title": "Ensure 'Disallow Digest authentication' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client:AllowDigest",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client:AllowDigest",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Client\\Disallow Digest authentication to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client' -Name 'AllowDigest' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Client\\Disallow Digest authentication to 'Enabled'",
+    "reason": "Digest authentication is less robust than other authentication methods available in WinRM. A threat actor who is able to capture packets on the network where WinRM is running may be able to determine the credentials used for accessing remote hosts via WinRM."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.2.1",
-    "title": "Ensure 'WinRM Service: Allow Basic authentication' is set to 'Disabled'",
+    "title": "Ensure 'Allow Basic authentication' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:AllowBasic",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:AllowBasic",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow Basic authentication to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service' -Name 'AllowBasic' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow Basic authentication to 'Disabled'",
+    "reason": "Basic authentication is less robust than other authentication methods available in WinRM because credentials including passwords are transmitted in plain text."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.2.2",
-    "title": "Ensure 'WinRM Service: Allow remote server management through WinRM' is set to 'Disabled'",
+    "title": "Ensure 'Allow remote server management through WinRM' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:AllowAutoConfig",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:AllowAutoConfig",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow remote server management through WinRM to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service' -Name 'AllowAutoConfig' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow remote server management through WinRM to 'Disabled'",
+    "reason": "Any feature is a potential avenue of attack, those that enable inbound network connections are particularly risky. Only enable the use of the Windows Remote Management (WinRM) service on trusted networks and when feasible employ additional controls such as IPsec."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.2.3",
-    "title": "Ensure 'WinRM Service: Allow unencrypted traffic' is set to 'Disabled'",
+    "title": "Ensure 'Allow unencrypted traffic' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:AllowUnencryptedTraffic",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:AllowUnencryptedTraffic",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow unencrypted traffic to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service' -Name 'AllowUnencryptedTraffic' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow unencrypted traffic to 'Disabled'",
+    "reason": "Encrypting WinRM network traffic reduces the risk of a threat actor viewing or modifying WinRM messages as they transit the network."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.90.2.4",
-    "title": "Ensure 'WinRM Service: Disallow WinRM from storing RunAs credentials' is set to 'Enabled'",
+    "title": "Ensure 'Disallow WinRM from storing RunAs credentials' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:DisableRunAs",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service:DisableRunAs",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Disallow WinRM from storing RunAs credentials to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service' -Name 'DisableRunAs' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Disallow WinRM from storing RunAs credentials to 'Enabled'",
+    "reason": "Although the ability to store RunAs credentials is a convenient feature it increases the risk of account compromise slightly. For example, if you forget to lock your desktop before leaving it unattended for a few minutes another person could access not only the desktop of your computer but also any hosts you manage via WinRM with cached RunAs credentials."
   },
   {
+    "hash_id": "",
+    "service": "WinRM",
     "id": "18.10.91.1",
     "title": "Ensure 'Allow Remote Shell Access' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\WinRS:AllowRemoteShellAccess",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\WinRS:AllowRemoteShellAccess",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Shell\\Allow Remote Shell Access to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\WinRS' -Name 'AllowRemoteShellAccess' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Shell\\Allow Remote Shell Access to 'Disabled'",
+    "reason": "Any feature is a potential avenue of attack, those that enable inbound network connections are particularly risky. Only enable the use of the Windows Remote Shell on trusted networks and when feasible employ additional controls such as IPsec."
   },
   {
-    "id": "18.10.93.2.1",
-    "title": "Ensure 'Prevent users from modifying settings' is set to 'Enabled'",
-    "expected": 1,
-    "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender Security Center\\App and Browser protection:DisallowExploitProtectionOverride",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Security\\App and browser protection\\Prevent users from modifying settings to 'Enabled'"
-  },
-  {
+    "hash_id": "",
+    "service": "wuauserv",
     "id": "18.10.94.1.1",
     "title": "Ensure 'No auto-restart with logged on users for scheduled automatic updates installations' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:NoAutoRebootWithLoggedOnUsers",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:NoAutoRebootWithLoggedOnUsers",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Legacy Policies\\No auto-restart with logged on users for scheduled automatic updates installations to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoRebootWithLoggedOnUsers' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Legacy Policies\\No auto-restart with logged on users for scheduled automatic updates installations to 'Disabled'",
+    "reason": "Without the auto-restart functionality, users who are not security-conscious may choose to indefinitely delay the restart, therefore keeping the computer in a less secure state."
   },
   {
+    "hash_id": "",
+    "service": "wuauserv",
     "id": "18.10.94.2.1",
     "title": "Ensure 'Configure Automatic Updates' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:NoAutoUpdate",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:NoAutoUpdate",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Manage end user experience\\Configure Automatic Updates to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoUpdate' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Manage end user experience\\Configure Automatic Updates to 'Enabled'",
+    "reason": "The Configure Automatic Updates setting can help you ensure that the computers in your environment will always have the most recent critical operating system updates and service packs installed."
   },
   {
+    "hash_id": "",
+    "service": "wuauserv",
     "id": "18.10.94.2.2",
     "title": "Ensure 'Configure Automatic Updates: Scheduled install day' is set to '0 - Every day'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:ScheduledInstallDay",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU:ScheduledInstallDay",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Manage end user experience\\Configure Automatic Updates: Scheduled install day to '0 - Every day'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'ScheduledInstallDay' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Manage end user experience\\Configure Automatic Updates: Scheduled install day to '0 - Every day'",
+    "reason": "The Configure Automatic Updates setting can help you ensure that the computers in your environment will always have the most recent critical operating system updates and service packs installed."
   },
   {
-    "id": "18.11.1",
-    "title": "Ensure 'Disable HTTP proxy features: Disable WPAD' is set to 'Enabled: Checked'",
+    "hash_id": "",
+    "service": "wuauserv",
+    "id": "18.10.94.4.1",
+    "title": "Ensure 'Manage preview builds' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate:ManagePreviewBuildsPolicyValue",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WinHttp:DisableWpad",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Center for Internet Security (CIS)\\Additional Benchmark Settings\\Disable HTTP proxy features: Disable WPAD to 'Enabled: Checked'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'ManagePreviewBuildsPolicyValue' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Manage updates offered from Windows Update\\Manage preview builds to 'Disabled'",
+    "reason": "It can be risky for experimental features to be allowed in an enterprise managed environment because this can introduce bugs and security holes into systems, making it easier for a threat actor to gain access. It is generally preferred to only use production-ready builds."
+  },
+  {
+    "hash_id": "",
+    "service": "wuauserv",
+    "id": "18.10.94.4.2",
+    "title": "Ensure 'Select when Quality Updates are received' is set to 'Enabled: 0 days'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate:DeferQualityUpdates",
+    "expected": true,
+    "operator": "==",
+    "powershell_check": "((Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdates' -ErrorAction SilentlyContinue) -eq 1) -and ((Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdatesPeriodInDays' -ErrorAction SilentlyContinue) -eq 0)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Update\\Manage updates offered from Windows Update\\Select when Quality Updates are received to 'Enabled: 0 days'",
+    "reason": "Quality Updates can contain important bug fixes and/or security patches, and should be installed as soon as possible."
+  },
+  {
+    "hash_id": "",
+    "service": "Core",
+    "id": "18.11.1",
+    "title": "Ensure 'Disable HTTP proxy features: Disable WPAD' is set to 'Enabled: Checked'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WinHttp:DisableWpad",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WinHttp' -Name 'DisableWpad' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Center for Internet Security (CIS)\\Additional Benchmark Settings\\Disable HTTP proxy features: Disable WPAD to 'Enabled: Checked'",
+    "reason": "WPAD could expose the system to Man-In-The-Middle (MITM) attacks. If an organization depends on HTTP proxy configuration, it is recommended that other client configuration mechanisms be used instead, such as Group Policy."
+  },
+  {
+    "hash_id": "",
+    "service": "Core",
+    "id": "18.11.2",
+    "title": "Ensure 'Disable HTTP proxy features: Disable proxy authentication' is set to 'Enabled: Disable authentication over loopback interfaces' or higher",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings:DisableProxyAuthenticationSchemes",
+    "expected": [
+      256,
+      287
+    ],
+    "operator": "InList",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings' -Name 'DisableProxyAuthenticationSchemes' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Center for Internet Security (CIS)\\Additional Benchmark Settings\\Disable HTTP proxy features: Disable proxy authentication to 'Enabled: Disable authentication over loopback interfaces' or 'Disable all authentication protocols and loopback authentication'",
+    "reason": "It is best to limit the sign-in interface to only known and trusted services, so malicious actors can't impersonate them."
   }
 ]

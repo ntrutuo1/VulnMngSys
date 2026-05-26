@@ -93,9 +93,19 @@ def create_api_server(host: str = "127.0.0.1", port: int = 5000) -> tuple[Thread
             profile_key = body.get("profileKey") or body.get("profile_key")
             mode = str(body.get("mode") or "quick").strip().lower()
             full_scan = bool(body.get("fullScan") if "fullScan" in body else mode == "full")
+            selected_services_raw = body.get("selectedServices") or body.get("selected_service_names") or []
+            selected_service_names = {
+                str(item).strip()
+                for item in selected_services_raw
+                if str(item).strip()
+            }
 
             try:
-                payload = run_scan_and_save_report(profile_key=profile_key, mode="full" if full_scan else "quick")
+                payload = run_scan_and_save_report(
+                    profile_key=profile_key,
+                    mode="full" if full_scan else "quick",
+                    selected_service_names=selected_service_names,
+                )
                 _json_response(self, 200, payload)
             except Exception as exc:
                 _json_response(self, 500, {"ok": False, "error": str(exc) or SCAN_FEATURE_MESSAGE})

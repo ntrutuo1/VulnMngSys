@@ -15,26 +15,28 @@ def _normalize(value: Any) -> str:
 
 def _rule_from_scan_row(row: dict[str, Any]) -> dict[str, Any]:
     """Build evaluation context from scan output only (no rules/ re-read)."""
-    expected = row.get("Expected")
+    expected = row.get("expected")
     if expected is None:
-        expected = row.get("expected")
+        expected = row.get("Expected")
 
-    registry_value = row.get("RegistryValue")
+    registry_value = row.get("registry_path")
+    if registry_value is None:
+        registry_value = row.get("RegistryValue")
     if registry_value is None:
         registry_value = row.get("registry_value")
 
-    rule_type = _normalize(row.get("RuleType") or row.get("ruleType") or row.get("type") or "")
-    check_type = _normalize(row.get("CheckType") or row.get("checkType") or "")
+    rule_type = _normalize(row.get("check_type") or row.get("RuleType") or row.get("ruleType") or row.get("type") or "")
+    check_type = _normalize(row.get("check_type") or row.get("CheckType") or row.get("checkType") or "")
 
     return {
-        "id": _normalize(row.get("RuleId") or row.get("ruleId") or ""),
-        "title": _normalize(row.get("Title") or row.get("title") or ""),
+        "id": _normalize(row.get("id") or row.get("RuleId") or row.get("ruleId") or ""),
+        "title": _normalize(row.get("title") or row.get("Title") or ""),
         "type": rule_type or check_type,
         "expected": expected,
         "match": row.get("Match") or row.get("match"),
         "registry_value": registry_value,
-        "description": _normalize(row.get("Description") or row.get("description") or ""),
-        "recommended": _normalize(row.get("Recommended") or row.get("recommended") or ""),
+        "description": _normalize(row.get("reason") or row.get("Description") or row.get("description") or ""),
+        "recommended": _normalize(row.get("expected") or row.get("Expected") or row.get("Recommended") or row.get("recommended") or ""),
     }
 
 
@@ -45,15 +47,37 @@ def _compare_scan_rows(scan_items: list[Any]) -> list[RuleComparisonResult]:
         if not isinstance(row, dict):
             continue
 
+        if "verdict" in row or "passed" in row:
+            verdict = _normalize(row.get("verdict") or ("PASS" if row.get("passed") else "FAIL"))
+            passed = bool(row.get("passed")) if "passed" in row else verdict == "PASS"
+            results.append(
+                RuleComparisonResult(
+                    rule_id=_normalize(row.get("id") or row.get("RuleId") or row.get("ruleId") or ""),
+                    title=_normalize(row.get("title") or row.get("Title") or ""),
+                    service_name=_normalize(row.get("service") or row.get("serviceName") or row.get("service_name") or ""),
+                    passed=passed,
+                    verdict=verdict,
+                    expected=_normalize(row.get("expected") or row.get("Expected") or row.get("Recommended") or row.get("recommended") or ""),
+                    actual=_normalize(row.get("actual") or row.get("Actual") or row.get("CurrentValue") or row.get("currentValue") or ""),
+                    status=_normalize(row.get("status") or row.get("Status") or verdict),
+                    check_type=_normalize(row.get("check_type") or row.get("CheckType") or row.get("checkType") or row.get("type") or ""),
+                    source=_normalize(row.get("source") or row.get("Source") or ""),
+                    guidance=list(row.get("guidance") or []),
+                )
+            )
+            continue
+
         rule = _rule_from_scan_row(row)
         rule_id = _normalize(rule.get("id") or "")
-        status = _normalize(row.get("Status") or "")
-        check_type = _normalize(row.get("CheckType") or row.get("checkType") or "")
-        actual = _normalize(row.get("Actual") or row.get("actual") or "")
-        source = _normalize(row.get("Source") or row.get("source") or "")
+        status = _normalize(row.get("status") or row.get("Status") or "")
+        check_type = _normalize(row.get("check_type") or row.get("CheckType") or row.get("checkType") or "")
+        actual = _normalize(row.get("actual") or row.get("Actual") or "")
+        source = _normalize(row.get("source") or row.get("Source") or "")
         title = _normalize(rule.get("title") or "")
         recommended = _normalize(
-            row.get("Recommended")
+            row.get("expected")
+            or row.get("Expected")
+            or row.get("Recommended")
             or row.get("recommended")
             or format_expected_display(rule.get("expected"), str(rule.get("description") or ""))
         )
@@ -72,6 +96,7 @@ def _compare_scan_rows(scan_items: list[Any]) -> list[RuleComparisonResult]:
             RuleComparisonResult(
                 rule_id=rule_id,
                 title=title,
+                    service_name=_normalize(row.get("service") or row.get("serviceName") or row.get("service_name") or ""),
                 passed=passed,
                 verdict=verdict,
                 expected=expected,
@@ -141,17 +166,22 @@ def build_report_payload(
         "reportFile": str(report_file),
         "items": [
             {
+                "hash_id": item.rule_id,
                 "ruleId": item.rule_id,
                 "rule_id": item.rule_id,
+                "service": item.service_name,
                 "title": item.title,
                 "passed": item.passed,
                 "verdict": item.verdict,
                 "expected": item.expected,
                 "actual": item.actual,
                 "status": item.status,
-                "checkType": item.check_type,
                 "check_type": item.check_type,
+                "checkType": item.check_type,
                 "source": item.source,
+                "registry_path": item.source,
+                "serviceName": item.service_name,
+                "service_name": item.service_name,
                 "guidance": item.guidance,
             }
             for item in items

@@ -1,36 +1,34 @@
 # JSON Scanner Utilities
 
-Backend Python gọi hai điểm khác nhau:
+The Python backend uses two entry points:
 
-1. **Khởi động / inventory** — gọi trực tiếp `Get-WindowsServerInventory.ps1` (phiên bản OS, dịch vụ).
-2. **Quét chính** — gọi `scripts/scan_executor.ps1`, script đó chỉ điều phối `Invoke-RuleJsonScan.ps1`.
+1. **Startup / inventory** - directly invokes `Get-WindowsServerInventory.ps1` (OS version, services).
+2. **Primary scan** - goes through the internal JSON rule engine in `app_bootstrap.scanflow`.
 
 ```powershell
-# Inventory (khởi động)
+# Inventory (startup)
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Get-WindowsServerInventory.ps1 -AsJson
 
-# Scan (sau khi user chọn quick/full)
-powershell -NoProfile -ExecutionPolicy Bypass -File ..\scan_executor.ps1 `
-  -RuleJsonPaths "D:\...\rules\Windows_Server_2022_1.json" `
-  -OutputDir "D:\...\reports\temp" -Quiet
+# Scan (after the user selects quick/full) -- handled by the Python engine
+python ..\..\main.py --cli
 ```
 
 ## `Get-WindowsServerInventory.ps1`
 
-- Tự động nhận diện phiên bản hệ điều hành Windows Server hiện tại.
-- Thu thập danh sách dịch vụ trọng yếu đang tồn tại trên máy.
-- Trả ra JSON để backend/frontend dùng cho luồng nghiệp vụ quét.
+- Automatically detects the current Windows Server edition.
+- Collects the list of critical services present on the machine.
+- Returns JSON for the backend and frontend scan workflow.
 
-Ví dụ chạy:
+Example:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Get-WindowsServerInventory.ps1 -AsJson
 ```
 
-## Luồng wizard quét
+## Scan Wizard Flow
 
-`app_bootstrap/scan_wizard.py` sẽ gọi script inventory, hiển thị hộp chọn:
+`app_bootstrap/scan_wizard.py` will call the inventory script and display a selection dialog:
 
-- `Yes`: Quét nhanh (profile `_rules`)
-- `No`: Quét đầy đủ (toàn bộ script profile)
-- `Cancel`: Bỏ qua
+- `Yes`: Quick scan (profile `_rules`)
+- `No`: Full scan (entire script profile)
+- `Cancel`: Skip

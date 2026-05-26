@@ -4,10 +4,10 @@ Package `app_bootstrap.scanflow` tách riêng theo component:
 
 - `inventory.py`: khi khởi động, gọi trực tiếp `json_scanners/Get-WindowsServerInventory.ps1` để nhận diện phiên bản OS và dịch vụ.
 - `selection.py`: hiển thị hộp chọn chế độ quét (nhanh/đầy đủ/bỏ qua).
-- `scanner.py`: luồng quét chính qua `scripts/scan_executor.ps1`; manifest `rules/` chỉ chọn file đưa vào scanner, không dùng để so sánh lại ở Python.
-- `scan_executor.ps1`: gộp kết quả thành `reports/temp/scan_results_merged.json` — đây là nguồn dữ liệu cho báo cáo.
-- `report_builder.py`: đánh giá PASS/FAIL từ merged scan (metadata `Expected`/`RuleType` đã nhúng trong output), ghi `reports/scan_compare_report.json`.
-- `scan_executor_client.py`: wrapper subprocess chỉ cho `scan_executor.ps1` (không dùng cho inventory).
+- `json_rule_engine.py`: đọc trực tiếp rule JSON, thu thập snapshot `secedit`/`auditpol`/registry/HKU và sinh kết quả scan chuẩn hóa.
+- `scanner.py`: wrapper mỏng tạo `reports/temp/scan_results_merged.json` từ engine JSON.
+- `report_builder.py`: tổng hợp PASS/FAIL/MANUAL từ merged scan và ghi `reports/scan_compare_report.json`.
+- `scan_executor_client.py`: compatibility wrapper, hiện cũng đi qua engine JSON.
 - `comparator.py`: so sánh kết quả quét với rule mẫu JSON.
 - `guidance.py`: sinh hướng dẫn xử lý chuẩn cho các rule fail.
 - `orchestrator.py`: điều phối toàn bộ flow scan sau khi app được nâng quyền.
@@ -29,11 +29,7 @@ h0 = 14695981039346656037
 h(i+1) = ((h(i) XOR byte(i)) * 1099511628211) mod 2^64
 ```
 
-Benchmark nhanh:
-
-```powershell
-python .\scripts\benchmark_rule_matching.py
-```
+Benchmark nhanh: dùng script validation hiện có để kiểm tra rule/output trước khi chạy scan chính.
 
 ## Kiểm chuẩn rule/output
 

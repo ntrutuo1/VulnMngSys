@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Alert, Button, Card, Layout, Radio, Space, Spin, Typography, message } from 'antd'
 import { useTranslation } from 'react-i18next'
 import HeaderBar from './components/HeaderBar'
+import ServiceSelector from './components/ServiceSelector'
 import StatusCards from './components/StatusCards'
 import ResultTable from './components/ResultTable'
 import { fetchInventory, fetchReport, fetchStatus, startScan } from './services/apiClient'
@@ -15,6 +16,7 @@ export default function App() {
   const [report, setReport] = useState(null)
   const [scanLoading, setScanLoading] = useState(false)
   const [fullScan, setFullScan] = useState(false)
+  const [selectedServiceNames, setSelectedServiceNames] = useState([])
 
   useEffect(() => {
     let active = true
@@ -48,12 +50,38 @@ export default function App() {
     }
   }, [])
 
+  const detectedServices = useMemo(() => inventory?.detectedServices || [], [inventory])
   const scanItems = useMemo(() => report?.items || [], [report])
 
+  useEffect(() => {
+    const serviceNames = detectedServices
+      .map((item) => item?.Name || item?.name || item?.DisplayName || item?.displayName)
+      .map((value) => String(value || '').trim())
+      .filter(Boolean)
+
+    if (serviceNames.length > 0) {
+      setSelectedServiceNames(serviceNames)
+    } else {
+      setSelectedServiceNames([])
+    }
+  }, [detectedServices])
+
+  const hasDetectedServices = detectedServices.length > 0
+  const hasSelectedServices = selectedServiceNames.length > 0
+
   async function handleStartScan() {
+    if (hasDetectedServices && !hasSelectedServices) {
+      message.warning(t('messages.selectServicesFirst'))
+      return
+    }
+
     setScanLoading(true)
     try {
-      const payload = await startScan({ profileKey: inventory?.profileKey, fullScan })
+      const payload = await startScan({
+        profileKey: inventory?.profileKey,
+        fullScan,
+        selectedServices: hasDetectedServices ? selectedServiceNames : [],
+      })
       if (payload?.ok) {
         setReport(payload)
         message.success(t('messages.scanDone', { passed: payload.passed, total: payload.total }))
@@ -87,13 +115,24 @@ export default function App() {
             />
           ) : null}
           <StatusCards inventory={inventory} />
+          <ServiceSelector
+            services={detectedServices}
+            selectedServiceNames={selectedServiceNames}
+            onChange={setSelectedServiceNames}
+            loading={!inventory}
+          />
           <Card title={t('scan.controlsTitle')} className="glass-card">
             <Space direction="vertical" style={{ width: '100%' }}>
               <Radio.Group value={fullScan} onChange={(event) => setFullScan(event.target.value)}>
                 <Radio.Button value={false}>{t('scan.quick')}</Radio.Button>
                 <Radio.Button value={true}>{t('scan.full')}</Radio.Button>
               </Radio.Group>
-              <Button type="primary" onClick={handleStartScan} loading={scanLoading}>
+              <Button
+                type="primary"
+                onClick={handleStartScan}
+                loading={scanLoading}
+                disabled={hasDetectedServices && !hasSelectedServices}
+              >
                 {t('scan.start')}
               </Button>
             </Space>
@@ -116,6 +155,11 @@ export default function App() {
                     mode: report.fullScan ? t('report.modeFull') : t('report.modeQuick'),
                   })}
                 </Typography.Text>
+                {report.selectedServices?.length ? (
+                  <Typography.Text type="secondary">
+                    {t('scan.selectedServicesSummary', { count: report.selectedServices.length })}
+                  </Typography.Text>
+                ) : null}
                 <ResultTable items={scanItems} />
               </Space>
             ) : (

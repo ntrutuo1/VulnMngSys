@@ -1,0 +1,151 @@
+{
+  "catalog_version": "1.0",
+  "profiles": {
+    "Windows_Server_2022": [
+      {
+        "service_name": "MpsSvc",
+        "aliases": ["Windows Firewall", "Microsoft Defender Firewall"],
+        "match_any": [
+          {
+            "field": "title",
+            "contains_any": ["Windows Firewall", "Microsoft Defender Firewall"]
+          },
+          {
+            "field": "registry",
+            "contains_any": ["\\WindowsFirewall\\", "\\Windows Defender Firewall\\"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["Windows Defender Firewall with Advanced Security", "Firewall state"]
+          }
+        ]
+      },
+      {
+        "service_name": "Spooler",
+        "aliases": ["Print Spooler"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains": "\\Services\\Spooler:"
+          },
+          {
+            "field": "title",
+            "contains_any": ["Print Spooler", "Allow Print Spooler"]
+          },
+          {
+            "field": "remediation",
+            "contains": "Set-Service -Name Spooler"
+          }
+        ]
+      },
+      {
+        "service_name": "LanmanServer",
+        "aliases": ["Lanman Server", "SMB Server"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains_any": ["\\Services\\LanmanServer", "\\Services\\LanManServer"]
+          },
+          {
+            "field": "title",
+            "contains_any": ["Lanman Server", "SMB", "File and Printer Sharing"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["Lanman Server", "Set-Service -Name Server"]
+          }
+        ]
+      },
+      {
+        "service_name": "LanmanWorkstation",
+        "aliases": ["Lanman Workstation"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains_any": ["\\Services\\LanmanWorkstation", "\\Services\\LanManWorkstation"]
+          },
+          {
+            "field": "title",
+            "contains_any": ["Lanman Workstation", "Workstation"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["Lanman Workstation", "Set-Service -Name LanmanWorkstation"]
+          }
+        ]
+      },
+      {
+        "service_name": "WinRM",
+        "aliases": ["Windows Remote Management"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains_any": ["\\Windows\\WinRM\\", "\\WinRM\\"]
+          },
+          {
+            "field": "title",
+            "contains_any": ["WinRM", "Windows Remote Management"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["WinRM", "Windows Remote Management"]
+          }
+        ]
+      },
+      {
+        "service_name": "TermService",
+        "aliases": ["Remote Desktop Services", "Terminal Services"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains_any": ["\\Terminal Services", "\\Remote Desktop Services"]
+          },
+          {
+            "field": "title",
+            "contains_any": ["Remote Desktop Services", "Terminal Services"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["Remote Desktop Services", "Terminal Services"]
+          }
+        ]
+      },
+      {
+        "service_name": "W32Time",
+        "aliases": ["Windows Time Service"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains_any": ["\\W32Time\\", "\\Windows Time Service\\"]
+          },
+          {
+            "field": "title",
+            "contains_any": ["Windows Time Service", "NTP Client", "Time Providers"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["Windows Time Service", "NTP Client", "Time Providers"]
+          }
+        ]
+      },
+      {
+        "service_name": "RemoteRegistry",
+        "aliases": ["Remote Registry"],
+        "match_any": [
+          {
+            "field": "registry",
+            "contains_any": ["\\Services\\RemoteRegistry", "\\RemoteRegistry"]
+          },
+          {
+            "field": "title",
+            "contains_any": ["Remote Registry"]
+          },
+          {
+            "field": "remediation",
+            "contains_any": ["RemoteRegistry", "Remote Registry"]
+          }
+        ]
+      }
+    ]
+  }
+}

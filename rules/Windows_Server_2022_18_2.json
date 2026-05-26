@@ -1,250 +1,431 @@
 [
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.7.2",
     "title": "Ensure 'Prevent automatic download of applications associated with device metadata' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata:PreventDeviceMetadataFromNetwork",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata:PreventDeviceMetadataFromNetwork",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Installation\\Prevent automatic download of applications associated with device metadata to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata' -Name 'PreventDeviceMetadataFromNetwork' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Installation\\Prevent automatic download of applications associated with device metadata to 'Enabled'",
+    "reason": "Installation of software should be conducted by an authorized system administrator and not a standard user. Allowing automatic third-party software installations under the context of the SYSTEM account has potential for allowing unauthorized access via backdoors or installation software bugs."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.13.1",
     "title": "Ensure 'Boot-Start Driver Initialization Policy' is set to 'Enabled: Good, unknown and bad but critical'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch:DriverLoadPolicy",
     "expected": 3,
     "operator": "==",
-    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch:DriverLoadPolicy",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Early Launch Antimalware\\Boot-Start Driver Initialization Policy to 'Enabled: Good, unknown and bad but critical'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch' -Name 'DriverLoadPolicy' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Early Launch Antimalware\\Boot-Start Driver Initialization Policy to 'Enabled: Good, unknown and bad but critical'",
+    "reason": "This policy setting helps reduce the impact of malware that has already infected your system."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.17.1",
     "title": "Ensure 'Enable / disable CLFS logfile authentication' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies:ClfsAuthenticationChecking",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Policies:ClfsAuthenticationChecking",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Filesystem\\Enable / disable CLFS logfile authentication to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Policies' -Name 'ClfsAuthenticationChecking' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Filesystem\\Enable / disable CLFS logfile authentication to 'Enabled'",
+    "reason": "CLFS is a security feature which hardens logfile parsing. If modifications to logfiles are detected, CLFS will consider the logfile unsafe for parsing and return an error to the caller. It is also able to detect modifications by writing authentication codes to logfiles which combines file data with a system-unique cryptographic key."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.19.2",
     "title": "Ensure 'Continue experiences on this device' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:EnableCdp",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:EnableCdp",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Group Policy\\Continue experiences on this device to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'EnableCdp' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Group Policy\\Continue experiences on this device to 'Disabled'",
+    "reason": "A cross-device experience is when a system can access app and send messages to other devices. In an enterprise managed environment only trusted systems should be communicating within the network. Access to any other system should be prohibited."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.9.20.1.1",
     "title": "Ensure 'Turn off downloading of print drivers over HTTP' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:DisableWebPnPDownload",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:DisableWebPnPDownload",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off downloading of print drivers over HTTP to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers' -Name 'DisableWebPnPDownload' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off downloading of print drivers over HTTP to 'Enabled'",
+    "reason": "Users might download drivers that include malicious code."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.2",
     "title": "Ensure 'Turn off handwriting personalization data sharing' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\TabletPC:PreventHandwritingDataSharing",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\TabletPC:PreventHandwritingDataSharing",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off handwriting personalization data sharing to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\TabletPC' -Name 'PreventHandwritingDataSharing' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off handwriting personalization data sharing to 'Enabled'",
+    "reason": "A person's handwriting is Personally Identifiable Information (PII), especially when it comes to your signature. As such, it is unacceptable in many environments to automatically upload PII to a website without explicit approval by the user."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.3",
     "title": "Ensure 'Turn off handwriting recognition error reporting' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\HandwritingErrorReports:PreventHandwritingErrorReports",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\HandwritingErrorReports:PreventHandwritingErrorReports",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off handwriting recognition error reporting to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\HandwritingErrorReports' -Name 'PreventHandwritingErrorReports' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off handwriting recognition error reporting to 'Enabled'",
+    "reason": "A person's handwriting is Personally Identifiable Information (PII), especially when it comes to your signature. As such, it is unacceptable in many environments to automatically upload PII to a website without explicit approval by the user."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.4",
     "title": "Ensure 'Turn off Internet Connection Wizard if URL connection is referring to Microsoft.com' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Internet Connection Wizard:ExitOnMSICW",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Internet Connection Wizard:ExitOnMSICW",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Internet Connection Wizard if URL connection is referring to Microsoft.com to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Internet Connection Wizard' -Name 'ExitOnMSICW' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Internet Connection Wizard if URL connection is referring to Microsoft.com to 'Enabled'",
+    "reason": "In an enterprise managed environment we want to lower the risk of a user unknowingly exposing sensitive data."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.5",
     "title": "Ensure 'Turn off Internet download for Web publishing and online ordering wizards' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoWebServices",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoWebServices",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Internet download for Web publishing and online ordering wizards to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoWebServices' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Internet download for Web publishing and online ordering wizards to 'Enabled'",
+    "reason": "Although the risk is minimal, enabling this setting will reduce the possibility of a user unknowingly downloading malicious content through this feature."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.9.20.1.6",
     "title": "Ensure 'Turn off printing over HTTP' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:DisableHTTPPrinting",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:DisableHTTPPrinting",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off printing over HTTP to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers' -Name 'DisableHTTPPrinting' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off printing over HTTP to 'Enabled'",
+    "reason": "Information that is transmitted over HTTP through this capability is not protected and can be intercepted by threat actors. For this reason, it is not often used in enterprise managed environments."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.7",
     "title": "Ensure 'Turn off Registration if URL connection is referring to Microsoft.com' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Registration Wizard Control:NoRegistration",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Registration Wizard Control:NoRegistration",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Registration if URL connection is referring to Microsoft.com to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Registration Wizard Control' -Name 'NoRegistration' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Registration if URL connection is referring to Microsoft.com to 'Enabled'",
+    "reason": "Users in an enterprise managed environment should not be registering their own copies of Windows, providing their own PII in the process."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.8",
     "title": "Ensure 'Turn off Search Companion content file updates' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\SearchCompanion:DisableContentFileUpdates",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\SearchCompanion:DisableContentFileUpdates",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Search Companion content file updates to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\SearchCompanion' -Name 'DisableContentFileUpdates' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Search Companion content file updates to 'Enabled'",
+    "reason": "There is a small risk that users will unknowingly reveal sensitive information because of the topics they are searching for. This risk is very low because even if this setting is enabled users still must submit search queries to the desired search engine in order to perform searches."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.9",
     "title": "Ensure 'Turn off the \"Order Prints\" picture task' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoOnlinePrintsWizard",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoOnlinePrintsWizard",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off the \"Order Prints\" picture task to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoOnlinePrintsWizard' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off the \"Order Prints\" picture task to 'Enabled'",
+    "reason": "In an enterprise managed environment we want to lower the risk of a user unknowingly exposing sensitive data."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.10",
     "title": "Ensure 'Turn off the \"Publish to Web\" task for files and folders' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoPublishingWizard",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:NoPublishingWizard",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off the \"Publish to Web\" task for files and folders to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoPublishingWizard' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off the \"Publish to Web\" task for files and folders to 'Enabled'",
+    "reason": "Users may publish confidential or sensitive information to a public service outside of the control of the organization."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.11",
     "title": "Ensure 'Turn off the Windows Messenger Customer Experience Improvement Program' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Messenger\\Client:CEIP",
     "expected": 2,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Messenger\\Client:CEIP",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off the Windows Messenger Customer Experience Improvement Program to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Messenger\\Client' -Name 'CEIP' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off the Windows Messenger Customer Experience Improvement Program to 'Enabled'",
+    "reason": "Large enterprise managed environments may not want to have information collected by Microsoft from managed client computers."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.20.1.12",
     "title": "Ensure 'Turn off Windows Customer Experience Improvement Program' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows:CEIPEnable",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows:CEIPEnable",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Windows Customer Experience Improvement Program to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows' -Name 'CEIPEnable' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Windows Customer Experience Improvement Program to 'Enabled'",
+    "reason": "Large enterprise managed environments may not want to have information collected by Microsoft from managed client computers."
   },
   {
+    "hash_id": "",
+    "service": "Core",
+    "id": "18.9.20.1.13",
+    "title": "Ensure 'Turn off Windows Error Reporting' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting:Disabled",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting' -Name 'Disabled' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication settings\\Turn off Windows Error Reporting to 'Enabled'",
+    "reason": "If a Windows Error occurs in a secure, enterprise managed environment, the error should be reported directly to IT staff for troubleshooting and remediation. There is no benefit to the corporation to report these errors directly to Microsoft, and there is some risk of unknowingly exposing sensitive data as part of the error."
+  },
+  {
+    "hash_id": "",
+    "service": "Core",
+    "id": "18.9.23.1",
+    "title": "Ensure 'Support device authentication using certificate' is set to 'Enabled: Automatic'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\kerberos\\parameters:DevicePKInitBehavior",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\kerberos\\parameters' -Name 'DevicePKInitBehavior' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Kerberos\\Support device authentication using certificate to 'Enabled: Automatic'",
+    "reason": "Having stronger device authentication with the use of certificates is strongly encouraged over standard username and password authentication. Having this set to Automatic will allow certificate based authentication to be used whenever possible."
+  },
+  {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.24.1",
     "title": "Ensure 'Enumeration policy for external devices incompatible with Kernel DMA Protection' is set to 'Enabled: Block All'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Kernel DMA Protection:DeviceEnumerationPolicy",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Kernel DMA Protection:DeviceEnumerationPolicy",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Kernel DMA Protection\\Enumeration policy for external devices incompatible with Kernel DMA Protection to 'Enabled: Block All'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Kernel DMA Protection' -Name 'DeviceEnumerationPolicy' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Kernel DMA Protection\\Enumeration policy for external devices incompatible with Kernel DMA Protection to 'Enabled: Block All'",
+    "reason": "Device memory sandboxing allows the OS to leverage the I/O Memory Management Unit (IOMMU) of a device to block unpermitted I/O, or memory access, by the peripheral."
   },
- {
+  {
+    "hash_id": "",
+    "service": "LSASS",
     "id": "18.9.27.1",
     "title": "Ensure 'Configures LSASS to run as a protected process' is set to 'Enabled: Enabled with UEFI Lock'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:RunAsPPL",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:RunAsPPL",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Local Security Authority\\Configures LSASS to run as a protected process to 'Enabled: Enabled with UEFI Lock'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'RunAsPPL' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Local Security Authority\\Configures LSASS to run as a protected process to 'Enabled: Enabled with UEFI Lock'",
+    "reason": "Provides added security for the credentials that LSA stores and manages. Enabling this setting with UEFI Lock prevents the setting from being changed remotely."
   },
   {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.9.28.1",
     "title": "Ensure 'Disallow copying of user input methods to the system account for sign-in' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Control Panel\\International:BlockUserInputMethodsForSignIn",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Control Panel\\International:BlockUserInputMethodsForSignIn",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Locale Services\\Disallow copying of user input methods to the system account for sign-in to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Control Panel\\International' -Name 'BlockUserInputMethodsForSignIn' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Locale Services\\Disallow copying of user input methods to the system account for sign-in to 'Enabled'",
+    "reason": "This is a way to increase the security of the system account."
   },
   {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.9.29.1",
     "title": "Ensure 'Block user from showing account details on sign-in' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:BlockUserFromShowingAccountDetailsOnSignin",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:BlockUserFromShowingAccountDetailsOnSignin",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Block user from showing account details on sign-in to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'BlockUserFromShowingAccountDetailsOnSignin' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Block user from showing account details on sign-in to 'Enabled'",
+    "reason": "A threat actor with access to the console could view the name of the last user who logged on to the server. The threat actor could then try to guess the password, use a dictionary, or use a brute-force attack to try and log on."
   },
   {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.9.29.2",
     "title": "Ensure 'Do not display network selection UI' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:DontDisplayNetworkSelectionUI",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:DontDisplayNetworkSelectionUI",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Do not display network selection UI to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'DontDisplayNetworkSelectionUI' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Do not display network selection UI to 'Enabled'",
+    "reason": "An unauthorized user could disconnect the PC from the network or can connect the PC to other available networks without signing into Windows."
   },
   {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.9.29.3",
     "title": "Ensure 'Turn off app notifications on the lock screen' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:DisableLockScreenAppNotifications",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:DisableLockScreenAppNotifications",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Turn off app notifications on the lock screen to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'DisableLockScreenAppNotifications' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Turn off app notifications on the lock screen to 'Enabled'",
+    "reason": "App notifications might display sensitive business or personal data."
   },
   {
+    "hash_id": "",
+    "service": "Winlogon",
     "id": "18.9.29.4",
     "title": "Ensure 'Turn on convenience PIN sign-in' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:AllowDomainPINLogon",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:AllowDomainPINLogon",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Turn on convenience PIN sign-in to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'AllowDomainPINLogon' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Logon\\Turn on convenience PIN sign-in to 'Disabled'",
+    "reason": "A PIN is created from a much smaller selection of characters than a password, so in most cases a PIN will be much less robust than a password."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.33.1",
     "title": "Ensure 'Allow Clipboard synchronization across devices' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:AllowCrossDeviceClipboard",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:AllowCrossDeviceClipboard",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\OS Policies\\Allow Clipboard synchronization across devices to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'AllowCrossDeviceClipboard' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\OS Policies\\Allow Clipboard synchronization across devices to 'Disabled'",
+    "reason": "Due to privacy concerns, clipboard data should stay local to the system and not synced across devices."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.33.2",
     "title": "Ensure 'Allow upload of User Activities' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:UploadUserActivities",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:UploadUserActivities",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\OS Policies\\Allow upload of User Activities to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'UploadUserActivities' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\OS Policies\\Allow upload of User Activities to 'Disabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Power",
     "id": "18.9.35.6.1",
     "title": "Ensure 'Allow network connectivity during connected-standby (on battery)' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9:DCSettingIndex",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9:DCSettingIndex",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Allow network connectivity during connected-standby (on battery) to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9' -Name 'DCSettingIndex' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Allow network connectivity during connected-standby (on battery) to 'Disabled'",
+    "reason": "Disabling this setting ensures that the computer will not be accessible to threat actors over a WLAN network while left unattended, on battery and in a sleep state."
   },
   {
+    "hash_id": "",
+    "service": "Power",
     "id": "18.9.35.6.2",
     "title": "Ensure 'Allow network connectivity during connected-standby (plugged in)' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9:ACSettingIndex",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9:ACSettingIndex",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Allow network connectivity during connected-standby (plugged in) to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9' -Name 'ACSettingIndex' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Allow network connectivity during connected-standby (plugged in) to 'Disabled'",
+    "reason": "Disabling this setting ensures that the computer will not be accessible to threat actors over a WLAN network while left unattended, plugged in and in a sleep state."
   },
   {
+    "hash_id": "",
+    "service": "Power",
     "id": "18.9.35.6.3",
     "title": "Ensure 'Require a password when a computer wakes (on battery)' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51:DCSettingIndex",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51:DCSettingIndex",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Require a password when a computer wakes (on battery) to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' -Name 'DCSettingIndex' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Require a password when a computer wakes (on battery) to 'Enabled'",
+    "reason": "Enabling this setting ensures that anyone who wakes an unattended computer from sleep state will have to provide logon credentials before they can access the system."
   },
   {
+    "hash_id": "",
+    "service": "Power",
     "id": "18.9.35.6.4",
     "title": "Ensure 'Require a password when a computer wakes (plugged in)' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51:ACSettingIndex",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51:ACSettingIndex",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Require a password when a computer wakes (plugged in) to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' -Name 'ACSettingIndex' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Power Management\\Sleep Settings\\Require a password when a computer wakes (plugged in) to 'Enabled'",
+    "reason": "Enabling this setting ensures that anyone who wakes an unattended computer from sleep state will have to provide logon credentials before they can access the system."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.9.37.1",
     "title": "Ensure 'Configure Offer Remote Assistance' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fAllowUnsolicited",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fAllowUnsolicited",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Assistance\\Configure Offer Remote Assistance to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fAllowUnsolicited' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Assistance\\Configure Offer Remote Assistance to 'Disabled'",
+    "reason": "A user might be tricked and accept an unsolicited Remote Assistance offer from a threat actor."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.9.37.2",
     "title": "Ensure 'Configure Solicited Remote Assistance' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fAllowToGetHelp",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services:fAllowToGetHelp",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Assistance\\Configure Solicited Remote Assistance to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'fAllowToGetHelp' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Assistance\\Configure Solicited Remote Assistance to 'Disabled'",
+    "reason": "There is slight risk that a rogue administrator will gain access to another user's desktop session, however, they cannot connect to a user's computer unannounced or control it without permission from the user."
   }
 ]

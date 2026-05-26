@@ -2,26 +2,52 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .rule_catalog import get_full_rule_files, get_quick_rule_file
-from .scan_executor_client import run_scan_via_executor
+from .inventory import load_windows_inventory
+from .json_rule_engine import write_merged_scan
+from .models import ScanInventory
 
 
 def _collect_rule_files(profile_key: str, full_scan: bool) -> list[Path]:
-    if full_scan:
-        return get_full_rule_files(profile_key)
-    return [get_quick_rule_file(profile_key)]
+    _ = (profile_key, full_scan)
+    return []
 
 
-def run_scan_for_profile(profile_key: str, full_scan: bool) -> Path:
-    """
-    Chạy scan_executor → trả về file merged scan (kết quả thu thập).
-    Manifest rules/ chỉ dùng để biết file nào đưa vào scanner, không dùng để so sánh lại.
-    """
+def _detected_service_names(inventory: ScanInventory | None = None) -> set[str]:
+    selected_inventory = inventory
+    if selected_inventory is None:
+        try:
+            selected_inventory = load_windows_inventory()
+        except Exception:
+            return set()
+
+    names: set[str] = set()
+    for item in selected_inventory.detected_services:
+        service_name = str(item.get("Name") or "").strip()
+        if service_name:
+            names.add(service_name)
+    return names
+
+
+def run_scan_for_profile(
+    profile_key: str,
+    full_scan: bool,
+    inventory: ScanInventory | None = None,
+    selected_service_names: set[str] | None = None,
+) -> Path:
+    """Run the JSON rule engine and return the merged scan artifact."""
     app_root = Path(__file__).resolve().parents[2]
     report_temp_dir = app_root / "reports" / "temp"
 
-    selected_rules = _collect_rule_files(profile_key=profile_key, full_scan=full_scan)
-    if not selected_rules:
-        raise RuntimeError(f"Không tìm thấy file rule cho profile {profile_key}")
+    normalized_selected_services = {
+        str(name).strip()
+        for name in (selected_service_names or set())
+        if str(name).strip()
+    }
+    detected_service_names = normalized_selected_services or _detected_service_names(inventory)
 
-    return run_scan_via_executor(rule_files=selected_rules, output_dir=report_temp_dir)
+    return write_merged_scan(
+        profile_key=profile_key,
+        full_scan=full_scan,
+        output_dir=report_temp_dir,
+        detected_service_names=detected_service_names,
+    )

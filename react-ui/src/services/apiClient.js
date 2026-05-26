@@ -20,7 +20,7 @@ export async function fetchReport() {
   return response.json()
 }
 
-export async function startScan({ profileKey, fullScan = false } = {}) {
+export async function startScan({ profileKey, fullScan = false, selectedServices = [] } = {}) {
   const response = await fetch(`${API_BASE}/api/scan`, {
     method: 'POST',
     headers: {
@@ -30,6 +30,7 @@ export async function startScan({ profileKey, fullScan = false } = {}) {
       profileKey,
       fullScan,
       mode: fullScan ? 'full' : 'quick',
+      selectedServices,
     }),
   })
   return response.json()

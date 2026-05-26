@@ -1,4 +1,5 @@
-import { Table, Tag, Typography } from 'antd'
+import { useMemo, useState } from 'react'
+import { Button, Descriptions, Modal, Space, Table, Tag, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 function verdictColor(verdict) {
@@ -7,6 +8,7 @@ function verdictColor(verdict) {
 
 export default function ResultTable({ items = [] }) {
   const { t } = useTranslation()
+  const [selectedRow, setSelectedRow] = useState(null)
 
   const pagination = {
     pageSize: 20,
@@ -15,19 +17,38 @@ export default function ResultTable({ items = [] }) {
     showTotal: (total, range) => t('table.totalRules', { from: range[0], to: range[1], total }),
   }
 
+  const safeItems = useMemo(() => items || [], [items])
+
+  function openDetails(record) {
+    setSelectedRow(record)
+  }
+
+  function closeDetails() {
+    setSelectedRow(null)
+  }
+
   const columns = [
     {
-      title: 'Rule',
+      title: t('table.rule'),
       dataIndex: 'ruleId',
       key: 'ruleId',
-      width: 140,
+      width: 300,
       render: (value, row) => (
-        <div>
-          <Typography.Text strong>{value || row.rule_id || '-'}</Typography.Text>
-          <div>
-            <Typography.Text type="secondary">{row.title || '-'}</Typography.Text>
-          </div>
-        </div>
+        <button
+          type="button"
+          className="result-rule-cell"
+          onClick={(event) => {
+            event.stopPropagation()
+            openDetails(row)
+          }}
+        >
+          <Typography.Text strong className="result-rule-id">
+            {value || row.rule_id || '-'}
+          </Typography.Text>
+          <Typography.Text type="secondary" ellipsis={{ tooltip: row.title || '-' }} className="result-rule-title">
+            {row.title || '-'}
+          </Typography.Text>
+        </button>
       ),
     },
     {
@@ -38,36 +59,129 @@ export default function ResultTable({ items = [] }) {
       render: (value) => <Tag color={verdictColor(value)}>{value || 'FAIL'}</Tag>,
     },
     {
-      title: 'Expected',
+      title: t('table.expected'),
       dataIndex: 'expected',
       key: 'expected',
-      width: 220,
+      width: 260,
+      ellipsis: true,
+      render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
     {
-      title: 'Actual',
+      title: t('table.actual'),
       dataIndex: 'actual',
       key: 'actual',
-      width: 220,
+      width: 260,
+      ellipsis: true,
+      render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
     {
-      title: 'Status',
+      title: t('table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 160,
     },
     {
-      title: 'Guidance',
+      title: t('table.guidance'),
       dataIndex: 'guidance',
       key: 'guidance',
+      width: 260,
+      ellipsis: true,
       render: (value) => {
         const guidance = Array.isArray(value) ? value : []
         if (guidance.length === 0) {
           return <Typography.Text type="secondary">-</Typography.Text>
         }
-        return guidance.map((line) => <div key={line}>{line}</div>)
+        return <Typography.Text ellipsis={{ tooltip: guidance.join('\n') }}>{guidance.join(' • ')}</Typography.Text>
       },
+    },
+    {
+      title: '',
+      key: 'action',
+      width: 120,
+      render: (_, row) => (
+        <Button
+          type="link"
+          onClick={(event) => {
+            event.stopPropagation()
+            openDetails(row)
+          }}
+        >
+          {t('table.details')}
+        </Button>
+      ),
     },
   ]
 
-  return <Table rowKey={(record, index) => `${record.ruleId || record.rule_id || record.title || 'row'}-${index}`} columns={columns} dataSource={items} pagination={pagination} size="small" />
+  return (
+    <>
+      <Table
+        rowKey={(record, index) => `${record.ruleId || record.rule_id || record.title || 'row'}-${index}`}
+        columns={columns}
+        dataSource={safeItems}
+        pagination={pagination}
+        size="small"
+        scroll={{ x: 1240 }}
+        onRow={(record) => ({
+          onClick: () => openDetails(record),
+          style: { cursor: 'pointer' },
+        })}
+      />
+
+      <Modal
+        open={Boolean(selectedRow)}
+        onCancel={closeDetails}
+        footer={null}
+        width={920}
+        className="rule-details-modal"
+        title={selectedRow ? `${selectedRow.ruleId || selectedRow.rule_id || '-'} · ${selectedRow.title || '-'}` : t('table.details')}
+      >
+        {selectedRow ? (
+          <Descriptions bordered size="small" column={1} labelStyle={{ width: 200 }}>
+            <Descriptions.Item label={t('table.rule')}>
+              <Space direction="vertical" size={0}>
+                <Typography.Text strong>{selectedRow.ruleId || selectedRow.rule_id || '-'}</Typography.Text>
+                <Typography.Text type="secondary">{selectedRow.title || '-'}</Typography.Text>
+              </Space>
+            </Descriptions.Item>
+            <Descriptions.Item label={t('table.result')}>
+              <Tag color={verdictColor(selectedRow.verdict)}>{selectedRow.verdict || 'FAIL'}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label={t('table.expected')}>{selectedRow.expected || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.actual')}>{selectedRow.actual || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.status')}>{selectedRow.status || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.service')}>{selectedRow.serviceName || selectedRow.service_name || selectedRow.service || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.checkType')}>{selectedRow.checkType || selectedRow.check_type || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.source')}>{selectedRow.source || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.registryPath')}>{selectedRow.registry_path || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.powershellCheck')}>
+              <Typography.Paragraph style={{ marginBottom: 0, whiteSpace: 'pre-wrap' }} copyable>
+                {selectedRow.powershell_check || '-'}
+              </Typography.Paragraph>
+            </Descriptions.Item>
+            <Descriptions.Item label={t('table.remediation')}>
+              <Typography.Paragraph style={{ marginBottom: 0, whiteSpace: 'pre-wrap' }}>
+                {selectedRow.remediation || '-'}
+              </Typography.Paragraph>
+            </Descriptions.Item>
+            <Descriptions.Item label={t('table.reason')}>
+              <Typography.Paragraph style={{ marginBottom: 0, whiteSpace: 'pre-wrap' }}>
+                {selectedRow.reason || '-'}
+              </Typography.Paragraph>
+            </Descriptions.Item>
+            <Descriptions.Item label={t('table.guidance')}>
+              {Array.isArray(selectedRow.guidance) && selectedRow.guidance.length > 0 ? (
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  {selectedRow.guidance.map((line, index) => (
+                    <Typography.Text key={`${line}-${index}`}>{line}</Typography.Text>
+                  ))}
+                </Space>
+              ) : (
+                <Typography.Text type="secondary">-</Typography.Text>
+              )}
+            </Descriptions.Item>
+          </Descriptions>
+        ) : null}
+      </Modal>
+    </>
+  )
 }

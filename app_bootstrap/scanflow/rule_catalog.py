@@ -22,6 +22,12 @@ def _find_rule_path(filename: str) -> Path | None:
     if candidate.exists():
         return candidate
 
+    normalized_name = filename.replace(" copy", "")
+    if normalized_name != filename:
+        candidate = rules_dir / normalized_name
+        if candidate.exists():
+            return candidate
+
     for p in rules_dir.rglob(filename):
         if not p.is_file():
             continue
@@ -29,9 +35,21 @@ def _find_rule_path(filename: str) -> Path | None:
             continue
         return p
 
+    if normalized_name != filename:
+        for p in rules_dir.rglob(normalized_name):
+            if not p.is_file():
+                continue
+            if "plain_backup" in p.parts:
+                continue
+            return p
+
     for p in rules_dir.rglob(filename):
         if p.is_file():
             return p
+    if normalized_name != filename:
+        for p in rules_dir.rglob(normalized_name):
+            if p.is_file():
+                return p
     return None
 
 
@@ -71,7 +89,7 @@ def _load_manifest(profile_key: str) -> dict:
                         break
             except Exception:
                 pass
-            raise RuleManifestError(f"Không tìm thấy manifest: {manifest_file}. Available samples: {sample}")
+            raise RuleManifestError(f"Manifest not found: {manifest_file}. Available samples: {sample}")
     payload = json.loads(manifest_file.read_text(encoding="utf-8-sig"))
     if not isinstance(payload, dict):
         raise RuleManifestError("Manifest phải là object JSON")
@@ -82,12 +100,12 @@ def get_quick_rule_file(profile_key: str) -> Path:
     manifest = _load_manifest(profile_key)
     quick_name = str(manifest.get("quick") or "").strip()
     if not quick_name:
-        raise RuleManifestError("Manifest thiếu trường `quick`")
+        raise RuleManifestError("Manifest is missing the `quick` field")
 
     # resolve file by name; support files in plain_backup
     found = _find_rule_path(quick_name)
     if not found:
-        raise RuleManifestError(f"Quick rule file không tồn tại: {quick_name}")
+        raise RuleManifestError(f"Quick rule file does not exist: {quick_name}")
     return found
 
 
@@ -95,13 +113,13 @@ def get_full_rule_files(profile_key: str) -> list[Path]:
     manifest = _load_manifest(profile_key)
     full_items = manifest.get("full")
     if not isinstance(full_items, list) or not full_items:
-        raise RuleManifestError("Manifest thiếu danh sách `full`")
+        raise RuleManifestError("Manifest is missing the `full` list")
 
     files: list[Path] = []
     for name in full_items:
         item_name = str(name).strip()
         found = _find_rule_path(item_name)
         if not found:
-            raise RuleManifestError(f"Full rule file không tồn tại: {item_name}")
+            raise RuleManifestError(f"Full rule file does not exist: {item_name}")
         files.append(found)
     return files

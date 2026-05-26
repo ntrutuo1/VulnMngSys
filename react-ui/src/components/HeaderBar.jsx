@@ -1,12 +1,8 @@
-import { Badge, Segmented, Space, Typography } from 'antd'
+import { Badge, Space, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 export default function HeaderBar({ statusOk }) {
-  const { t, i18n } = useTranslation()
-
-  function handleLanguageChange(value) {
-    i18n.changeLanguage(value)
-  }
+  const { t } = useTranslation()
 
   return (
     <div className="header-bar">
@@ -25,15 +21,7 @@ export default function HeaderBar({ statusOk }) {
         />
         <Space size={8}>
           <Typography.Text type="secondary">{t('language.label')}</Typography.Text>
-          <Segmented
-            options={[
-              { label: t('language.vi'), value: 'vi' },
-              { label: t('language.en'), value: 'en' },
-            ]}
-            value={i18n.language === 'en' ? 'en' : 'vi'}
-            onChange={handleLanguageChange}
-            size="small"
-          />
+          <Typography.Text strong>{t('language.en')}</Typography.Text>
         </Space>
       </Space>
     </div>

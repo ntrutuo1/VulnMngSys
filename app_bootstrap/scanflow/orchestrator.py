@@ -34,6 +34,7 @@ def run_windows_server_scan_flow() -> None:
         merged_scan_file = run_scan_for_profile(
             profile_key=inventory.profile_key,
             full_scan=selection.full_scan,
+            inventory=inventory,
         )
     except Exception as exc:
         show_message_box(f"Lỗi khi chạy script quét: {exc}", "VulnMngSys - Scan Flow", 0x10 | 0x40000)

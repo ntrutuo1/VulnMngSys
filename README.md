@@ -1,16 +1,16 @@
-# VulnMngSys — Công cụ phát hiện lỗ hổng cấu hình Windows Server
+# VulnMngSys - Windows Server configuration vulnerability scanner
 
-Ứng dụng quét **misconfiguration** trên máy Windows Server theo bộ rule CIS Benchmark (Windows Server 2022), chạy cục bộ với quyền Administrator.
+This application scans Windows Server machines for configuration misconfigurations using the CIS Benchmark rule set (Windows Server 2022) and runs locally with Administrator privileges.
 
-## Phạm vi
+## Scope
 
 - Account Policy (`secedit`)
 - User Rights Assignment (`secedit /areas USER_RIGHTS`)
 - Security Options / Registry
 - Advanced Audit Policy (`auditpol`)
-- Một số rule per-user (HKU)
+- Some per-user rules (HKU)
 
-Không bao gồm: quét mạng, CVE database, Metasploit runtime.
+Not included: network scanning, CVE databases, and the Metasploit runtime.
 
 ## Kiến trúc
 
@@ -18,19 +18,19 @@ Không bao gồm: quét mạng, CVE database, Metasploit runtime.
 flowchart LR
   UI[React UI] --> API[api_server.py]
   API --> Scan[scan_backend.py]
-  Scan --> PS[Invoke-RuleJsonScan.ps1]
+  Scan --> Eng[app_bootstrap.scanflow.json_rule_engine]
   Scan --> Cmp[report_builder.py]
   Cmp --> Report[reports/scan_compare_report.json]
 ```
 
-## Yêu cầu
+## Requirements
 
-- Windows Server 2016 / 2019 / 2022 (khuyến nghị 2022)
+- Windows Server 2016 / 2019 / 2022 (2022 recommended)
 - Python 3.10+
 - PowerShell 5.1+
-- Quyền Administrator (UAC)
+- Administrator privileges (UAC)
 
-## Chạy phát triển
+## Development Run
 
 ```powershell
 cd VulnMngSys
@@ -49,7 +49,7 @@ Xác thực hợp đồng rule/scan/report:
 python scripts\validate_scan_standards.py
 ```
 
-## Build giao diện + EXE
+## Build UI + EXE
 
 ```powershell
 cd react-ui
@@ -59,7 +59,7 @@ cd ..
 .\build_windows.ps1
 ```
 
-## Thêm rule mới
+## Add a New Rule
 
 Ví dụ password policy:
 
@@ -74,20 +74,20 @@ Ví dụ password policy:
 }
 ```
 
-Các `type` hỗ trợ: `secedit`, `user_right`, `registry`, `user_registry`, `auditpol`, `local_account`.
+Supported `type` values: `secedit`, `user_right`, `registry`, `user_registry`, `auditpol`, `local_account`.
 
 Manifest: [`rules/Windows_Server_2022_manifest.json`](rules/Windows_Server_2022_manifest.json) — `quick` / `full`.
 
-## API cục bộ
+## Local API
 
-| Endpoint | Mô tả |
+| Endpoint | Description |
 |----------|--------|
-| `GET /api/inventory` | Thông tin OS / profile |
+| `GET /api/inventory` | OS / profile information |
 | `POST /api/scan` | Body: `{ "mode": "quick\|full", "profileKey": "Windows_Server_2022" }` |
-| `GET /api/report` | Báo cáo JSON gần nhất |
-| `GET /api/report/export?format=html` | Xuất HTML |
+| `GET /api/report` | Latest JSON report |
+| `GET /api/report/export?format=html` | Export HTML |
 
-## Báo cáo
+## Reports
 
 - JSON: `reports/scan_compare_report.json`
-- HTML: `reports/scan_report.html` (sau export)
+- HTML: `reports/scan_report.html` (after export)

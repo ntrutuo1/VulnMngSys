@@ -1,280 +1,502 @@
 [
   {
+    "hash_id": "",
+    "service": "Dnscache",
     "id": "18.6.4.1",
     "title": "Ensure 'Configure multicast DNS (mDNS) protocol' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient:EnableMDNS",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient:EnableMDNS",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Configure multicast DNS (mDNS) protocol to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableMDNS' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Configure multicast DNS (mDNS) protocol to 'Disabled'",
+    "reason": "A threat actor can listen on a network over UDP port 5353 and respond to them, tricking the host into thinking that it knows the location of the requested system."
   },
   {
+    "hash_id": "",
+    "service": "Dnscache",
     "id": "18.6.4.2",
     "title": "Ensure 'Turn off default IPv6 DNS Servers' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient:DisableIPv6DefaultDnsServers",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient:DisableIPv6DefaultDnsServers",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Turn off default IPv6 DNS Servers to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'DisableIPv6DefaultDnsServers' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Turn off default IPv6 DNS Servers to 'Enabled'",
+    "reason": "Since the vast majority of private enterprise managed networks have no need to utilize IPv6 (because they have access to private IPv4 addressing), disabling the use of IPv6 DNS server addresses removes a possible attack surface that is also harder to monitor the traffic on."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.6.5.1",
     "title": "Ensure 'Enable Font Providers' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:EnableFontProviders",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:EnableFontProviders",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Fonts\\Enable Font Providers to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'EnableFontProviders' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Fonts\\Enable Font Providers to 'Disabled'",
+    "reason": "In an enterprise managed environment the IT department should be managing the changes to the system configuration, to ensure all changes are tested and approved."
   },
   {
+    "hash_id": "",
+    "service": "LanmanServer",
     "id": "18.6.7.1",
     "title": "Ensure 'Mandate the minimum version of SMB' is set to 'Enabled: 3.1.1'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanServer:MinSmb2Dialect",
     "expected": 785,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanServer:MinSmb2Dialect",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Server\\Mandate the minimum version of SMB to 'Enabled: 3.1.1'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanServer' -Name 'MinSmb2Dialect' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Server\\Mandate the minimum version of SMB to 'Enabled: 3.1.1'",
+    "reason": "The newer, more modern version of SMB (v3) is supported and available on all currently supported Microsoft Windows OSes. SMBv1 is no longer enabled by default due to its security risks, and although SMBv2 is more robust than v1, it does not support encryption like its successor."
   },
   {
+    "hash_id": "",
+    "service": "LanmanWorkstation",
     "id": "18.6.8.1",
     "title": "Ensure 'Enable insecure guest logons' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation:AllowInsecureGuestAuth",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation:AllowInsecureGuestAuth",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Workstation\\Enable insecure guest logons to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation' -Name 'AllowInsecureGuestAuth' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Workstation\\Enable insecure guest logons to 'Disabled'",
+    "reason": "Insecure guest logons are used by file servers to allow unauthenticated access to shared folders."
   },
   {
+    "hash_id": "",
+    "service": "LanmanWorkstation",
     "id": "18.6.8.2",
     "title": "Ensure 'Require Encryption' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation:RequireEncryption",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation:RequireEncryption",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Workstation\\Require Encryption to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation' -Name 'RequireEncryption' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Workstation\\Require Encryption to 'Enabled'",
+    "reason": "The native RDP encryption is now considered a weak protocol, so enforcing the use of stronger TLS encryption for all RDP communications between clients and RD Session Host servers is preferred."
   },
   {
+    "hash_id": "",
+    "service": "Network",
+    "id": "18.6.9.1",
+    "title": "Ensure 'Turn on Mapper I/O (LLTDIO) driver' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LLTD:EnableLLTDIO",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LLTD' -Name 'EnableLLTDIO' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Link-Layer Topology Discovery\\Turn on Mapper I/O (LLTDIO) driver to 'Disabled'",
+    "reason": "To help protect from potentially discovering and connecting to unauthorized devices, this setting should be disabled to prevent responding to network traffic for network topology discovery."
+  },
+  {
+    "hash_id": "",
+    "service": "Network",
+    "id": "18.6.9.2",
+    "title": "Ensure 'Turn on Responder (RSPNDR) driver' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LLTD:EnableRspndr",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LLTD' -Name 'EnableRspndr' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Link-Layer Topology Discovery\\Turn on Responder (RSPNDR) driver to 'Disabled'",
+    "reason": "To help protect from potentially discovering and connecting to unauthorized devices, this setting should be disabled to prevent responding to network traffic for network topology discovery."
+  },
+  {
+    "hash_id": "",
+    "service": "PNRP",
     "id": "18.6.10.2",
     "title": "Ensure 'Turn off Microsoft Peer-to-Peer Networking Services' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Peernet:Disabled",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Peernet:Disabled",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Microsoft Peer-to-Peer Networking Services\\Turn off Microsoft Peer-to-Peer Networking Services to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Peernet' -Name 'Disabled' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Microsoft Peer-to-Peer Networking Services\\Turn off Microsoft Peer-to-Peer Networking Services to 'Enabled'",
+    "reason": "This setting enhances the security of the environment and reduces the overall risk exposure related to peer-to-peer networking."
   },
   {
+    "hash_id": "",
+    "service": "Network",
     "id": "18.6.11.2",
     "title": "Ensure 'Prohibit installation and configuration of Network Bridge on your DNS domain network' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections:NC_AllowNetBridge_NLA",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections:NC_AllowNetBridge_NLA",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Network Connections\\Prohibit installation and configuration of Network Bridge on your DNS domain network to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections' -Name 'NC_AllowNetBridge_NLA' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Network Connections\\Prohibit installation and configuration of Network Bridge on your DNS domain network to 'Enabled'",
+    "reason": "In an enterprise managed environment, where there is a need to control network traffic to only authorized paths, allowing users to create a Network Bridge increases the risk and attack surface from the bridged network."
   },
   {
+    "hash_id": "",
+    "service": "Network",
     "id": "18.6.11.3",
     "title": "Ensure 'Prohibit use of Internet Connection Sharing on your DNS domain network' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections:NC_ShowSharedAccessUI",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections:NC_ShowSharedAccessUI",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Network Connections\\Prohibit use of Internet Connection Sharing on your DNS domain network to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections' -Name 'NC_ShowSharedAccessUI' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Network Connections\\Prohibit use of Internet Connection Sharing on your DNS domain network to 'Enabled'",
+    "reason": "Non-administrators should not be able to turn on the Mobile Hotspot feature and open their Internet connectivity up to nearby mobile devices."
   },
   {
+    "hash_id": "",
+    "service": "Network",
+    "id": "18.6.14.1",
+    "title": "Ensure 'Hardened UNC Paths' is set to 'Enabled, with Require Mutual Authentication, Require Integrity, and Require Privacy set for all NETLOGON and SYSVOL shares'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths:\\\\*\\NETLOGON",
+    "expected": "RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1",
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths' -Name '\\\\*\\NETLOGON' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Network Provider\\Hardened UNC Paths to 'Enabled' with specific settings",
+    "reason": "A threat actor who successfully exploits this vulnerability could take complete control of the affected system. They could then install programs, view, change, or delete data, or create new accounts with full user rights."
+  },
+  {
+    "hash_id": "",
+    "service": "Tcpip6",
     "id": "18.6.19.2.1",
     "title": "Disable IPv6 (Ensure TCPIP6 Parameter 'DisabledComponents' is set to '0xff (255)')",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters:DisabledComponents",
     "expected": 255,
     "operator": "==",
-    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters:DisabledComponents",
-    "remediation": "Set Registry value to 0xff (255) (DWORD): HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters:DisabledComponents"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters' -Name 'DisabledComponents' -ErrorAction SilentlyContinue)",
+    "remediation": "Set Registry value to 0xff (255) (DWORD): HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\TCPIP6\\Parameters:DisabledComponents",
+    "reason": "Since the vast majority of private enterprise managed networks have no need to utilize IPv6, disabling IPv6 components removes a possible attack surface that is also harder to monitor the traffic on."
   },
   {
+    "hash_id": "",
+    "service": "Wlansvc",
+    "id": "18.6.20.1",
+    "title": "Ensure 'Configuration of wireless settings using Windows Connect Now' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WCN\\Registrars:EnableRegistrars",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WCN\\Registrars' -Name 'EnableRegistrars' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connect Now\\Configuration of wireless settings using Windows Connect Now to 'Disabled'",
+    "reason": "This setting enhances the security of the environment and reduces the overall risk exposure related to user configuration of wireless settings."
+  },
+  {
+    "hash_id": "",
+    "service": "Wlansvc",
     "id": "18.6.20.2",
     "title": "Ensure 'Prohibit access of the Windows Connect Now wizards' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WCN\\UI:DisableWcnUi",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WCN\\UI:DisableWcnUi",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connect Now\\Prohibit access of the Windows Connect Now wizards to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WCN\\UI' -Name 'DisableWcnUi' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connect Now\\Prohibit access of the Windows Connect Now wizards to 'Enabled'",
+    "reason": "Allowing standard users to access the Windows Connect Now wizard increases the risk and attack surface."
   },
   {
+    "hash_id": "",
+    "service": "WcmSvc",
     "id": "18.6.21.1",
     "title": "Ensure 'Minimize the number of simultaneous connections to the Internet or a Windows Domain' is set to 'Enabled: 3 = Prevent Wi-Fi when on Ethernet'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy:fMinimizeConnections",
     "expected": 3,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy:fMinimizeConnections",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connection Manager\\Minimize the number of simultaneous connections to the Internet or a Windows Domain to 'Enabled: 3 = Prevent Wi-Fi when on Ethernet'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy' -Name 'fMinimizeConnections' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connection Manager\\Minimize the number of simultaneous connections to the Internet or a Windows Domain to 'Enabled: 3'",
+    "reason": "Preventing bridged network connections can help prevent a user unknowingly allowing traffic to route between internal and external networks, which risks exposure to sensitive internal data."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.1",
     "title": "Ensure 'Allow Print Spooler to accept client connections' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers:RegisterSpoolerRemoteRpcEndPoint",
     "expected": 2,
     "operator": "==",
-    "registry": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers:RegisterSpoolerRemoteRpcEndPoint",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers:Allow Print Spooler to accept client connections to 'Disabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\Printers' -Name 'RegisterSpoolerRemoteRpcEndPoint' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers:Allow Print Spooler to accept client connections to 'Disabled'",
+    "reason": "Disabling the ability for the Print Spooler service to accept client connections mitigates remote attacks against the PrintNightmare vulnerability (CVE-2021-34527) and other remote Print Spooler attacks."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.2",
     "title": "Ensure 'Configure Redirection Guard' is set to 'Enabled: Redirection Guard Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:RedirectionguardPolicy",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:RedirectionguardPolicy",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure Redirection Guard to 'Enabled: Redirection Guard Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers' -Name 'RedirectionguardPolicy' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure Redirection Guard to 'Enabled: Redirection Guard Enabled'",
+    "reason": "This setting prevents non-administrators from redirecting files within the print spooler process."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.3",
     "title": "Ensure 'Configure RPC connection settings: Protocol to use for outgoing RPC connections' is set to 'Enabled: RPC over TCP'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcUseNamedPipeProtocol",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcUseNamedPipeProtocol",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC connection settings: Protocol to use for outgoing RPC connections to 'Enabled: RPC over TCP'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC' -Name 'RpcUseNamedPipeProtocol' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC connection settings: Protocol to use for outgoing RPC connections to 'Enabled: RPC over TCP'",
+    "reason": "This setting prevents the use of named pipes for RPC connections to the print spooler and forces the use of TCP which is a more secure communication method."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.4",
     "title": "Ensure 'Configure RPC connection settings: Use authentication for outgoing RPC connections' is set to 'Enabled: Default'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcAuthentication",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcAuthentication",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC connection settings: Use authentication for outgoing RPC connections to 'Enabled: Default'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC' -Name 'RpcAuthentication' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC connection settings: Use authentication for outgoing RPC connections to 'Enabled: Default'",
+    "reason": "This setting can prevent the use of named pipes for RPC connections to the print spooler and forces the use of TCP which is a more secure communication method."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.5",
     "title": "Ensure 'Configure RPC listener settings: Protocols to allow for incoming RPC connections' is set to 'Enabled: RPC over TCP'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcProtocols",
     "expected": 5,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcProtocols",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC listener settings: Configure protocol options for incoming RPC connections to 'Enabled: RCP over TCP'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC' -Name 'RpcProtocols' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC listener settings: Configure protocol options for incoming RPC connections to 'Enabled: RPC over TCP'",
+    "reason": "This setting can prevent the use of named pipes for RPC connections to the print spooler and forces the use of TCP which is a more secure communication method."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.6",
     "title": "Ensure 'Configure RPC listener settings: Authentication protocol to use for incoming RPC connections:' is set to 'Enabled: Negotiate' or higher",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:ForceKerberosForRpc",
     "expected": [
       0,
       1
     ],
     "operator": "InList",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:ForceKerberosForRpc",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC listener settings: Configure protocol options for incoming RPC connections to 'Enabled: Negotiate' or 'Enabled: Kerberos'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC' -Name 'ForceKerberosForRpc' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC listener settings: Configure protocol options for incoming RPC connections",
+    "reason": "This setting can prevent the use of named pipes for RPC connections to the print spooler and forces the use of TCP which is a more secure communication method."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.7",
     "title": "Ensure 'Configure RPC over TCP port' is set to 'Enabled: 0'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcTcpPort",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC:RpcTcpPort",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC over TCP port to 'Enabled: 0'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\RPC' -Name 'RpcTcpPort' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC over TCP port to 'Enabled: 0'",
+    "reason": "Using dynamic ports for printing makes it more difficult for a threat actor to know which port is being used and therefore which port to attack."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.8",
     "title": "Ensure 'Configure RPC packet level privacy setting for incoming connections' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print:RpcAuthnLevelPrivacyEnabled",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print:RpcAuthnLevelPrivacyEnabled",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Configure RPC packet level privacy setting for incoming connections to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print' -Name 'RpcAuthnLevelPrivacyEnabled' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Configure RPC packet level privacy setting for incoming connections to 'Enabled'",
+    "reason": "Enabling the RPC packet level privacy setting for incoming connections enforces the server-side to increase the authentication level to minimize this vulnerability."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.9",
     "title": "Ensure 'Limits print driver installation to Administrators' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint:RestrictDriverInstallationToAdministrators",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint:RestrictDriverInstallationToAdministrators",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Limits print driver installation to Administrators to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint' -Name 'RestrictDriverInstallationToAdministrators' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Limits print driver installation to Administrators to 'Enabled'",
+    "reason": "Restricting the installation of print drives to Administrators can help mitigate the PrintNightmare vulnerability (CVE-2021-34527) and other Print Spooler attacks."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.10",
     "title": "Ensure 'Manage processing of Queue-specific files' is set to 'Enabled: Limit Queue-specific files to Color profiles'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:CopyFilesPolicy",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers:CopyFilesPolicy",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Manage processing of Queue-specific files to 'Enabled: Limit Queue-specific files to Color profiles'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers' -Name 'CopyFilesPolicy' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Manage processing of Queue-specific files to 'Enabled: Limit Queue-specific files to Color profiles'",
+    "reason": "A threat actor who successfully exploits this vulnerability could run arbitrary code with SYSTEM privileges and then install programs; view, change, or delete data; or create new accounts with full user rights."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.11",
     "title": "Ensure 'Point and Print Restrictions: When installing drivers for a new connection' is set to 'Enabled: Show warning and elevation prompt'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint:NoWarningNoElevationOnInstall",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint:NoWarningNoElevationOnInstall",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Point and Print Restrictions: When installing drivers for a new connection to 'Enabled: Show warning and elevation prompt'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint' -Name 'NoWarningNoElevationOnInstall' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Point and Print Restrictions: When installing drivers for a new connection to 'Enabled: Show warning and elevation prompt'",
+    "reason": "Enabling Windows User Account Control (UAC) for the installation of new print drivers can help mitigate the PrintNightmare vulnerability (CVE-2021-34527) and other Print Spooler attacks."
   },
   {
+    "hash_id": "",
+    "service": "Spooler",
     "id": "18.7.12",
     "title": "Ensure 'Point and Print Restrictions: When updating drivers for an existing connection' is set to 'Enabled: Show warning and elevation prompt'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint:UpdatePromptSettings",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint:UpdatePromptSettings",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Point and Print Restrictions: When updating drivers for an existing connection to 'Enabled: Show warning and elevation prompt'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint' -Name 'UpdatePromptSettings' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Printers\\Point and Print Restrictions: When updating drivers for an existing connection to 'Enabled: Show warning and elevation prompt'",
+    "reason": "Enabling Windows User Account Control (UAC) for updating existing print drivers can help mitigate the PrintNightmare vulnerability (CVE-2021-34527) and other Print Spooler attacks."
   },
   {
+    "hash_id": "",
+    "service": "WpnService",
     "id": "18.8.1.1",
     "title": "Ensure 'Turn off notifications network usage' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications:NoCloudApplicationNotification",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications:NoCloudApplicationNotification",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Start Menu and Taskbar\\Turn off notifications network usage to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications' -Name 'NoCloudApplicationNotification' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Start Menu and Taskbar\\Turn off notifications network usage to 'Enabled'",
+    "reason": "In a high security environment, external systems, especially those hosted outside the organization, should be prevented from having an impact on the secure workstations."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.9.3.1",
     "title": "Ensure 'Include command line in process creation events' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit:ProcessCreationIncludeCmdLine_Enabled",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit:ProcessCreationIncludeCmdLine_Enabled",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Audit Process Creation\\Include command line in process creation events to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit' -Name 'ProcessCreationIncludeCmdLine_Enabled' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Audit Process Creation\\Include command line in process creation events to 'Enabled'",
+    "reason": "Capturing process command line information in event logs can be very valuable when performing forensic investigations of attack incidents."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.9.4.1",
     "title": "Ensure 'Encryption Oracle Remediation' is set to 'Enabled: Force Updated Clients'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters:AllowEncryptionOracle",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters:AllowEncryptionOracle",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Credentials Delegation\\Encryption Oracle Remediation to 'Enabled: Force Updated Clients'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters' -Name 'AllowEncryptionOracle' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Credentials Delegation\\Encryption Oracle Remediation to 'Enabled: Force Updated Clients'",
+    "reason": "This setting is important to mitigate the CredSSP encryption oracle vulnerability, for which information was published by Microsoft on 03/13/2018 in CVE-2018-0886."
   },
   {
+    "hash_id": "",
+    "service": "TermService",
     "id": "18.9.4.2",
     "title": "Ensure 'Remote host allows delegation of non-exportable credentials' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation:AllowProtectedCreds",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation:AllowProtectedCreds",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Credentials Delegation\\Remote host allows delegation of non-exportable credentials to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation' -Name 'AllowProtectedCreds' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Credentials Delegation\\Remote host allows delegation of non-exportable credentials to 'Enabled'",
+    "reason": "Windows Defender Remote Credential Guard helps you protect your credentials over a Remote Desktop connection by redirecting Kerberos requests back to the device that is requesting the connection. Both features should be enabled and supported, as they reduce the chance of credential theft."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.5.1",
     "title": "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:EnableVirtualizationBasedSecurity",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:EnableVirtualizationBasedSecurity",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard' -Name 'EnableVirtualizationBasedSecurity' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security to 'Enabled'",
+    "reason": "Kerberos, NTLM, and Credential manager isolate secrets by using virtualization-based security. Data stored by the isolated LSA process is protected using virtualization-based security and is not accessible to the rest of the operating system."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.5.2",
     "title": "Ensure 'Turn On Virtualization Based Security: Select Platform Security Level' is set to 'Secure Boot' or higher",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:RequirePlatformSecurityFeatures",
     "expected": [
       1,
       3
     ],
     "operator": "InList",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:RequirePlatformSecurityFeatures",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Select Platform Security Level to 'Secure Boot' or 'Secure Boot and DMA Protection'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard' -Name 'RequirePlatformSecurityFeatures' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Select Platform Security Level to 'Secure Boot' or 'Secure Boot and DMA Protection'",
+    "reason": "Secure Boot can help reduce the risk of bootloader attacks and in conjunction with DMA protections to help protect data from being scraped from memory."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.5.3",
     "title": "Ensure 'Turn On Virtualization Based Security: Virtualization Based Protection of Code Integrity' is set to 'Enabled with UEFI lock'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:HypervisorEnforcedCodeIntegrity",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:HypervisorEnforcedCodeIntegrity",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Virtualization Based Protection of Code Integrity to 'Enabled with UEFI lock'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard' -Name 'HypervisorEnforcedCodeIntegrity' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Virtualization Based Protection of Code Integrity to 'Enabled with UEFI lock'",
+    "reason": "The Enabled with UEFI lock option ensures that Virtualization Based Protection of Code Integrity cannot be disabled remotely."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.5.4",
     "title": "Ensure 'Turn On Virtualization Based Security: Require UEFI Memory Attributes Table' is set to 'True (checked)'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:HVCIMATRequired",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:HVCIMATRequired",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Require UEFI Memory Attributes Table to 'True (checked)'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard' -Name 'HVCIMATRequired' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Require UEFI Memory Attributes Table to 'TRUE'",
+    "reason": "This setting will help protect this control from being enabled on a system that is not compatible which could lead to a crash or data loss."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.5.5",
     "title": "Ensure 'Turn On Virtualization Based Security: Credential Guard Configuration' is set to 'Enabled with UEFI lock'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:LsaCfgFlags",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:LsaCfgFlags",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Credential Guard Configuration to 'Enabled with UEFI lock'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard' -Name 'LsaCfgFlags' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Credential Guard Configuration to 'Enabled with UEFI lock'",
+    "reason": "The Enabled with UEFI lock option ensures that Credential Guard cannot be disabled remotely."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.9.5.6",
     "title": "Ensure 'Turn On Virtualization Based Security: Secure Launch Configuration' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:ConfigureSystemGuardLaunch",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard:ConfigureSystemGuardLaunch",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Secure Launch Configuration to 'Enabled'"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard' -Name 'ConfigureSystemGuardLaunch' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Secure Launch Configuration to 'Enabled'",
+    "reason": "Secure Launch changes the way windows boots to use Intel Trusted Execution Technology (TXT) and Runtime BIOS Resilience features to prevent firmware exploits from being able to impact the security of the Windows Virtualization Based Security environment."
   }
 ]

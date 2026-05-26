@@ -1,253 +1,330 @@
 [
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.16.1",
     "title": "Ensure 'Allow Diagnostic Data' is set to 'Enabled: Diagnostic data off (not recommended)' or 'Enabled: Send required diagnostic data'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:AllowTelemetry",
     "expected": [
       0,
       1
     ],
     "operator": "InList",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:AllowTelemetry",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Allow Diagnostic Data"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'AllowTelemetry' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Allow Diagnostic Data",
+    "reason": "Certain aspects of Microsoft Anti-Virus must have the setting Allow Diagnostic Data on and sending data to function properly."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.16.2",
     "title": "Ensure 'Configure Authenticated Proxy usage for the Connected User Experience and Telemetry service' is set to 'Enabled: Disable Authenticated Proxy usage'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:DisableEnterpriseAuthProxy",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:DisableEnterpriseAuthProxy",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Configure Authenticated Proxy usage for the Connected User Experience and Telemetry service"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'DisableEnterpriseAuthProxy' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Configure Authenticated Proxy usage for the Connected User Experience and Telemetry service",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.16.3",
     "title": "Ensure 'Do not show feedback notifications' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:DoNotShowFeedbackNotifications",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:DoNotShowFeedbackNotifications",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Do not show feedback notifications"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'DoNotShowFeedbackNotifications' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Do not show feedback notifications",
+    "reason": "Data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.16.4",
     "title": "Ensure 'Enable OneSettings Auditing' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:EnableOneSettingsAuditing",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:EnableOneSettingsAuditing",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Enable OneSettings Auditing"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'EnableOneSettingsAuditing' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Enable OneSettings Auditing",
+    "reason": "If events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.16.5",
     "title": "Ensure 'Limit Diagnostic Log Collection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:LimitDiagnosticLogCollection",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:LimitDiagnosticLogCollection",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Limit Diagnostic Log Collection"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'LimitDiagnosticLogCollection' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Limit Diagnostic Log Collection",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "Core",
     "id": "18.10.16.6",
     "title": "Ensure 'Limit Dump Collection' is set to 'Enabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:LimitDumpCollection",
     "expected": 1,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection:LimitDumpCollection",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Limit Dump Collection"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'LimitDumpCollection' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Limit Dump Collection",
+    "reason": "Data must never be shared with third-parties without explicit consent, as it may contain sensitive information."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.1",
     "title": "Ensure 'Enable App Installer' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableAppInstaller",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableAppInstaller",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableAppInstaller' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer",
+    "reason": "Windows Package Manager is a command line tool can be used to discover, install, upgrade, remove and configure applications, and it can be used as a distribution channel for software packages containing tools and applications. Users should not have access to these types of development tools."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.2",
     "title": "Ensure 'Enable App Installer Experimental Features' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableExperimentalFeatures",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableExperimentalFeatures",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Experimental Features"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableExperimentalFeatures' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Experimental Features",
+    "reason": "Windows Package Manager is a command line tool can be used to discover, install, upgrade, remove and configure applications, and it can be used as a distribution channel for software packages containing tools and applications. Users should not have access to experimental features."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.3",
     "title": "Ensure 'Enable App Installer Hash Override' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableHashOverride",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableHashOverride",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Hash Override"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableHashOverride' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Hash Override",
+    "reason": "Users should not have the ability to override SHA256 security validation."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.4",
     "title": "Ensure 'Enable App Installer Local Archive Malware Scan Override' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableLocalArchiveMalwareScanOverride",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableLocalArchiveMalwareScanOverride",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Local Archive Malware Scan Override"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableLocalArchiveMalwareScanOverride' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Local Archive Malware Scan Override",
+    "reason": "Users should not have the ability to override malware scans."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.5",
     "title": "Ensure 'Enable App Installer ms-appinstaller protocol' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableMSAppInstallerProtocol",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableMSAppInstallerProtocol",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer ms-appinstaller protocol"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableMSAppInstallerProtocol' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer ms-appinstaller protocol",
+    "reason": "Users should not have the ability to install an application by clicking a link on a website. If an unknown or malicious link is clicked, malicious software could be installed on the system."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.6",
     "title": "Ensure 'Enable App Installer Microsoft Store Source Certificate Validation Bypass' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableBypassCertificatePinningForMicrosoftStore",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableBypassCertificatePinningForMicrosoftStore",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Microsoft Store Source Certificate Validation Bypass"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableBypassCertificatePinningForMicrosoftStore' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable App Installer Microsoft Store Source Certificate Validation Bypass",
+    "reason": "It is important to validate that the Microsoft Store source is not spoofed."
   },
   {
+    "hash_id": "",
+    "service": "AppxSvc",
     "id": "18.10.18.7",
     "title": "Ensure 'Enable Windows Package Manager command line interfaces' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableWindowsPackageManagerCommandLineInterfaces",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller:EnableWindowsPackageManagerCommandLineInterfaces",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable Windows Package Manager command line interfaces"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppInstaller' -Name 'EnableWindowsPackageManagerCommandLineInterfaces' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Desktop App Installer\\Enable Windows Package Manager command line interfaces",
+    "reason": "Windows Package Manager is a command line tool can be used to discover, install, upgrade, remove and configure applications. It can also be used as a distribution channel for software packages containing tools and applications. Users should not have access to these types of development tools."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.1.1",
     "title": "Ensure 'Application: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application:Retention",
+    "expected": "0",
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Application\\Control Event Log behavior when the log file reaches its maximum size"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application' -Name 'Retention' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Application\\Control Event Log behavior when the log file reaches its maximum size",
+    "reason": "If new events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.1.2",
     "title": "Ensure 'Application: Specify the maximum log file size (KB)' is set to 'Enabled: 32,768 or greater'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application:MaxSize",
     "expected": 32768,
     "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Application\\Specify the maximum log file size (KB)"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application' -Name 'MaxSize' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Application\\Specify the maximum log file size (KB)",
+    "reason": "If events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.2.1",
     "title": "Ensure 'Security: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:Retention",
+    "expected": "0",
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Control Event Log behavior when the log file reaches its maximum size"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security' -Name 'Retention' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Control Event Log behavior when the log file reaches its maximum size",
+    "reason": "If new events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.2.2",
     "title": "Ensure 'Security: Specify the maximum log file size (KB)' is set to 'Enabled: 196,608 or greater'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:MaxSize",
     "expected": 196608,
     "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Specify the maximum log file size (KB)"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security' -Name 'MaxSize' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Specify the maximum log file size (KB)",
+    "reason": "If events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.3.1",
     "title": "Ensure 'Setup: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:Retention",
+    "expected": "0",
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Setup\\Control Event Log behavior when the log file reaches its maximum size"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup' -Name 'Retention' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Setup\\Control Event Log behavior when the log file reaches its maximum size",
+    "reason": "If new events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.3.2",
     "title": "Ensure 'Setup: Specify the maximum log file size (KB)' is set to 'Enabled: 32,768 or greater'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:MaxSize",
     "expected": 32768,
     "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Setup\\Specify the maximum log file size (KB)"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup' -Name 'MaxSize' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Setup\\Specify the maximum log file size (KB)",
+    "reason": "If events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.4.1",
     "title": "Ensure 'System: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System:Retention",
+    "expected": "0",
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\System\\Control Event Log behavior when the log file reaches its maximum size"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System' -Name 'Retention' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\System\\Control Event Log behavior when the log file reaches its maximum size",
+    "reason": "If new events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
+    "hash_id": "",
+    "service": "EventLog",
     "id": "18.10.26.4.2",
     "title": "Ensure 'System: Specify the maximum log file size (KB)' is set to 'Enabled: 32,768 or greater'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System:MaxSize",
     "expected": 32768,
     "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\System\\Specify the maximum log file size (KB)"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System' -Name 'MaxSize' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\System\\Specify the maximum log file size (KB)",
+    "reason": "If events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of threat actors."
   },
   {
-    "id": "18.10.26.2.1",
-    "title": "Ensure 'Security: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
-    "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Control Event Log behavior when the log file reaches its maximum size"
-  },
-  {
-    "id": "18.10.26.2.2",
-    "title": "Ensure 'Security: Specify the maximum log file size (KB)' is set to 'Enabled: 196,608 or greater'",
-    "expected": 196608,
-    "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Specify the maximum log file size (KB)"
-  },
-  {
-    "id": "18.10.26.3.1",
-    "title": "Ensure 'Setup: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
-    "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Setup\\Control Event Log behavior when the log file reaches its maximum size"
-  },
-  {
-    "id": "18.10.26.3.2",
-    "title": "Ensure 'Setup: Specify the maximum log file size (KB)' is set to 'Enabled: 32,768 or greater'",
-    "expected": 32768,
-    "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Setup\\Specify the maximum log file size (KB)"
-  },
-  {
-    "id": "18.10.26.4.1",
-    "title": "Ensure 'System: Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
-    "expected": 0,
-    "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System:Retention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\System\\Control Event Log behavior when the log file reaches its maximum size"
-  },
-  {
-    "id": "18.10.26.4.2",
-    "title": "Ensure 'System: Specify the maximum log file size (KB)' is set to 'Enabled: 32,768 or greater'",
-    "expected": 32768,
-    "operator": ">=",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System:MaxSize",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\System\\Specify the maximum log file size (KB)"
-  },
-  {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.29.2",
     "title": "Ensure 'Do not apply the Mark of the Web tag to files copied from insecure sources' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:DisableMotWOnInsecurePathCopy",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:DisableMotWOnInsecurePathCopy",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Do not apply the Mark of the Web tag to files copied from insecure sources"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'DisableMotWOnInsecurePathCopy' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Do not apply the Mark of the Web tag to files copied from insecure sources",
+    "reason": "MOTW is an important security feature that ensures files from insecure locations are treated with extra caution and are tagged with MOTW. If files are left untagged, users and computers could be exposed to security risks."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.29.3",
     "title": "Ensure 'Turn off Data Execution Prevention for Explorer' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoDataExecutionPrevention",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoDataExecutionPrevention",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off Data Execution Prevention for Explorer"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'NoDataExecutionPrevention' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off Data Execution Prevention for Explorer",
+    "reason": "Data Execution Prevention is an important security feature supported by Explorer that helps to limit the impact of certain types of malware."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.29.4",
     "title": "Ensure 'Turn off heap termination on corruption' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoHeapTerminationOnCorruption",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer:NoHeapTerminationOnCorruption",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off heap termination on corruption"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'NoHeapTerminationOnCorruption' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off heap termination on corruption",
+    "reason": "Allowing an application to function after its session has become corrupt increases the risk posture to the system."
   },
   {
+    "hash_id": "",
+    "service": "Explorer",
     "id": "18.10.29.5",
     "title": "Ensure 'Turn off shell protocol protected mode' is set to 'Disabled'",
+    "check_type": "Registry_HKLM",
+    "registry_path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:PreXPSP2ShellProtocolBehavior",
     "expected": 0,
     "operator": "==",
-    "registry": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:PreXPSP2ShellProtocolBehavior",
-    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off shell protocol protected mode"
+    "powershell_check": "(Get-ItemPropertyValue -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'PreXPSP2ShellProtocolBehavior' -ErrorAction SilentlyContinue)",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off shell protocol protected mode",
+    "reason": "Limiting the opening of files and folders to a limited set reduces the attack surface of the system."
   }
 ]
