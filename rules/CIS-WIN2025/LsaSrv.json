@@ -1,0 +1,14 @@
+[
+    {
+        "id": "18.9.32.1",
+        "service": "LsaSrv",
+        "title": "Ensure 'NTLM: Block NTLM authentication' is configured",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\NTLM",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\NTLM' -Name 'BlockNTLM' -ErrorAction SilentlyContinue).BlockNTLM",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\System\\NTLM to 'Enabled' (Block)",
+        "reason": "WS2025 Specific (25H2 Template): Lần đầu tiên CIS Benchmark yêu cầu vô hiệu hóa và chặn hoàn toàn giao thức NTLM ở cấp độ LSA, một bước tiến lớn so với việc chỉ ép dùng NTLMv2 ở các bản trước."
+    }
+]

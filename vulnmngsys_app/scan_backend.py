@@ -172,6 +172,7 @@ def run_profile_scan(
     profile_key: str | None = None,
     full_scan: bool = False,
     selected_service_names: set[str] | None = None,
+    selected_service_ids: set[int] | None = None,
 ) -> dict[str, Any]:
     selected_profile = profile_key or _default_profile_key()
     try:
@@ -184,12 +185,22 @@ def run_profile_scan(
         for name in (selected_service_names or set())
         if str(name).strip()
     }
+    normalized_selected_service_ids: set[int] = set()
+    for service_id in (selected_service_ids or set()):
+        try:
+            text = str(service_id).strip()
+            if not text:
+                continue
+            normalized_selected_service_ids.add(int(text))
+        except (TypeError, ValueError):
+            continue
 
     merged_scan_file = run_scan_for_profile(
         profile_key=selected_profile,
         full_scan=full_scan,
         inventory=inventory,
         selected_service_names=normalized_selected_services or None,
+        selected_service_ids=normalized_selected_service_ids or None,
     )
 
     raw_payload = json.loads(merged_scan_file.read_text(encoding="utf-8-sig"))
@@ -200,7 +211,12 @@ def run_profile_scan(
         merged_scan_file=merged_scan_file,
         rows=normalized_rows,
     )
-    return {"ok": True, **report_payload, "selectedServices": sorted(normalized_selected_services)}
+    return {
+        "ok": True,
+        **report_payload,
+        "selectedServices": sorted(normalized_selected_services),
+        "selectedServiceIds": sorted(normalized_selected_service_ids),
+    }
 
 
 def run_scan_and_save_report(
@@ -208,8 +224,14 @@ def run_scan_and_save_report(
     profile_key: str | None = None,
     mode: str = "quick",
     selected_service_names: set[str] | None = None,
+    selected_service_ids: set[int] | None = None,
 ) -> dict[str, Any]:
-    return run_profile_scan(profile_key=profile_key, full_scan=mode == "full", selected_service_names=selected_service_names)
+    return run_profile_scan(
+        profile_key=profile_key,
+        full_scan=mode == "full",
+        selected_service_names=selected_service_names,
+        selected_service_ids=selected_service_ids,
+    )
 
 
 def load_report_file(report_file: Path | None = None) -> dict[str, Any]:

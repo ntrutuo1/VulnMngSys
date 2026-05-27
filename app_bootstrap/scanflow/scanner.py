@@ -33,6 +33,7 @@ def run_scan_for_profile(
     full_scan: bool,
     inventory: ScanInventory | None = None,
     selected_service_names: set[str] | None = None,
+    selected_service_ids: set[int] | None = None,
 ) -> Path:
     """Run the JSON rule engine and return the merged scan artifact."""
     app_root = Path(__file__).resolve().parents[2]
@@ -43,6 +44,15 @@ def run_scan_for_profile(
         for name in (selected_service_names or set())
         if str(name).strip()
     }
+    normalized_selected_service_ids: set[int] = set()
+    for service_id in (selected_service_ids or set()):
+        try:
+            text = str(service_id).strip()
+            if not text:
+                continue
+            normalized_selected_service_ids.add(int(text))
+        except (TypeError, ValueError):
+            continue
     detected_service_names = normalized_selected_services or _detected_service_names(inventory)
 
     return write_merged_scan(
@@ -50,4 +60,5 @@ def run_scan_for_profile(
         full_scan=full_scan,
         output_dir=report_temp_dir,
         detected_service_names=detected_service_names,
+        detected_service_ids=normalized_selected_service_ids or None,
     )

@@ -1,0 +1,14 @@
+[
+    {
+        "id": "18.10.56.1",
+        "service": "PushToInstall",
+        "title": "Ensure 'Turn off Push To Install service' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\PushToInstall",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PushToInstall' -Name 'DisablePushToInstall' -ErrorAction SilentlyContinue).DisablePushToInstall",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Push To Install\\Turn off Push To Install service to 'Enabled'",
+        "reason": "WS2025 Specific: Ngăn chặn nguy cơ máy chủ bị đẩy ứng dụng lạ/mã độc thông qua tính năng liên kết thiết bị đa nền tảng."
+    }
+]

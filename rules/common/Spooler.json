@@ -1,0 +1,16 @@
+[
+    {
+        "hash_id": "",
+        "service": "Spooler",
+        "id": "5.1",
+        "title": "Ensure 'Print Spooler (Spooler)' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Spooler",
+        "expected": 4,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Spooler' -Name 'Start' -ErrorAction SilentlyContinue).Start",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\System Services\\Print Spooler to 'Disabled'",
+        "reason": "Disabling the Print Spooler (Spooler) service mitigates the PrintNightmare vulnerability (CVE-2021-34527) and other attacks against the service.",
+        "service_id": 5
+    }
+]

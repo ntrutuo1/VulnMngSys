@@ -1,0 +1,14 @@
+[
+    {
+        "id": "18.5.4.1",
+        "service": "Dnscache",
+        "title": "Ensure 'Configure NetBIOS settings' is set to 'Enabled: Disable NetBIOS name resolution on public networks'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient",
+        "expected": 2,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableNetbios' -ErrorAction SilentlyContinue).EnableNetbios",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Network\\DNS Client\\Configure NetBIOS settings to 'Enabled: Disable NetBIOS on public networks'",
+        "reason": "WS2025 Specific (22H2+ Template): Cấu hình kiểm soát NetBIOS vô cùng chi tiết. Nó giúp DNS Client chủ động chặn NetBIOS trên các mạng công cộng để chống spoofing, nhưng vẫn giữ tương thích trên mạng nội bộ."
+    }
+]

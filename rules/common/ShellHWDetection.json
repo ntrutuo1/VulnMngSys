@@ -1,0 +1,30 @@
+[
+    {
+        "hash_id": "",
+        "service": "ShellHWDetection",
+        "id": "18.9.8.3",
+        "title": "Ensure 'Turn off Autoplay' is set to 'Enabled: All drives'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "expected": 255,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoDriveTypeAutoRun' -ErrorAction SilentlyContinue).NoDriveTypeAutoRun",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Turn off Autoplay to 'Enabled: All drives'",
+        "reason": "AutoPlay can be used by malicious software to execute payload automatically from removable media. Disabling AutoPlay on all drives mitigates this risk.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "ShellHWDetection",
+        "id": "18.9.8.1",
+        "title": "Ensure 'Disallow Autoplay for non-volume devices' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'NoAutoplayfornonVolume' -ErrorAction SilentlyContinue).NoAutoplayfornonVolume",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Disallow Autoplay for non-volume devices to 'Enabled'",
+        "reason": "Prevents AutoPlay from executing on MTP devices like cameras or phones which could contain malicious code.",
+        "service_id": 18
+    }
+]

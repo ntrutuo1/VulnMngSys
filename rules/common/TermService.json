@@ -1,0 +1,44 @@
+[
+    {
+        "hash_id": "",
+        "service": "TermService",
+        "id": "18.9.63.3.10.1",
+        "title": "Ensure 'Set time limit for active but idle Remote Desktop Services sessions' is set to 'Enabled: 15 minutes or less'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "expected": 900000,
+        "operator": "<=",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'MaxIdleTime' -ErrorAction SilentlyContinue).MaxIdleTime",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Session Time Limits\\Set time limit for active but idle Remote Desktop Services sessions to 'Enabled: 15 minutes or less'",
+        "reason": "This setting helps to prevent active Remote Desktop sessions from tying up the computer for long periods of time while not in use.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "TermService",
+        "id": "18.9.63.3.10.2",
+        "title": "Ensure 'Set time limit for disconnected sessions' is set to 'Enabled: 1 minute'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "expected": 60000,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'MaxDisconnectionTime' -ErrorAction SilentlyContinue).MaxDisconnectionTime",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Session Host\\Session Time Limits\\Set time limit for disconnected sessions to 'Enabled: 1 minute'",
+        "reason": "This setting helps to prevent disconnected Remote Desktop sessions from tying up the computer.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "TermService",
+        "id": "18.9.63.2.2",
+        "title": "Ensure 'Do not allow passwords to be saved' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services' -Name 'DisablePasswordSaving' -ErrorAction SilentlyContinue).DisablePasswordSaving",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Remote Desktop Services\\Remote Desktop Connection Client\\Do not allow passwords to be saved to 'Enabled'",
+        "reason": "Prevents users from saving passwords in the Remote Desktop Connection client.",
+        "service_id": 18
+    }
+]

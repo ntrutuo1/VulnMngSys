@@ -1,0 +1,26 @@
+[
+    {
+        "id": "18.10.16.4",
+        "service": "DiagTrack",
+        "title": "Ensure 'Enable OneSettings Auditing' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'EnableOneSettingsAuditing' -ErrorAction SilentlyContinue).EnableOneSettingsAuditing",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Enable OneSettings Auditing to 'Enabled'",
+        "reason": "WS2025 Specific: Đảm bảo Windows ghi lại mọi nỗ lực kết nối với dịch vụ OneSettings vào Event Log để giám sát."
+    },
+    {
+        "id": "18.10.16.3",
+        "service": "DiagTrack",
+        "title": "Ensure 'Disable OneSettings Downloads' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'DisableOneSettingsDownloads' -ErrorAction SilentlyContinue).DisableOneSettingsDownloads",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Disable OneSettings Downloads to 'Enabled'",
+        "reason": "WS2025 Specific: Ngăn chặn Windows kết nối ngầm với OneSettings để tự động tải các tệp cấu hình từ xa."
+    }
+]

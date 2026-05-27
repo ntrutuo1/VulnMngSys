@@ -1,0 +1,44 @@
+[
+    {
+        "hash_id": "",
+        "service": "Winlogon",
+        "id": "2.3.7.4",
+        "title": "Ensure 'Interactive logon: Do not display last user name' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'DontDisplayLastUserName' -ErrorAction SilentlyContinue).DontDisplayLastUserName",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Do not display last user name to 'Enabled'",
+        "reason": "If the last user's name is displayed on the screen, an attacker can collect this information and use it to attempt to guess the password.",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "Winlogon",
+        "id": "2.3.7.5",
+        "title": "Ensure 'Interactive logon: Machine inactivity limit' is set to '900 or fewer seconds, but not 0'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "expected": 900,
+        "operator": "<=",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'InactivityTimeoutSecs' -ErrorAction SilentlyContinue).InactivityTimeoutSecs",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Machine inactivity limit to '900 or fewer seconds, but not 0'",
+        "reason": "If a user forgets to lock their computer, an attacker could access the system. Setting this timeout automatically locks the session.",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "Winlogon",
+        "id": "2.3.7.8",
+        "title": "Ensure 'Interactive logon: Require Domain Controller authentication to unlock workstation' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'ForceUnlockLogon' -ErrorAction SilentlyContinue).ForceUnlockLogon",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Interactive logon: Require Domain Controller authentication to unlock workstation to 'Enabled'",
+        "reason": "Requires the computer to re-authenticate with the domain controller when unlocking, ensuring that recently disabled or modified accounts cannot unlock the machine using cached credentials.",
+        "service_id": 2
+    }
+]

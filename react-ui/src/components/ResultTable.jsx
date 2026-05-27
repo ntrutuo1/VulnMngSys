@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Button, Descriptions, Modal, Space, Table, Tag, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
+import './ResultTable.css'
 
 function verdictColor(verdict) {
   return verdict === 'PASS' ? 'green' : 'volcano'
@@ -32,7 +33,7 @@ export default function ResultTable({ items = [] }) {
       title: t('table.rule'),
       dataIndex: 'ruleId',
       key: 'ruleId',
-      width: 300,
+      width: '25%',
       render: (value, row) => (
         <button
           type="button"
@@ -42,10 +43,10 @@ export default function ResultTable({ items = [] }) {
             openDetails(row)
           }}
         >
-          <Typography.Text strong className="result-rule-id">
+          <Typography.Text strong className="result-rule-id" ellipsis={{ tooltip: value || row.rule_id || '-' }}>
             {value || row.rule_id || '-'}
           </Typography.Text>
-          <Typography.Text type="secondary" ellipsis={{ tooltip: row.title || '-' }} className="result-rule-title">
+          <Typography.Text type="secondary" className="result-rule-title" ellipsis={{ tooltip: row.title || '-' }}>
             {row.title || '-'}
           </Typography.Text>
         </button>
@@ -55,14 +56,14 @@ export default function ResultTable({ items = [] }) {
       title: t('table.result'),
       dataIndex: 'verdict',
       key: 'verdict',
-      width: 100,
+      width: '8%',
       render: (value) => <Tag color={verdictColor(value)}>{value || 'FAIL'}</Tag>,
     },
     {
       title: t('table.expected'),
       dataIndex: 'expected',
       key: 'expected',
-      width: 260,
+      width: '20%',
       ellipsis: true,
       render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
@@ -70,7 +71,7 @@ export default function ResultTable({ items = [] }) {
       title: t('table.actual'),
       dataIndex: 'actual',
       key: 'actual',
-      width: 260,
+      width: '20%',
       ellipsis: true,
       render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
@@ -78,13 +79,13 @@ export default function ResultTable({ items = [] }) {
       title: t('table.status'),
       dataIndex: 'status',
       key: 'status',
-      width: 160,
+      width: '8%',
     },
     {
       title: t('table.guidance'),
       dataIndex: 'guidance',
       key: 'guidance',
-      width: 260,
+      width: '15%',
       ellipsis: true,
       render: (value) => {
         const guidance = Array.isArray(value) ? value : []
@@ -97,7 +98,7 @@ export default function ResultTable({ items = [] }) {
     {
       title: '',
       key: 'action',
-      width: 120,
+      width: '4%',
       render: (_, row) => (
         <Button
           type="link"
@@ -120,7 +121,9 @@ export default function ResultTable({ items = [] }) {
         dataSource={safeItems}
         pagination={pagination}
         size="small"
-        scroll={{ x: 1240 }}
+        // Use fixed table layout and 100% width so percent column widths are respected
+        tableLayout="fixed"
+        style={{ width: '100%' }}
         onRow={(record) => ({
           onClick: () => openDetails(record),
           style: { cursor: 'pointer' },

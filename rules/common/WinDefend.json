@@ -1,0 +1,44 @@
+[
+    {
+        "hash_id": "",
+        "service": "WinDefend",
+        "id": "18.10.43.16",
+        "title": "Ensure 'Turn off Microsoft Defender AntiVirus' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender' -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue).DisableAntiSpyware",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Turn off Microsoft Defender Antivirus to 'Disabled'",
+        "reason": "Turning off Microsoft Defender Antivirus exposes the system to malware and other unwanted software. It must be explicitly set to Disabled so the service remains active.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "WinDefend",
+        "id": "18.10.43.13.2",
+        "title": "Ensure 'Turn on e-mail scanning' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan' -Name 'DisableEmailScanning' -ErrorAction SilentlyContinue).DisableEmailScanning",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Scan\\Turn on e-mail scanning to 'Enabled'",
+        "reason": "Enabling this feature allows the antivirus engine to parse and scan emails and their attachments as they arrive, providing an early layer of defense against phishing and malicious payloads.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "WinDefend",
+        "id": "18.9.45.8.1",
+        "title": "Ensure 'Scan all downloaded files and attachments' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection' -Name 'DisableIOAVProtection' -ErrorAction SilentlyContinue).DisableIOAVProtection",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Real-time Protection\\Scan all downloaded files and attachments to 'Enabled'",
+        "reason": "This policy ensures that IOAV (Attachment Services) protection is active, which inspects files downloaded from browsers or saved from email clients.",
+        "service_id": 18
+    }
+]

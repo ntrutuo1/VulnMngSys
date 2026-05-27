@@ -1,0 +1,44 @@
+[
+    {
+        "hash_id": "",
+        "service": "LsaSrv",
+        "id": "2.3.11.5",
+        "title": "Ensure 'Network security: Do not store LAN Manager hash value on next password change' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'NoLMHash' -ErrorAction SilentlyContinue).NoLMHash",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: Do not store LAN Manager hash value on next password change to 'Enabled'",
+        "reason": "LM hashes are relatively weak and can be cracked quickly using brute-force attacks.",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "LsaSrv",
+        "id": "2.3.11.7",
+        "title": "Ensure 'Network security: LAN Manager authentication level' is set to 'Send NTLMv2 response only. Refuse LM & NTLM'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "expected": 5,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'LmCompatibilityLevel' -ErrorAction SilentlyContinue).LmCompatibilityLevel",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network security: LAN Manager authentication level to 'Send NTLMv2 response only. Refuse LM & NTLM'",
+        "reason": "The LM authentication protocol is inherently weak. NTLMv2 provides stronger authentication security.",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "LsaSrv",
+        "id": "2.3.1.3",
+        "title": "Ensure 'Accounts: Limit local account use of blank passwords to console logon only' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'LimitBlankPasswordUse' -ErrorAction SilentlyContinue).LimitBlankPasswordUse",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Accounts: Limit local account use of blank passwords to console logon only to 'Enabled'",
+        "reason": "If this policy is disabled, any user with a blank password could log on to the computer over the network, potentially granting unauthorized access.",
+        "service_id": 2
+    }
+]

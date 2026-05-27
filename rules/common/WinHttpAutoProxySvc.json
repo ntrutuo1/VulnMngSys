@@ -1,0 +1,16 @@
+[
+    {
+        "hash_id": "",
+        "service": "WinHttpAutoProxySvc",
+        "id": "18.11.1",
+        "title": "Ensure 'Disable HTTP proxy features: Disable WPAD' is set to 'Enabled: Checked'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinHttp",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinHttp' -Name 'DisableWpad' -ErrorAction SilentlyContinue).DisableWpad",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Disable HTTP proxy features: Disable WPAD to 'Enabled: Checked'",
+        "reason": "WPAD (Web Proxy Auto-Discovery) poses a significant security risk, as it allows attackers to perform Man-in-the-Middle (MitM) attacks by spoofing the WPAD server response. Disabling it is highly recommended.",
+        "service_id": 18
+    }
+]

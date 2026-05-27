@@ -1,0 +1,30 @@
+[
+    {
+        "hash_id": "",
+        "service": "Dnscache",
+        "id": "18.5.4.1",
+        "title": "Ensure 'Turn off multicast name resolution' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableMulticast' -ErrorAction SilentlyContinue).EnableMulticast",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Turn off multicast name resolution to 'Enabled'",
+        "reason": "An attacker can listen on a network for these LLMNR (UDP/5355) broadcasts and respond to them, tricking the host into thinking that it knows the location of the requested system [7].",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "Dnscache",
+        "id": "18.6.4.1",
+        "title": "Ensure 'Configure multicast DNS (mDNS) protocol' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableMDNS' -ErrorAction SilentlyContinue).EnableMDNS",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Configure multicast DNS (mDNS) protocol to 'Disabled'",
+        "reason": "A threat actor can listen on a network over UDP port 5353 and respond to them, tricking the host into thinking that it knows the location of the requested system [6].",
+        "service_id": 18
+    }
+]

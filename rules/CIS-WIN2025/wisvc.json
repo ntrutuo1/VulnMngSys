@@ -1,0 +1,14 @@
+[
+    {
+        "id": "18.10.15.9",
+        "service": "wisvc",
+        "title": "Ensure 'Toggle user control over Insider builds' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PreviewBuilds",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PreviewBuilds' -Name 'AllowBuildPreview' -ErrorAction SilentlyContinue).AllowBuildPreview",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Data Collection and Preview Builds\\Toggle user control over Insider builds to 'Disabled'",
+        "reason": "WS2025 Specific: Khóa quyền truy cập vào các bản dựng dùng thử (Preview Builds) vốn chứa nhiều rủi ro bảo mật trên môi trường Production."
+    }
+]

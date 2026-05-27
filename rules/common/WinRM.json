@@ -1,0 +1,30 @@
+[
+    {
+        "hash_id": "",
+        "service": "WinRM",
+        "id": "18.9.102.2.1",
+        "title": "Ensure 'Allow Basic authentication' is set to 'Disabled' (WinRM Service)",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service' -Name 'AllowBasic' -ErrorAction SilentlyContinue).AllowBasic",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow Basic authentication to 'Disabled'",
+        "reason": "Basic authentication transmits credentials in plain text. An attacker able to capture packets could determine the credentials used for accessing remote hosts via WinRM.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "WinRM",
+        "id": "18.9.102.2.3",
+        "title": "Ensure 'Allow unencrypted traffic' is set to 'Disabled' (WinRM Service)",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service' -Name 'AllowUnencryptedTraffic' -ErrorAction SilentlyContinue).AllowUnencryptedTraffic",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management (WinRM)\\WinRM Service\\Allow unencrypted traffic to 'Disabled'",
+        "reason": "Encrypting WinRM network traffic reduces the risk of an attacker viewing or modifying WinRM messages as they transit the network.",
+        "service_id": 18
+    }
+]

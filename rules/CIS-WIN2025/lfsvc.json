@@ -1,0 +1,14 @@
+[
+    {
+        "id": "18.10.37.2",
+        "service": "lfsvc",
+        "title": "Ensure 'Turn off location' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors' -Name 'DisableLocation' -ErrorAction SilentlyContinue).DisableLocation",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Location and Sensors\\Turn off location to 'Enabled'",
+        "reason": "WS2025 Specific: Tắt hoàn toàn dịch vụ Định vị để bảo vệ quyền riêng tư và hạn chế rò rỉ dữ liệu về tọa độ hệ thống."
+    }
+]

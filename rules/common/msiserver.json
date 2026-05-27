@@ -1,0 +1,30 @@
+[
+    {
+        "hash_id": "",
+        "service": "msiserver",
+        "id": "18.10.82.1",
+        "title": "Ensure 'Allow user control over installs' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'EnableUserControl' -ErrorAction SilentlyContinue).EnableUserControl",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Allow user control over installs to 'Disabled'",
+        "reason": "Permits users to change installation options that typically are available only to system administrators. This prevents users from bypassing security features.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "msiserver",
+        "id": "18.10.82.2",
+        "title": "Ensure 'Always install with elevated privileges' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'AlwaysInstallElevated' -ErrorAction SilentlyContinue).AlwaysInstallElevated",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Always install with elevated privileges to 'Disabled'",
+        "reason": "Directs Windows Installer to use system permissions when it installs any program. If enabled, standard users can install malicious applications that affect system-wide configuration.",
+        "service_id": 18
+    }
+]

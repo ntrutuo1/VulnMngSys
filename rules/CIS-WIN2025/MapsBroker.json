@@ -1,0 +1,14 @@
+[
+    {
+        "id": "18.10.38.1",
+        "service": "MapsBroker",
+        "title": "Ensure 'Turn off the download and update of map data' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Maps",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Maps' -Name 'AutoDownloadAndUpdateMapData' -ErrorAction SilentlyContinue).AutoDownloadAndUpdateMapData",
+        "remediation": "Set GP: Computer Configuration\\Administrative Templates\\Windows Components\\Maps\\Turn off the download and update of map data to 'Enabled'",
+        "reason": "WS2025 Specific: Ngăn chặn dịch vụ Maps tải và cập nhật dữ liệu bản đồ trái phép qua mạng."
+    }
+]

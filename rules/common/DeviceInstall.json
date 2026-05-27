@@ -1,0 +1,16 @@
+[
+    {
+        "hash_id": "",
+        "service": "DeviceInstall",
+        "id": "18.9.7.2",
+        "title": "Ensure 'Prevent automatic download of applications associated with device metadata' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Device Metadata' -Name 'PreventDeviceMetadataFromNetwork' -ErrorAction SilentlyContinue).PreventDeviceMetadataFromNetwork",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Device Installation\\Prevent automatic download of applications associated with device metadata to 'Enabled'",
+        "reason": "Verify that the version of all software/metadata acquired from outside your organization is explicitly approved. Preventing automatic retrieval mitigates malicious package delivery.",
+        "service_id": 18
+    }
+]

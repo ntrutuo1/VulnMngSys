@@ -7,6 +7,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from app_bootstrap.scanflow.inventory import load_windows_inventory
+from app_bootstrap.scanflow.service_id_map import valid_service_ids
 from ..scan_backend import SCAN_FEATURE_MESSAGE, load_report_file, run_scan_and_save_report
 
 
@@ -99,12 +100,37 @@ def create_api_server(host: str = "127.0.0.1", port: int = 5000) -> tuple[Thread
                 for item in selected_services_raw
                 if str(item).strip()
             }
+            selected_service_ids_raw = body.get("selectedServiceIds") or body.get("selected_service_ids") or []
+            selected_service_ids: set[int] = set()
+            invalid_ids: list[str] = []
+
+            for item in selected_service_ids_raw:
+                try:
+                    selected_service_ids.add(int(str(item).strip()))
+                except Exception:
+                    invalid_ids.append(str(item))
+
+            known_ids = valid_service_ids()
+            unknown_ids = sorted(service_id for service_id in selected_service_ids if service_id not in known_ids)
+            if invalid_ids or unknown_ids:
+                _json_response(
+                    self,
+                    400,
+                    {
+                        "ok": False,
+                        "error": "Invalid selectedServiceIds",
+                        "invalidIds": invalid_ids,
+                        "unknownIds": unknown_ids,
+                    },
+                )
+                return
 
             try:
                 payload = run_scan_and_save_report(
                     profile_key=profile_key,
                     mode="full" if full_scan else "quick",
                     selected_service_names=selected_service_names,
+                    selected_service_ids=selected_service_ids,
                 )
                 _json_response(self, 200, payload)
             except Exception as exc:

@@ -1,0 +1,44 @@
+[
+    {
+        "hash_id": "",
+        "service": "Netlogon",
+        "id": "2.3.6.1",
+        "title": "Ensure 'Domain member: Digitally encrypt or sign secure channel data (always)' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters' -Name 'RequireSignOrSeal' -ErrorAction SilentlyContinue).RequireSignOrSeal",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Domain member: Digitally encrypt or sign secure channel data (always) to 'Enabled'",
+        "reason": "This policy prevents the server from establishing a secure channel with a domain controller unless the traffic is signed or encrypted, mitigating Man-in-the-Middle attacks.",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "Netlogon",
+        "id": "2.3.6.2",
+        "title": "Ensure 'Domain member: Digitally encrypt secure channel data (when possible)' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters' -Name 'SealSecureChannel' -ErrorAction SilentlyContinue).SealSecureChannel",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Domain member: Digitally encrypt secure channel data (when possible) to 'Enabled'",
+        "reason": "When enabled, this policy requests encryption for all secure channel traffic, protecting sensitive authentication data from being intercepted in clear text.",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "Netlogon",
+        "id": "2.3.6.3",
+        "title": "Ensure 'Domain member: Digitally sign secure channel data (when possible)' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters' -Name 'SignSecureChannel' -ErrorAction SilentlyContinue).SignSecureChannel",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Domain member: Digitally sign secure channel data (when possible) to 'Enabled'",
+        "reason": "This configuration attempts to sign all secure channel data to ensure the integrity of the data being transmitted to and from the domain controller.",
+        "service_id": 2
+    }
+]

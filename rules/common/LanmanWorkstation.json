@@ -1,0 +1,30 @@
+[
+    {
+        "hash_id": "",
+        "service": "LanmanWorkstation",
+        "id": "2.3.8.1",
+        "title": "Ensure 'Microsoft network client: Digitally sign communications (always)' is set to 'Enabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'RequireSecuritySignature' -ErrorAction SilentlyContinue).RequireSecuritySignature",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Microsoft network client: Digitally sign communications (always) to 'Enabled'",
+        "reason": "SMB signatures authenticate both users and the servers that host the data. If either side fails the authentication process, data transmission will not take place. This prevents Man-in-the-Middle attacks [1].",
+        "service_id": 2
+    },
+    {
+        "hash_id": "",
+        "service": "LanmanWorkstation",
+        "id": "18.6.8.1",
+        "title": "Ensure 'Enable insecure guest logons' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation' -Name 'AllowInsecureGuestAuth' -ErrorAction SilentlyContinue).AllowInsecureGuestAuth",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Lanman Workstation\\Enable insecure guest logons to 'Disabled'",
+        "reason": "This policy setting determines if the SMB client will allow insecure guest logons to an SMB server, which could expose the client to unauthenticated access [2].",
+        "service_id": 18
+    }
+]

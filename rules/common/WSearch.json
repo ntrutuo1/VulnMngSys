@@ -1,0 +1,16 @@
+[
+    {
+        "hash_id": "",
+        "service": "WSearch",
+        "id": "18.9.65.2",
+        "title": "Ensure 'Allow indexing of encrypted files' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'AllowIndexingEncryptedStoresOrItems' -ErrorAction SilentlyContinue).AllowIndexingEncryptedStoresOrItems",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow indexing of encrypted files to 'Disabled'",
+        "reason": "If this policy is enabled, Windows Search will index encrypted files and store the index in a local, unencrypted database, potentially exposing sensitive information.",
+        "service_id": 18
+    }
+]

@@ -1,0 +1,9 @@
+.result-rule-cell{border:0;background:transparent;padding:0;text-align:left;width:100%}
+.result-rule-cell .result-rule-title{display:block}
+/* Reduce table cell padding to fit more columns */
+.ant-table-cell{padding:8px 12px}
+/* Ensure wrapped text and prevent overflow */
+.ant-table-cell .ant-typography{white-space:nowrap}
+.ant-table-cell .ant-typography[title]{white-space:nowrap}
+/* For ellipsis, ensure tooltip works */
+.result-rule-id{display:block}

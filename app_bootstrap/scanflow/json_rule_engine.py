@@ -14,6 +14,7 @@ import winreg
 from .guidance import build_guidance
 from .models import ComparisonSummary, RuleComparisonResult
 from .rule_catalog import get_full_rule_files, get_quick_rule_file
+from .service_id_map import normalize_service_id, service_ids_from_names, service_name_from_id
 
 
 AUDITPOL_BITMASKS = {
@@ -82,6 +83,8 @@ SECURITY_POLICY_KEYS = {
 LOCAL_USER_RULES = {"2.3.1.1", "2.3.1.3", "2.3.1.4"}
 
 SERVICE_CATALOG_PATH = Path(__file__).resolve().parents[2] / "rules" / "service_catalog.json"
+MANDATORY_BASELINE_SERVICE_ID = 1
+UNKNOWN_SERVICE_ID = 99
 
 
 @dataclass(frozen=True, slots=True)
@@ -204,25 +207,65 @@ def _prepare_rules_for_scan(
     *,
     profile_key: str,
     detected_service_names: set[str] | None,
+    detected_service_ids: set[int] | None = None,
 ) -> list[dict[str, Any]]:
     service_catalog = _load_service_catalog(profile_key)
-    if not service_catalog:
-        return rules
 
-    detected = {_normalize_service_name(name) for name in (detected_service_names or set()) if _normalize_text(name)}
-    filter_enabled = bool(detected)
+    normalized_detected_names = {
+        _normalize_text(name)
+        for name in (detected_service_names or set())
+        if _normalize_text(name)
+    }
+    selected_ids = {
+        service_id
+        for service_id in (normalize_service_id(item) for item in (detected_service_ids or set()))
+        if service_id is not None
+    }
+
+    if not selected_ids and normalized_detected_names:
+        selected_ids = service_ids_from_names(normalized_detected_names)
+
+    filter_enabled = bool(selected_ids) or bool(normalized_detected_names)
+
+    # Full scan mode keeps legacy behavior and classification enrichment.
+    if not filter_enabled:
+        if not service_catalog:
+            return rules
+
+        prepared: list[dict[str, Any]] = []
+        for rule in rules:
+            service_name = _classify_rule_service(rule, service_catalog)
+            if service_name:
+                enriched_rule = dict(rule)
+                enriched_rule["service"] = service_name
+                prepared.append(enriched_rule)
+            else:
+                prepared.append(rule)
+        return prepared
+
+    # Partial scan mode: filter strictly by service_id before any probe executes.
+    effective_ids = set(selected_ids)
+    effective_ids.add(MANDATORY_BASELINE_SERVICE_ID)
+    include_unknown = UNKNOWN_SERVICE_ID in selected_ids
+
     prepared: list[dict[str, Any]] = []
-
     for rule in rules:
-        service_name = _classify_rule_service(rule, service_catalog)
-        if service_name:
-            if filter_enabled and _normalize_service_name(service_name) not in detected:
-                continue
-            enriched_rule = dict(rule)
-            enriched_rule["service"] = service_name
-            prepared.append(enriched_rule)
-        else:
-            prepared.append(rule)
+        rule_service_id = normalize_service_id(rule.get("service_id"))
+
+        # In partial mode, untagged rules are skipped by policy.
+        if rule_service_id is None:
+            continue
+        if rule_service_id == UNKNOWN_SERVICE_ID and not include_unknown:
+            continue
+        if rule_service_id not in effective_ids:
+            continue
+
+        enriched_rule = dict(rule)
+        if not enriched_rule.get("service"):
+            mapped_name = service_name_from_id(rule_service_id)
+            if mapped_name:
+                enriched_rule["service"] = mapped_name
+        prepared.append(enriched_rule)
 
     return prepared
 
@@ -826,9 +869,15 @@ def scan_profile(
     profile_key: str,
     full_scan: bool,
     detected_service_names: set[str] | None = None,
+    detected_service_ids: set[int] | None = None,
 ) -> tuple[list[RuleComparisonResult], list[Path]]:
     rule_files = _load_rule_files(profile_key, full_scan)
-    return scan_rule_files(rule_files, profile_key=profile_key, detected_service_names=detected_service_names), rule_files
+    return scan_rule_files(
+        rule_files,
+        profile_key=profile_key,
+        detected_service_names=detected_service_names,
+        detected_service_ids=detected_service_ids,
+    ), rule_files
 
 
 def scan_rule_files(
@@ -836,9 +885,15 @@ def scan_rule_files(
     *,
     profile_key: str,
     detected_service_names: set[str] | None = None,
+    detected_service_ids: set[int] | None = None,
 ) -> list[RuleComparisonResult]:
     rules = _load_json_rules(rule_files)
-    rules = _prepare_rules_for_scan(rules, profile_key=profile_key, detected_service_names=detected_service_names)
+    rules = _prepare_rules_for_scan(
+        rules,
+        profile_key=profile_key,
+        detected_service_names=detected_service_names,
+        detected_service_ids=detected_service_ids,
+    )
     if not rules:
         return []
     snapshots = _load_snapshots()
@@ -851,9 +906,15 @@ def write_merged_scan_from_files(
     *,
     profile_key: str,
     detected_service_names: set[str] | None = None,
+    detected_service_ids: set[int] | None = None,
 ) -> Path:
     rules = _load_json_rules(rule_files)
-    rules = _prepare_rules_for_scan(rules, profile_key=profile_key, detected_service_names=detected_service_names)
+    rules = _prepare_rules_for_scan(
+        rules,
+        profile_key=profile_key,
+        detected_service_names=detected_service_names,
+        detected_service_ids=detected_service_ids,
+    )
     snapshots = _load_snapshots()
     results = [_compare_rule(rule, snapshots) for rule in rules]
 
@@ -892,6 +953,7 @@ def write_merged_scan(
     full_scan: bool,
     output_dir: Path,
     detected_service_names: set[str] | None = None,
+    detected_service_ids: set[int] | None = None,
 ) -> Path:
     rule_files = _load_rule_files(profile_key, full_scan)
     return write_merged_scan_from_files(
@@ -899,6 +961,7 @@ def write_merged_scan(
         output_dir,
         profile_key=profile_key,
         detected_service_names=detected_service_names,
+        detected_service_ids=detected_service_ids,
     )
 
 

@@ -1,0 +1,170 @@
+[
+  {
+    "id": 1,
+    "service": "Appinfo",
+    "name": "Application Information (UAC)",
+    "description": "Dịch vụ quản lý leo thang đặc quyền. Bắt buộc bật UAC (Admin Approval Mode) trên Desktop bảo mật để ngăn mã độc tự động chạy dưới quyền Admin.",
+    "config_file": "Appinfo.json"
+  },
+  {
+    "id": 2,
+    "service": "DeviceInstall",
+    "name": "Device Setup Manager",
+    "description": "Dịch vụ quản lý cài đặt thiết bị. Chặn việc tự động tải ứng dụng/metadata đi kèm với phần cứng từ Internet để phòng tránh mã độc ngụy trang.",
+    "config_file": "DeviceInstall.json"
+  },
+  {
+    "id": 3,
+    "service": "Dnscache",
+    "name": "DNS Client",
+    "description": "Dịch vụ lưu trữ và phân giải tên miền. Bắt buộc tắt LLMNR và mDNS để chống các cuộc tấn công giả mạo tên miền (Name Spoofing) và đánh cắp mã băm.",
+    "config_file": "Dnscache.json"
+  },
+  {
+    "id": 4,
+    "service": "EventLog",
+    "name": "Windows Event Log",
+    "description": "Dịch vụ ghi nhận sự kiện hệ thống. Yêu cầu tăng dung lượng tối đa cho log Security (196MB) và Application/System (32MB) để phục vụ điều tra sự cố.",
+    "config_file": "EventLog.json"
+  },
+  {
+    "id": 5,
+    "service": "LanmanServer",
+    "name": "Server (SMB Server)",
+    "description": "Dịch vụ chia sẻ tệp và máy in. Bắt buộc tắt giao thức SMBv1 (nguồn gốc của nhiều Ransomware) và yêu cầu ký điện tử gói tin.",
+    "config_file": "LanmanServer.json"
+  },
+  {
+    "id": 6,
+    "service": "LanmanWorkstation",
+    "name": "Workstation (SMB Client)",
+    "description": "Dịch vụ kết nối chia sẻ tệp. Cấm đăng nhập qua tài khoản Guest không an toàn và bắt buộc ký điện tử kết nối đi.",
+    "config_file": "LanmanWorkstation.json"
+  },
+  {
+    "id": 7,
+    "service": "LsaSrv",
+    "name": "Local Security Authority (LSASS)",
+    "description": "Tiến trình xác thực lõi. Bắt buộc dùng giao thức NTLMv2 mạnh nhất, cấm lưu trữ mã băm chuẩn cũ (LM Hash).",
+    "config_file": "LsaSrv.json"
+  },
+  {
+    "id": 8,
+    "service": "MpsSvc",
+    "name": "Windows Defender Firewall",
+    "description": "Dịch vụ Tường lửa mặc định. Luôn phải bật trên mọi Profile (Domain/Private/Public) và chặn mọi kết nối Inbound không được phép.",
+    "config_file": "MpsSvc.json"
+  },
+  {
+    "id": 9,
+    "service": "mrxsmb10",
+    "name": "SMB 1.x MiniRedirector",
+    "description": "Driver nhân hệ điều hành của SMBv1 Client. Bắt buộc vô hiệu hóa driver để chặn hoàn toàn khả năng máy chủ chủ động kết nối SMBv1 ra ngoài.",
+    "config_file": "mrxsmb10.json"
+  },
+  {
+    "id": 10,
+    "service": "msiserver",
+    "name": "Windows Installer",
+    "description": "Dịch vụ cài đặt phần mềm (.msi). Cấm người dùng thông thường cài đặt phần mềm với đặc quyền quản trị (AlwaysInstallElevated).",
+    "config_file": "msiserver.json"
+  },
+  {
+    "id": 11,
+    "service": "Netlogon",
+    "name": "Net Logon",
+    "description": "Dịch vụ duy trì kênh giao tiếp an toàn (Secure Channel) với Domain Controller. Yêu cầu mã hóa và ký điện tử mọi luồng dữ liệu.",
+    "config_file": "Netlogon.json"
+  },
+  {
+    "id": 12,
+    "service": "RemoteRegistry",
+    "name": "Remote Registry",
+    "description": "Dịch vụ quản lý Registry từ xa qua mạng. Siết chặt danh sách các đường dẫn Registry cho phép truy cập ẩn danh (Anonymous).",
+    "config_file": "RemoteRegistry.json"
+  },
+  {
+    "id": 13,
+    "service": "ShellHWDetection",
+    "name": "Shell Hardware Detection",
+    "description": "Dịch vụ quản lý thiết bị ngoại vi và AutoPlay. Bắt buộc tắt AutoPlay/AutoRun trên mọi loại thiết bị (USB, CD) để chặn mã độc tự thực thi.",
+    "config_file": "ShellHWDetection.json"
+  },
+  {
+    "id": 14,
+    "service": "Spooler",
+    "name": "Print Spooler",
+    "description": "Dịch vụ quản lý in ấn. Là mục tiêu của các cuộc tấn công PrintNightmare, bắt buộc vô hiệu hóa nếu máy chủ không đóng vai trò Print Server.",
+    "config_file": "Spooler.json"
+  },
+  {
+    "id": 15,
+    "service": "TCPIP",
+    "name": "TCP/IP Protocol Driver",
+    "description": "Trình điều khiển mạng lõi. Cấu hình bảo vệ chống lại tấn công từ chối dịch vụ (DoS) và cấm việc người gửi tự định tuyến gói tin (Source Routing).",
+    "config_file": "TCPIP.json"
+  },
+  {
+    "id": 16,
+    "service": "TermService",
+    "name": "Remote Desktop Services",
+    "description": "Dịch vụ quản lý phiên RDP. Giới hạn thời gian phiên rảnh (idle), tự động ngắt kết nối và cấm client lưu mật khẩu từ xa.",
+    "config_file": "TermService.json"
+  },
+  {
+    "id": 17,
+    "service": "W32Time",
+    "name": "Windows Time",
+    "description": "Dịch vụ đồng bộ thời gian. Bắt buộc bật Client NTP để đồng bộ thời gian xác thực, nhưng phải tắt chức năng Server NTP trên các Member Server.",
+    "config_file": "W32Time.json"
+  },
+  {
+    "id": 18,
+    "service": "WerSvc",
+    "name": "Windows Error Reporting Service",
+    "description": "Dịch vụ báo cáo lỗi. Không tự động gửi bản dump bộ nhớ chứa thông tin nhạy cảm (như mật khẩu, khóa mã hóa) về máy chủ của Microsoft.",
+    "config_file": "WerSvc.json"
+  },
+  {
+    "id": 19,
+    "service": "WinDefend",
+    "name": "Microsoft Defender Antivirus",
+    "description": "Trình diệt virus cốt lõi. Bắt buộc bật tính năng quét thời gian thực, đồng thời kiểm tra tất cả các tệp tin tải về và luồng email.",
+    "config_file": "WinDefend.json"
+  },
+  {
+    "id": 20,
+    "service": "WinHttpAutoProxySvc",
+    "name": "WinHTTP Web Proxy Auto-Discovery",
+    "description": "Dịch vụ tự động dò Proxy (WPAD). Bắt buộc tắt tính năng này để tránh các cuộc tấn công Man-in-the-Middle (MitM) đánh cắp luồng duyệt Web.",
+    "config_file": "WinHttpAutoProxySvc.json"
+  },
+  {
+    "id": 21,
+    "service": "Winlogon",
+    "name": "Windows Logon",
+    "description": "Tiến trình hiển thị màn hình đăng nhập. Che tên người dùng đăng nhập cuối cùng và tự động khóa phiên làm việc (Screen Saver) khi máy tính bị treo.",
+    "config_file": "Winlogon.json"
+  },
+  {
+    "id": 22,
+    "service": "WinRM",
+    "name": "Windows Remote Management",
+    "description": "Dịch vụ quản trị từ xa qua mạng. Bắt buộc tắt giao thức xác thực Basic và yêu cầu mọi luồng lệnh điều khiển phải được mã hóa.",
+    "config_file": "WinRM.json"
+  },
+  {
+    "id": 23,
+    "service": "WSearch",
+    "name": "Windows Search",
+    "description": "Dịch vụ tạo chỉ mục tìm kiếm tệp tin. Cấm lập chỉ mục tự động đối với các tệp đã được mã hóa để tránh vô tình làm lộ lọt dữ liệu nhạy cảm vào cache.",
+    "config_file": "WSearch.json"
+  },
+  {
+    "id": 24,
+    "service": "wuauserv",
+    "name": "Windows Update",
+    "description": "Dịch vụ cập nhật hệ thống. Đảm bảo bản vá được tải tự động, nhưng cấm khởi động lại máy khi đang có quản trị viên thao tác trực tiếp trên máy.",
+    "config_file": "wuauserv.json"
+  }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "hash_id": "",
+        "service": "WerSvc",
+        "id": "18.9.82.3",
+        "title": "Ensure 'Automatically send memory dumps for OS-generated error reports' is set to 'Disabled'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting",
+        "expected": 0,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting' -Name 'AutoApproveOSDumps' -ErrorAction SilentlyContinue).AutoApproveOSDumps",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Error Reporting\\Automatically send memory dumps for OS-generated error reports to 'Disabled'",
+        "reason": "Memory dumps sent to Microsoft for error reporting could inadvertently contain sensitive information such as passwords, encryption keys, or user data.",
+        "service_id": 18
+    },
+    {
+        "hash_id": "",
+        "service": "WerSvc",
+        "id": "18.9.82.2.1",
+        "title": "Ensure 'Configure Default consent' is set to 'Enabled: Always ask before sending data'",
+        "check_type": "Registry",
+        "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting\\Consent",
+        "expected": 1,
+        "operator": "==",
+        "powershell_check": "(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting\\Consent' -Name 'DefaultConsent' -ErrorAction SilentlyContinue).DefaultConsent",
+        "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Error Reporting\\Consent\\Configure Default consent to 'Enabled: Always ask before sending data'",
+        "reason": "Ensures that the system does not automatically send potentially sensitive error data to external servers without explicit administrative approval.",
+        "service_id": 18
+    }
+]
