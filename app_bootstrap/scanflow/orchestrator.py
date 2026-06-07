@@ -7,6 +7,7 @@ from .report_builder import build_report_from_merged_scan
 from .inventory import load_windows_inventory
 from .scanner import run_scan_for_profile
 from .selection import ask_scan_mode, show_message_box
+from .views.scan_view import get_scan_view
 
 
 def run_windows_server_scan_flow() -> None:
@@ -49,30 +50,8 @@ def run_windows_server_scan_flow() -> None:
 
     if summary.failed > 0:
         failed_ids = [item.rule_id for item in summary.items if not item.passed][:6]
-        fail_list = "\n".join(f"- {rule_id}" for rule_id in failed_ids) or "- Không xác định"
-        show_message_box(
-            (
-                f"Quét hoàn tất: {summary.total} rule\n"
-                f"PASS: {summary.passed}\n"
-                f"FAIL: {summary.failed}\n"
-                f"MANUAL: {summary.manual}\n\n"
-                "Rule FAIL tiêu biểu:\n"
-                f"{fail_list}\n\n"
-                f"Xem hướng dẫn chuẩn trong file:\n{summary.report_file}"
-            ),
-            "VulnMngSys - Kết quả quét",
-            0x30 | 0x40000,
-        )
+        message = get_scan_view().build_result_message(summary=summary, failed_ids=failed_ids)
+        show_message_box(message, "VulnMngSys - Kết quả quét", 0x30 | 0x40000)
         return
 
-    show_message_box(
-        (
-            f"Quét hoàn tất: {summary.total} rule\n"
-            f"PASS: {summary.passed}\n"
-            f"FAIL: {summary.failed}\n\n"
-            f"MANUAL: {summary.manual}\n\n"
-            f"Báo cáo lưu tại:\n{summary.report_file}"
-        ),
-        "VulnMngSys - Kết quả quét",
-        0x40 | 0x40000,
-    )
+    show_message_box(get_scan_view().build_result_message(summary=summary), "VulnMngSys - Kết quả quét", 0x40 | 0x40000)

@@ -43,8 +43,8 @@ def load_windows_inventory() -> ScanInventory:
         computer_name=str(raw.get("ComputerName") or ""),
         os_caption=str(raw.get("OsCaption") or "Unknown"),
         os_version=str(raw.get("OsVersion") or "Unknown"),
+        build_number=str(raw.get("BuildNumber") or ""),
+        product_type=str(raw.get("ProductType") or ""),
         is_server=bool(raw.get("IsServer")),
         profile_key=str(raw.get("ProfileKey") or ""),
-        detected_service_count=int(raw.get("DetectedServiceCount") or 0),
-        detected_services=list(raw.get("DetectedServices") or []),
     )

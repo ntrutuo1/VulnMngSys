@@ -11,25 +11,10 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app_bootstrap.scanflow.json_rule_engine import scan_profile, write_merged_scan
-from app_bootstrap.scanflow.inventory import load_windows_inventory
-
-
-def _detected_service_names() -> set[str]:
-    try:
-        inventory = load_windows_inventory()
-    except Exception:
-        return set()
-
-    names: set[str] = set()
-    for item in inventory.detected_services:
-        service_name = str(item.get("Name") or "").strip()
-        if service_name:
-            names.add(service_name)
-    return names
 
 
 def _build_payload(profile_key: str, full_scan: bool) -> dict[str, object]:
-    results, rule_files = scan_profile(profile_key, full_scan, detected_service_names=_detected_service_names())
+    results, rule_files = scan_profile(profile_key, full_scan)
     total = len(results)
     passed = sum(1 for item in results if item.verdict == "PASS")
     failed = sum(1 for item in results if item.verdict == "FAIL")
@@ -59,7 +44,6 @@ def main() -> int:
             args.profile_key,
             args.full,
             PROJECT_ROOT / "reports" / "temp",
-            detected_service_names=_detected_service_names(),
         )
         print(str(merged_path))
         return 0

@@ -1,7 +1,8 @@
-import { Badge, Space, Typography } from 'antd'
+import { Badge, Segmented, Space, Typography } from 'antd'
+import { DesktopOutlined, MobileOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 
-export default function HeaderBar({ statusOk }) {
+export default function HeaderBar({ statusOk, viewMode, onViewModeChange }) {
   const { t } = useTranslation()
 
   return (
@@ -19,10 +20,15 @@ export default function HeaderBar({ statusOk }) {
           status={statusOk ? 'success' : 'error'}
           text={statusOk ? t('app.statusReady') : t('app.statusNotReady')}
         />
-        <Space size={8}>
-          <Typography.Text type="secondary">{t('language.label')}</Typography.Text>
-          <Typography.Text strong>{t('language.en')}</Typography.Text>
-        </Space>
+        <Segmented
+          size="small"
+          value={viewMode}
+          onChange={onViewModeChange}
+          options={[
+            { label: t('view.desktop'), value: 'desktop', icon: <DesktopOutlined /> },
+            { label: t('view.mobile'), value: 'mobile', icon: <MobileOutlined /> },
+          ]}
+        />
       </Space>
     </div>
   )

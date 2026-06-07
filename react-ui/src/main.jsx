@@ -9,8 +9,46 @@ import 'antd/dist/reset.css'
 const theme = {
   token: {
     colorPrimary: '#0f766e',
-    borderRadius: 12,
-    fontFamily: 'Segoe UI, -apple-system, BlinkMacSystemFont, sans-serif',
+    colorSuccess: '#16a34a',
+    colorWarning: '#d97706',
+    colorError: '#dc2626',
+    borderRadius: 8,
+    borderRadiusLG: 8,
+    borderRadiusSM: 6,
+    fontSize: 14,
+    fontSizeLG: 15,
+    fontSizeSM: 13,
+    fontFamily: '"Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
+    lineHeight: 1.6,
+    controlHeight: 36,
+    controlHeightLG: 42,
+    controlHeightSM: 28,
+    paddingContentHorizontal: 16,
+    paddingContentVertical: 10,
+  },
+  components: {
+    Table: {
+      fontSize: 13,
+      cellPaddingBlock: 10,
+      cellPaddingInline: 12,
+      headerBg: '#f8fafc',
+      rowHoverBg: '#f8fafc',
+    },
+    Card: {
+      paddingLG: 20,
+      headerFontSize: 15,
+      headerFontSizeSM: 13,
+      boxShadow: 'none',
+    },
+    Button: {
+      fontWeight: 500,
+    },
+    Tag: {
+      fontSize: 12,
+    },
+    Badge: {
+      fontSize: 12,
+    },
   },
 }
 

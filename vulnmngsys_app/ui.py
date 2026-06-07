@@ -9,7 +9,7 @@ from urllib.parse import urlencode
 import webview
 
 from .frontend.api_server import create_api_server
-from .scan_backend import get_resource_path
+from app_bootstrap.scanflow.views.scan_backend_view import get_resource_path
 
 
 def _resolve_frontend_dist() -> Path:

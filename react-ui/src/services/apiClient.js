@@ -5,33 +5,52 @@ function resolveApiBase() {
 
 const API_BASE = resolveApiBase()
 
-export async function fetchStatus() {
-  const response = await fetch(`${API_BASE}/api/status`)
+async function getJson(path) {
+  const response = await fetch(`${API_BASE}${path}`)
   return response.json()
 }
 
-export async function fetchInventory() {
-  const response = await fetch(`${API_BASE}/api/inventory`)
-  return response.json()
-}
-
-export async function fetchReport() {
-  const response = await fetch(`${API_BASE}/api/report`)
-  return response.json()
-}
-
-export async function startScan({ profileKey, fullScan = false, selectedServices = [] } = {}) {
-  const response = await fetch(`${API_BASE}/api/scan`, {
+async function postJson(path, body) {
+  const response = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      profileKey,
-      fullScan,
-      mode: fullScan ? 'full' : 'quick',
-      selectedServices,
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   })
   return response.json()
+}
+
+export function fetchStatus() {
+  return getJson('/api/status')
+}
+
+export function fetchInventory() {
+  return getJson('/api/inventory')
+}
+
+export function fetchReport() {
+  return getJson('/api/report')
+}
+
+export function startScan({ profileKey, fullScan = false } = {}) {
+  return postJson('/api/scan', {
+    profileKey,
+    fullScan,
+    mode: fullScan ? 'full' : 'quick',
+  })
+}
+
+export function fetchMsfModules(activeTest = false) {
+  return getJson(`/api/msf/modules${activeTest ? '?active_test=true' : ''}`)
+}
+
+export function fetchMsfStatus() {
+  return getJson('/api/msf/status')
+}
+
+export function fetchMsfReport() {
+  return getJson('/api/msf/report')
+}
+
+export function startMsfAudit({ target = '127.0.0.1', activeTest = false } = {}) {
+  return postJson('/api/msf/audit', { target, activeTest })
 }

@@ -17,7 +17,6 @@ def run_scan_via_executor(
     rule_files: list[Path],
     output_dir: Path,
     profile_key: str = "Windows_Server_2022",
-    detected_service_names: set[str] | None = None,
 ) -> Path:
     """Compatibility wrapper that now delegates to the JSON rule engine."""
     if not rule_files:
@@ -28,7 +27,6 @@ def run_scan_via_executor(
         rule_files,
         output_dir,
         profile_key=profile_key,
-        detected_service_names=detected_service_names,
     )
     if not merged_path.exists():
         raise ScanExecutorError(f"Merged scan file not found: {merged_path}")

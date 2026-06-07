@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IIS MSF Audit Report — 127.0.0.1</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f23; color: #e0e0e0; margin: 0; padding: 24px; }
+  h1 { color: #60a5fa; margin-bottom: 4px; }
+  .meta { color: #9ca3af; font-size: 0.875rem; margin-bottom: 24px; }
+  .score-badge { display: inline-block; padding: 8px 20px; border-radius: 9999px;
+    font-size: 1.5rem; font-weight: bold; margin-bottom: 16px; }
+  .score-green { background: #064e3b; color: #34d399; }
+  .score-orange { background: #451a03; color: #fb923c; }
+  .score-red { background: #450a0a; color: #f87171; }
+  .summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .pill { padding: 4px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }
+  .pill-PASS { background: #052e16; color: #4ade80; }
+  .pill-FAIL { background: #450a0a; color: #f87171; }
+  .pill-WARNING { background: #431407; color: #fb923c; }
+  .pill-INFO { background: #0c1a3d; color: #60a5fa; }
+  .pill-SKIPPED { background: #1f2937; color: #9ca3af; }
+  .pill-ERROR { background: #2d0000; color: #ef4444; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: #1e293b; color: #94a3b8; padding: 10px 12px; text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1e293b; vertical-align: top; }
+  tr:hover td { background: #1e293b; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; }
+  .tag-PASS { background: #052e16; color: #4ade80; }
+  .tag-FAIL { background: #450a0a; color: #f87171; }
+  .tag-WARNING { background: #431407; color: #fb923c; }
+  .tag-INFO { background: #0c1a3d; color: #60a5fa; }
+  .tag-SKIPPED { background: #1f2937; color: #9ca3af; }
+  .tag-ERROR { background: #2d0000; color: #ef4444; }
+  .evidence { color: #d97706; font-size: 0.8rem; }
+  .remediation { color: #86efac; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<h1>IIS MSF Audit Report</h1>
+<div class="meta">Target: 127.0.0.1 &nbsp;|&nbsp; Mode: safe &nbsp;|&nbsp; 2026-06-08T03:02:08.344498</div>
+<div class="score-badge score-red">Score: 32/100 — Critical</div>
+<div class="summary"><span class='pill pill-PASS'>PASS: 1</span><span class='pill pill-FAIL'>FAIL: 1</span><span class='pill pill-WARNING'>WARNING: 1</span><span class='pill pill-INFO'>INFO: 2</span><span class='pill pill-ERROR'>ERROR: 6</span></div>
+<table>
+<thead>
+<tr><th>#</th><th>Module</th><th>Category</th><th>Port</th><th>Status</th><th>Evidence</th><th>Remediation</th></tr>
+</thead>
+<tbody>
+<tr><td>IIS-MSF-001</td><td><strong>Microsoft IIS HTTP Internal IP Disclosure</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/iis_internal_ip</small></td><td>iis specific cve or legacy misconfig</td><td>80</td><td><span class='tag tag-ERROR'>ERROR</span></td><td class='evidence'>Module execution error: Unable to create a new console.</td><td class='remediation'>Check module options and target connectivity.</td></tr>
+<tr><td>IIS-MSF-002</td><td><strong>Microsoft IIS shortname vulnerability scanner</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/iis_shortname_scanner</small></td><td>iis specific misconfiguration</td><td>80</td><td><span class='tag tag-ERROR'>ERROR</span></td><td class='evidence'>Module execution error: Unable to create a new console.</td><td class='remediation'>Check module options and target connectivity.</td></tr>
+<tr><td>IIS-MSF-003</td><td><strong>HTTP Cross-Site Tracing Detection</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/trace</small></td><td>http method misconfiguration with cve reference</td><td>80</td><td><span class='tag tag-ERROR'>ERROR</span></td><td class='evidence'>Module execution error: Unable to create a new console.</td><td class='remediation'>Check module options and target connectivity.</td></tr>
+<tr><td>IIS-MSF-004</td><td><strong>HTTP Options Detection</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/options</small></td><td>http method misconfiguration with cve reference</td><td>80</td><td><span class='tag tag-ERROR'>ERROR</span></td><td class='evidence'>Module execution error: Unable to create a new console.</td><td class='remediation'>Check module options and target connectivity.</td></tr>
+<tr><td>IIS-MSF-005</td><td><strong>HTTP WebDAV Scanner</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/webdav_scanner</small></td><td>iis feature misconfiguration</td><td>443</td><td><span class='tag tag-WARNING'>WARNING</span></td><td class='evidence'>Version 4.0.5, Alpha E | Ready... | &gt; access security | access: PERMISSION DENIED. | &gt; access security grid</td><td class='remediation'>Disable WebDAV in IIS Manager if not required.</td></tr>
+<tr><td>IIS-MSF-007</td><td><strong>HTTP Directory Listing Scanner</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/dir_listing</small></td><td>content exposure misconfiguration</td><td>80</td><td><span class='tag tag-FAIL'>FAIL</span></td><td class='evidence'>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% | %%     %%%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% | %%  %%  %%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% | %%  %  %%%%%%%%   %%%%%%%%%%% https://metasploit.com %%%%%%%</td><td class='remediation'>Disable Directory Browsing in IIS site settings.</td></tr>
+<tr><td>IIS-MSF-008</td><td><strong>HTTP Interesting File Scanner</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/files_dir</small></td><td>content exposure misconfiguration</td><td>80</td><td><span class='tag tag-ERROR'>ERROR</span></td><td class='evidence'>______________________________________________________________________________ | |                                                                              | | |                   METASPLOIT CYBER MISSILE COMMAND V5                        | | |____________________________________________________</td><td class='remediation'>Check module options and target connectivity</td></tr>
+<tr><td>IIS-MSF-009</td><td><strong>HTTP Robots.txt Content Scanner</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/robots_txt</small></td><td>content discovery</td><td>80</td><td><span class='tag tag-INFO'>INFO</span></td><td class='evidence'>.                                         . | . | dBBBBBBb  dBBBP dBBBBBBP dBBBBBb  .                       o | '   dB'                     BBP | dB'dB'dB' dBBP     dBP     dBP BB</td><td class='remediation'>Review collected information for further analysis</td></tr>
+<tr><td>IIS-MSF-010</td><td><strong>HTTP Version Detection</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/http_version</small></td><td>fingerprinting</td><td>80</td><td><span class='tag tag-INFO'>INFO</span></td><td class='evidence'>____________ | [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%| $a,        |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%] | [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%| $S`?a,     |%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%] | [%%%%%%%%%%%%%%%%%%%%__%%%%%%%%%%|       `?a, |%%%%%%%%__%%%%%%%%%__%%__ %%%%] | [% .--------..-----.|  |_ .---.-.|       .</td><td class='remediation'>Review collected information for further analysis</td></tr>
+<tr><td>IIS-MSF-011</td><td><strong>SSL/TLS Version Detection</strong><br><small style='color:#6b7280'>auxiliary/scanner/ssl/ssl_version</small></td><td>tls cve and crypto misconfiguration</td><td>443</td><td><span class='tag tag-ERROR'>ERROR</span></td><td class='evidence'># cowsay++ | ____________ | &lt; metasploit &gt; | ------------ | \   ,__,</td><td class='remediation'>Check module options and target connectivity</td></tr>
+<tr><td>IIS-MSF-012</td><td><strong>HTTP SSL Certificate Checker</strong><br><small style='color:#6b7280'>auxiliary/scanner/http/cert</small></td><td>tls certificate misconfiguration</td><td>443</td><td><span class='tag tag-PASS'>PASS</span></td><td class='evidence'></td><td class='remediation'></td></tr>
+</tbody>
+</table>
+</body>
+</html>

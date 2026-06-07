@@ -7,7 +7,7 @@ function verdictColor(verdict) {
   return verdict === 'PASS' ? 'green' : 'volcano'
 }
 
-export default function ResultTable({ items = [] }) {
+export default function ResultTable({ items = [], compact = false }) {
   const { t } = useTranslation()
   const [selectedRow, setSelectedRow] = useState(null)
 
@@ -64,6 +64,7 @@ export default function ResultTable({ items = [] }) {
       dataIndex: 'expected',
       key: 'expected',
       width: '20%',
+      responsive: compact ? ['lg'] : undefined,
       ellipsis: true,
       render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
@@ -72,6 +73,7 @@ export default function ResultTable({ items = [] }) {
       dataIndex: 'actual',
       key: 'actual',
       width: '20%',
+      responsive: compact ? ['md'] : undefined,
       ellipsis: true,
       render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
@@ -80,12 +82,14 @@ export default function ResultTable({ items = [] }) {
       dataIndex: 'status',
       key: 'status',
       width: '8%',
+      responsive: compact ? ['lg'] : undefined,
     },
     {
       title: t('table.guidance'),
       dataIndex: 'guidance',
       key: 'guidance',
       width: '15%',
+      responsive: compact ? ['xl'] : undefined,
       ellipsis: true,
       render: (value) => {
         const guidance = Array.isArray(value) ? value : []
@@ -123,6 +127,7 @@ export default function ResultTable({ items = [] }) {
         size="small"
         // Use fixed table layout and 100% width so percent column widths are respected
         tableLayout="fixed"
+        scroll={{ x: compact ? 520 : 900 }}
         style={{ width: '100%' }}
         onRow={(record) => ({
           onClick: () => openDetails(record),

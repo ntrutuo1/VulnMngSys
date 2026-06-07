@@ -4,7 +4,7 @@ import os
 import platform
 from typing import Any
 
-from .scan_backend import load_report_file, run_scan_and_save_report
+from app_bootstrap.scanflow.views.scan_backend_view import load_report_file, run_scan_and_save_report
 
 
 def _wait_before_exit() -> None:

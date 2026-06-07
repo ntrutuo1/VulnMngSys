@@ -4,7 +4,6 @@ react-ui/node_modules/
 
 electron-dist/
 win-unpacked/
-dist/
 build/
 
 *.asar

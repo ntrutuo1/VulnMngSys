@@ -1,125 +1,188 @@
 from __future__ import annotations
 
 import json
-import os
-import shutil
 from pathlib import Path
+from typing import Any, ClassVar
+
+from .models import RuleManifest
+from .rule_profile_matcher import (
+    best_profile_dir,
+    is_backup_path,
+    normalize_text,
+    path_score,
+    requested_profile_key,
+    sorted_rule_files,
+)
 
 
-class RuleManifestError(RuntimeError):
+def _rules_root() -> Path:
+    return Path(__file__).resolve().parents[2] / "rules"
+
+
+def _unique_text_items(values: Any) -> tuple[str, ...]:
+    if not isinstance(values, list):
+        return ()
+    items: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        text = normalize_text(value)
+        key = text.casefold()
+        if text and key not in seen:
+            seen.add(key)
+            items.append(text)
+    return tuple(items)
+
+
+def _candidate_names(filename: str) -> tuple[str, ...]:
+    base = normalize_text(filename)
+    cleaned = base.replace(" copy", "")
+    return tuple(dict.fromkeys(item for item in (base, cleaned) if item))
+
+
+class RuleCatalogError(RuntimeError):
     pass
 
 
+class RuleManifestError(RuleCatalogError):
+    pass
+
+
+class RuleCatalogService:
+    _instance: ClassVar[RuleCatalogService | None] = None
+
+    def __init__(self) -> None:
+        self._manifest_cache: dict[str, RuleManifest] = {}
+        self._path_cache: dict[tuple[str, str], Path] = {}
+
+    @classmethod
+    def instance(cls) -> RuleCatalogService:
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
+    def load_manifest(self, profile_key: str | None) -> RuleManifest:
+        resolved_key = requested_profile_key(profile_key)
+        cached = self._manifest_cache.get(resolved_key.casefold())
+        if cached is not None:
+            return cached
+
+        manifest = self._build_folder_manifest(resolved_key) or self._load_manifest_file(resolved_key)
+        if manifest is None:
+            raise RuleManifestError(f"No usable rule profile found for '{resolved_key}'.")
+        self._manifest_cache[resolved_key.casefold()] = manifest
+        return manifest
+
+    def resolve_rule_path(self, filename: str, *, profile_key: str | None = None) -> Path:
+        name = normalize_text(filename)
+        if not name:
+            raise RuleCatalogError("Rule filename is empty")
+        manifest = self.load_manifest(profile_key)
+        cache_key = (manifest.profile.casefold(), name.casefold())
+        cached = self._path_cache.get(cache_key)
+        if cached is not None:
+            return cached
+
+        candidates = self._rule_candidates(name, manifest)
+        if not candidates:
+            raise RuleCatalogError(f"Rule file does not exist: {name}")
+        candidates.sort(key=lambda item: (path_score(item, manifest.profile), str(item)))
+        self._path_cache[cache_key] = candidates[0]
+        return candidates[0]
+
+    def quick_rule_file(self, profile_key: str | None) -> Path:
+        manifest = self.load_manifest(profile_key)
+        if not manifest.quick:
+            raise RuleManifestError(f"Manifest for {manifest.profile} is missing quick rule.")
+        return self.resolve_rule_path(manifest.quick, profile_key=manifest.profile)
+
+    def full_rule_files(self, profile_key: str | None) -> list[Path]:
+        manifest = self.load_manifest(profile_key)
+        if not manifest.full:
+            raise RuleManifestError(f"Manifest for {manifest.profile} is missing full rules.")
+        return [self.resolve_rule_path(name, profile_key=manifest.profile) for name in manifest.full]
+
+    def _load_manifest_file(self, profile_key: str) -> RuleManifest | None:
+        manifest_file = self._discover_manifest_path(profile_key)
+        if manifest_file is None:
+            return None
+        payload = json.loads(manifest_file.read_text(encoding="utf-8-sig"))
+        if not isinstance(payload, dict):
+            raise RuleManifestError("Manifest must be a JSON object")
+        source_dir = best_profile_dir(_rules_root(), profile_key)
+        return RuleManifest(
+            profile=normalize_text(payload.get("profile") or profile_key) or profile_key,
+            quick=normalize_text(payload.get("quick")),
+            full=_unique_text_items(payload.get("full")),
+            legacy=_unique_text_items(payload.get("legacy")),
+            manifest_path=manifest_file,
+            source_dir=source_dir,
+        )
+
+    def _discover_manifest_path(self, profile_key: str) -> Path | None:
+        if "generic" in profile_key.casefold():
+            return None
+        rules_dir = _rules_root()
+        candidates = [rules_dir / f"{profile_key}_manifest.json"]
+        candidates.extend(path for path in rules_dir.rglob("*manifest*.json") if path.is_file())
+        valid = [path for path in candidates if path.exists() and not is_backup_path(path)]
+        if not valid:
+            return None
+        valid.sort(key=lambda item: (path_score(item, profile_key), str(item)))
+        return valid[0]
+
+    def _build_folder_manifest(self, profile_key: str) -> RuleManifest | None:
+        profile_dir = best_profile_dir(_rules_root(), profile_key)
+        if profile_dir is None:
+            return None
+        files = sorted_rule_files(profile_dir)
+        if not files:
+            return None
+        names = tuple(path.name for path in files)
+        quick = next((name for name in names if name.casefold().endswith("_1.json")), names[0])
+        return RuleManifest(profile=profile_dir.name, quick=quick, full=names, source_dir=profile_dir)
+
+    def _rule_candidates(self, filename: str, manifest: RuleManifest) -> list[Path]:
+        candidates: list[Path] = []
+        roots = [path for path in (manifest.source_dir, _rules_root()) if path is not None]
+        for name in _candidate_names(filename):
+            for root in roots:
+                direct = root / name
+                if direct.is_file() and not is_backup_path(direct):
+                    candidates.append(direct)
+            candidates.extend(path for path in _rules_root().rglob(name) if path.is_file() and not is_backup_path(path))
+        return list(dict.fromkeys(candidates))
+
+
+def get_rule_catalog() -> RuleCatalogService:
+    return RuleCatalogService.instance()
+
+
 def _manifest_path(profile_key: str) -> Path:
-    rules_dir = Path(__file__).resolve().parents[2] / "rules"
-    return rules_dir / f"{profile_key}_manifest.json"
+    return _rules_root() / f"{profile_key}_manifest.json"
 
 
 def _find_rule_path(filename: str) -> Path | None:
-    """Search `rules` directory for a filename; prefer root over plain_backup."""
-    rules_dir = Path(__file__).resolve().parents[2] / "rules"
-    candidate = rules_dir / filename
-    if candidate.exists():
-        return candidate
-
-    normalized_name = filename.replace(" copy", "")
-    if normalized_name != filename:
-        candidate = rules_dir / normalized_name
-        if candidate.exists():
-            return candidate
-
-    for p in rules_dir.rglob(filename):
-        if not p.is_file():
-            continue
-        if "plain_backup" in p.parts:
-            continue
-        return p
-
-    if normalized_name != filename:
-        for p in rules_dir.rglob(normalized_name):
-            if not p.is_file():
-                continue
-            if "plain_backup" in p.parts:
-                continue
-            return p
-
-    for p in rules_dir.rglob(filename):
-        if p.is_file():
-            return p
-    if normalized_name != filename:
-        for p in rules_dir.rglob(normalized_name):
-            if p.is_file():
-                return p
-    return None
+    try:
+        return get_rule_catalog().resolve_rule_path(filename)
+    except RuleCatalogError:
+        return None
 
 
 def _load_manifest(profile_key: str) -> dict:
-    manifest_file = _manifest_path(profile_key)
-    if not manifest_file.exists():
-        # fallback: search recursively for manifest json (handles plain_backup)
-        rules_dir = Path(__file__).resolve().parents[2] / "rules"
-        # try exact name first
-        found = _find_rule_path(f"{profile_key}_manifest.json")
-        if not found:
-            # look for any json file mentioning profile_key and 'manifest'
-            candidates = list(rules_dir.rglob(f"*{profile_key}*manifest*.json"))
-            if candidates:
-                found = candidates[0]
-        if found:
-            manifest_file = found
-            # if manifest was found in a nested folder (e.g., plain_backup),
-            # copy it into the top-level rules dir so other code that expects
-            # rules/<manifest> can find it in the packaged temp extraction.
-            try:
-                rules_dir = Path(__file__).resolve().parents[2] / "rules"
-                dest = rules_dir / manifest_file.name
-                if manifest_file.parent != rules_dir and not dest.exists():
-                    shutil.copy2(manifest_file, dest)
-                    manifest_file = dest
-            except Exception:
-                # if copy fails, continue using the discovered path
-                pass
-        else:
-            # helpful debug: list a few files under rules to aid diagnosis
-            sample = []
-            try:
-                for i, p in enumerate(rules_dir.rglob('*.json')):
-                    sample.append(str(p.relative_to(rules_dir)))
-                    if i >= 20:
-                        break
-            except Exception:
-                pass
-            raise RuleManifestError(f"Manifest not found: {manifest_file}. Available samples: {sample}")
-    payload = json.loads(manifest_file.read_text(encoding="utf-8-sig"))
-    if not isinstance(payload, dict):
-        raise RuleManifestError("Manifest phải là object JSON")
-    return payload
+    manifest = get_rule_catalog().load_manifest(profile_key)
+    return {
+        "profile": manifest.profile,
+        "quick": manifest.quick,
+        "full": list(manifest.full),
+        "legacy": list(manifest.legacy),
+        "manifest_path": str(manifest.manifest_path or ""),
+        "source_dir": str(manifest.source_dir or ""),
+    }
 
 
-def get_quick_rule_file(profile_key: str) -> Path:
-    manifest = _load_manifest(profile_key)
-    quick_name = str(manifest.get("quick") or "").strip()
-    if not quick_name:
-        raise RuleManifestError("Manifest is missing the `quick` field")
-
-    # resolve file by name; support files in plain_backup
-    found = _find_rule_path(quick_name)
-    if not found:
-        raise RuleManifestError(f"Quick rule file does not exist: {quick_name}")
-    return found
+def get_quick_rule_file(profile_key: str | None) -> Path:
+    return get_rule_catalog().quick_rule_file(profile_key)
 
 
-def get_full_rule_files(profile_key: str) -> list[Path]:
-    manifest = _load_manifest(profile_key)
-    full_items = manifest.get("full")
-    if not isinstance(full_items, list) or not full_items:
-        raise RuleManifestError("Manifest is missing the `full` list")
-
-    files: list[Path] = []
-    for name in full_items:
-        item_name = str(name).strip()
-        found = _find_rule_path(item_name)
-        if not found:
-            raise RuleManifestError(f"Full rule file does not exist: {item_name}")
-        files.append(found)
-    return files
+def get_full_rule_files(profile_key: str | None) -> list[Path]:
+    return get_rule_catalog().full_rule_files(profile_key)

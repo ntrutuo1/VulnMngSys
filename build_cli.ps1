@@ -9,6 +9,7 @@ $obfuscatedDir = Join-Path $rootDir 'obfuscated_src'
 $distDir = Join-Path $rootDir 'dist'
 $rulesDir = Join-Path $rootDir 'rules'
 $scriptsDir = Join-Path $rootDir 'scripts'
+$msfModulesDir = Join-Path $rootDir 'metasploit_modules'
 $pythonExe = Join-Path $parentDir '.venv\Scripts\python.exe'
 if (-not (Test-Path $pythonExe)) {
   $pythonExe = 'python'
@@ -35,7 +36,7 @@ function Invoke-CheckedCommand {
 }
 
 Write-Host '[1/4] Preparing Python build tools...'
-Invoke-CheckedCommand -FilePath $pythonExe -Arguments @('-m', 'pip', 'install', '--quiet', 'pyarmor', 'pyinstaller', 'pywebview')
+Invoke-CheckedCommand -FilePath $pythonExe -Arguments @('-m', 'pip', 'install', '--quiet', 'pyarmor', 'pyinstaller', 'pywebview', 'pymetasploit3')
 
 Write-Host '[2/4] Obfuscating CLI sources with PyArmor...'
 if (Test-Path $obfuscatedDir) {
@@ -80,8 +81,12 @@ $pyinstallerArgs = @(
   '--hidden-import', 'webbrowser',
   '--collect-submodules', 'app_bootstrap',
   '--collect-submodules', 'vulnmngsys_app',
+  '--collect-submodules', 'pymetasploit3',
+  '--hidden-import', 'pymetasploit3',
+  '--hidden-import', 'pymetasploit3.msfrpc',
   '--add-data', "${rulesDir};rules",
   '--add-data', "${scriptsDir};scripts",
+  '--add-data', "${msfModulesDir};metasploit_modules",
   (Join-Path $obfuscatedDir 'cli.py')
 )
 

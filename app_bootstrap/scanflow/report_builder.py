@@ -7,6 +7,10 @@ from typing import Any
 from .evaluate import evaluate_rule_verdict, format_expected_display
 from .guidance import build_guidance
 from .models import ComparisonSummary, RuleComparisonResult
+from .views.scan_view import get_scan_view
+
+
+_VIEW = get_scan_view()
 
 
 def _normalize(value: Any) -> str:
@@ -114,7 +118,7 @@ def _compare_scan_rows(scan_items: list[Any]) -> list[RuleComparisonResult]:
 def build_report_from_merged_scan(merged_scan_file: Path, report_file: Path) -> ComparisonSummary:
     """Build final report from scan_executor merged output — không đọc lại rules/."""
     raw = json.loads(merged_scan_file.read_text(encoding="utf-8-sig"))
-    scan_items = raw if isinstance(raw, list) else [raw]
+    scan_items = _VIEW.flatten_rows(raw)
     results = _compare_scan_rows(scan_items)
 
     total = len(results)
@@ -156,46 +160,16 @@ def build_report_payload(
     items: list[RuleComparisonResult],
     report_file: Path,
 ) -> dict[str, Any]:
-    return {
-        "status": status,
-        "total_rules": total,
-        "total": total,
-        "passed": passed,
-        "failed": failed,
-        "manual": manual,
-        "reportFile": str(report_file),
-        "items": [
-            {
-                "hash_id": item.rule_id,
-                "ruleId": item.rule_id,
-                "rule_id": item.rule_id,
-                "service": item.service_name,
-                "title": item.title,
-                "passed": item.passed,
-                "verdict": item.verdict,
-                "expected": item.expected,
-                "actual": item.actual,
-                "status": item.status,
-                "check_type": item.check_type,
-                "checkType": item.check_type,
-                "source": item.source,
-                "registry_path": item.source,
-                "serviceName": item.service_name,
-                "service_name": item.service_name,
-                "guidance": item.guidance,
-            }
-            for item in items
-        ],
-    }
+    return _VIEW.build_report_payload(
+        status=status,
+        total=total,
+        passed=passed,
+        failed=failed,
+        manual=manual,
+        items=items,
+        report_file=report_file,
+    )
 
 
 def report_payload_to_summary(payload: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "status": payload.get("status"),
-        "total_rules": payload.get("total_rules", payload.get("total", 0)),
-        "passed": payload.get("passed", 0),
-        "failed": payload.get("failed", 0),
-        "manual": payload.get("manual", 0),
-        "reportFile": payload.get("reportFile"),
-        "items": payload.get("items", []),
-    }
+    return _VIEW.report_payload_to_summary(payload)
