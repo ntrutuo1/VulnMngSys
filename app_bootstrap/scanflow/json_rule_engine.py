@@ -11,28 +11,12 @@ from typing import Any
 
 import winreg
 
+from .constants import AUDITPOL_BITMASKS, AUDITPOL_TEXT_TO_MASK
 from .guidance import build_guidance
 from .models import ComparisonSummary, RuleComparisonResult
 from .rule_metadata import cis_reference, short_reason
 from .rule_catalog import get_full_rule_files, get_quick_rule_file
-
-
-AUDITPOL_BITMASKS = {
-    0: 0,
-    1: 1,
-    2: 2,
-    3: 3,
-}
-
-AUDITPOL_TEXT_TO_MASK = {
-    "no auditing": 0,
-    "success": 1,
-    "failure": 2,
-    "success and failure": 3,
-    "success/failure": 3,
-    "success, failure": 3,
-    "failure and success": 3,
-}
+from .security import validate_powershell_check, verify_rule_file_integrity
 
 
 def _rule_text(rule: dict[str, Any], *field_names: str) -> str:
@@ -323,10 +307,13 @@ def _run_powershell(command: str) -> str:
     except Exception:
         pass
 
+    validate_powershell_check(command)
+
     completed = subprocess.run(
         ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command],
         capture_output=True,
         text=True,
+        timeout=60,
         check=False,
     )
     if completed.returncode != 0:
@@ -344,6 +331,7 @@ def _export_secedit(area: str) -> Path:
         ["secedit", "/export", "/cfg", str(tmp_file), "/areas", area],
         capture_output=True,
         text=True,
+        timeout=120,
         check=False,
     )
     if completed.returncode != 0 or not tmp_file.exists():
@@ -402,6 +390,7 @@ def _collect_auditpol_snapshot() -> dict[str, str]:
         ["auditpol", "/get", "/category:*", "/r"],
         capture_output=True,
         text=True,
+        timeout=60,
         check=False,
     )
     if completed.returncode != 0:
@@ -651,7 +640,6 @@ def _compare_rule(rule: dict[str, Any], snapshots: ScanSnapshots) -> RuleCompari
     verdict = "MANUAL"
     status = "NoDirectProbe"
 
-    registry_spec = _normalize_text(rule.get("registry"))
     powershell_check = _normalize_text(rule.get("powershell_check"))
     registry_spec = _normalize_text(rule.get("registry_path") or rule.get("registry") or rule.get("gp_path"))
 
@@ -777,24 +765,16 @@ def _compare_rule(rule: dict[str, Any], snapshots: ScanSnapshots) -> RuleCompari
                 rule_check_type = _normalize_text(rule.get("check_type")).casefold()
                 is_security_options = rule_check_type in {"securityoptions", "security_option", "security option"}
                 area = "SECURITYPOLICY" if is_security_options else "USER_RIGHTS"
-                parser = _parse_secedit_file if is_security_options else _parse_user_rights_file
                 source = f"secedit /export {area}"
                 check_type = "security_option" if is_security_options else "user_right"
                 key_match = re.search(r"\^([A-Za-z0-9_]+)", powershell_check)
                 key_name = key_match.group(1) if key_match else ""
                 try:
-                    secedit_file = _export_secedit(area)
-                    try:
-                        secedit_values = parser(secedit_file)
-                        actual_value = secedit_values.get(key_name, [] if not is_security_options else "")
-                        passed, actual_text = _compare_string(rule, actual_value)
-                        status = "Collected"
-                        verdict = "PASS" if passed else "FAIL"
-                    finally:
-                        try:
-                            secedit_file.unlink()
-                        except Exception:
-                            pass
+                    secedit_values = snapshots.security_policy if is_security_options else snapshots.user_rights
+                    actual_value = secedit_values.get(key_name, [] if not is_security_options else "")
+                    passed, actual_text = _compare_string(rule, actual_value)
+                    status = "Collected"
+                    verdict = "PASS" if passed else "FAIL"
                 except Exception as exc:
                     status = "MANUAL"
                     verdict = "MANUAL"
@@ -865,6 +845,7 @@ def scan_rule_files(
     *,
     profile_key: str,
 ) -> list[RuleComparisonResult]:
+    verify_rule_file_integrity(rule_files)
     rules = _load_json_rules(rule_files)
     rules = _prepare_rules_for_scan(
         rules,
@@ -882,6 +863,7 @@ def write_merged_scan_from_files(
     *,
     profile_key: str,
 ) -> Path:
+    verify_rule_file_integrity(rule_files)
     rules = _load_json_rules(rule_files)
     rules = _prepare_rules_for_scan(
         rules,

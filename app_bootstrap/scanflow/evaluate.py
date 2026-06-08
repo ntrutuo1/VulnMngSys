@@ -3,23 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-
-AUDITPOL_BITMASKS = {
-    0: 0,
-    1: 1,
-    2: 2,
-    3: 3,
-}
-
-AUDITPOL_TEXT_TO_MASK = {
-    "no auditing": 0,
-    "success": 1,
-    "failure": 2,
-    "success and failure": 3,
-    "success/failure": 3,
-    "success, failure": 3,
-    "failure and success": 3,
-}
+from .constants import AUDITPOL_BITMASKS, AUDITPOL_TEXT_TO_MASK
 
 
 def format_expected_display(expected: Any, description: str = "") -> str:

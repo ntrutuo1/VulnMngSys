@@ -67,13 +67,25 @@ export function ConfigureStage(props) {
   )
 }
 
-export function ResultsStage({ scanType, report, scanItems, scanLoading, reconfigLoading, inventory, onBack, onReconfig, compact }) {
+export function ResultsStage({
+  scanType,
+  report,
+  scanItems,
+  scanLoading,
+  reconfigLoading,
+  inventory,
+  selectedRuleIds = [],
+  onSelectedRuleIdsChange,
+  onBack,
+  onReconfig,
+  compact,
+}) {
   const { t } = useTranslation()
   if (scanType === 'iis_msf') return <IisMsfResults loading={false} report={report} onBack={onBack} />
   const actions = (
     <Space>
       <Button icon={<LeftOutlined />} onClick={onBack}>{t('stage.back')}</Button>
-      <Button type="primary" danger onClick={onReconfig} loading={reconfigLoading} disabled={!report || report.failed === 0}>{t('scan.reconfig')}</Button>
+      <Button type="primary" danger onClick={onReconfig} loading={reconfigLoading} disabled={!report || report.failed === 0 || selectedRuleIds.length === 0}>{t('scan.reconfig')}</Button>
     </Space>
   )
   return (
@@ -84,7 +96,12 @@ export function ResultsStage({ scanType, report, scanItems, scanLoading, reconfi
           <Typography.Text type="secondary">
             {t('scan.profileMode', { profile: report.profileKey || inventory?.profileKey || t('report.na'), mode: report.fullScan ? t('report.modeFull') : t('report.modeQuick') })}
           </Typography.Text>
-          <ResultTable items={scanItems} compact={compact} />
+          <ResultTable
+            items={scanItems}
+            compact={compact}
+            selectedRuleIds={selectedRuleIds}
+            onSelectedRuleIdsChange={onSelectedRuleIdsChange}
+          />
         </Space>
       ) : <Typography.Text type="secondary">{t('scan.noResult')}</Typography.Text>}
     </Card>

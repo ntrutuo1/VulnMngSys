@@ -44,6 +44,11 @@ const resources = {
         reconfigDone: 'Reconfig completed: {{applied}} rule(s), {{skipped}} skipped. Run the scan again to verify.',
         reconfigFailed: 'Reconfig failed',
         reconfigFailedWithError: 'Reconfig failed: {{error}}',
+        reconfigReviewTitle: 'Review generated reconfig script',
+        reconfigReviewBody: 'The script was generated for {{selected}} selected rule(s): {{applied}} can be applied, {{skipped}} will be skipped. Backup path: {{backupDir}}. Continue only after reviewing the generated script.',
+        reconfigApply: 'Apply',
+        reconfigCancel: 'Cancel',
+        serviceWarning: 'Post-fix verification found {{count}} service warning(s). Review remediation logs and rerun scan.',
       },
       report: {
         summary: '{{status}} | {{passed}}/{{total}} PASS',
@@ -68,6 +73,9 @@ const resources = {
         reason: 'Reason',
         guidance: 'Guidance',
         details: 'Details',
+        failedTab: 'FAIL ({{count}})',
+        passedTab: 'PASS ({{count}})',
+        manualTab: 'MANUAL ({{count}})',
         totalRules: '{{from}}-{{to}} / {{total}} rules',
       },
       language: {

@@ -5,8 +5,37 @@ import time
 from typing import Any
 
 
+_PROMPT_PREFIXES = ("msf", "meterpreter")
+_BANNER_WORDS = ("metasploit", "rapid7", "destroy.no.data")
+
+
 class MsfRpcConnectionError(Exception):
     """Raised when msfrpc connection cannot be established."""
+
+
+def _is_console_noise(line: str) -> bool:
+    stripped = line.strip()
+    lower = stripped.lower()
+    if not stripped:
+        return True
+    if any(word in lower for word in _BANNER_WORDS):
+        return True
+    if lower.startswith(_PROMPT_PREFIXES) and ">" in stripped:
+        return True
+    if lower.startswith(("use ", "set ", "run", "back")):
+        return True
+    if lower.startswith(("[*] starting", "[*] scanned")):
+        return True
+    if "=>" in stripped and stripped.split("=>", 1)[0].strip().isupper():
+        return True
+    decorative = sum(1 for char in stripped if char in "+-=|_/\\:;~*'\"[]{}()<>")
+    return len(stripped) >= 20 and decorative / len(stripped) > 0.65
+
+
+def sanitize_console_output(raw: str) -> str:
+    """Remove msfconsole startup banner, prompts, and command echo from output."""
+    lines = raw.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    return "\n".join(line.strip() for line in lines if not _is_console_noise(line)).strip()
 
 
 class MsfRpcRunner:
@@ -99,6 +128,7 @@ class MsfRpcRunner:
         # Run via console so we capture real output
         console = client.consoles.console()
         try:
+            self._drain_console(console)
             # Build option set commands then run
             option_cmds = "\n".join(
                 f"set {k} {v}" for k, v in datastore.items()
@@ -117,9 +147,16 @@ class MsfRpcRunner:
                 if not data.get("busy", True):
                     break
 
-            return "".join(output_parts)
+            return sanitize_console_output("".join(output_parts))
         finally:
             try:
                 console.destroy()
             except Exception:
                 pass
+
+    @staticmethod
+    def _drain_console(console: Any) -> None:
+        for _ in range(3):
+            data = console.read()
+            if not data.get("data"):
+                break

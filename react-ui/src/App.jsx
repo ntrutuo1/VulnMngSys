@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Layout, Space, message } from 'antd'
+import { Layout, Modal, Space, message } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { ConfigureStage, NonServerAlert, ResultsStage, StageSteps, StrategyStage } from './components/ConfigWorkflowStages'
 import HeaderBar from './components/HeaderBar'
@@ -19,8 +19,13 @@ export default function App() {
   const [scanLoading, setScanLoading] = useState(false)
   const [reconfigLoading, setReconfigLoading] = useState(false)
   const [fullScan, setFullScan] = useState(false)
+  const [selectedRuleIds, setSelectedRuleIds] = useState([])
   const [viewMode, setViewModeState] = useState(() => localStorage.getItem(VIEW_MODE_KEY) || 'desktop')
   const scanItems = useMemo(() => report?.items || [], [report])
+
+  useEffect(() => {
+    setSelectedRuleIds(failedRuleIds(scanItems))
+  }, [scanItems])
 
   useEffect(() => {
     let active = true
@@ -40,6 +45,7 @@ export default function App() {
       const payload = await startScan({ profileKey: inventory?.profileKey, fullScan })
       if (payload?.ok) {
         setReport(payload)
+        setSelectedRuleIds(failedRuleIds(payload.items || []))
         setStage('results')
         message.success(t('messages.scanDone', { passed: payload.passed, total: payload.total }))
       } else {
@@ -55,12 +61,28 @@ export default function App() {
   async function runConfigReconfig() {
     setReconfigLoading(true)
     try {
-      const payload = await runReconfig()
-      if (payload?.ok) {
-        message.success(t('messages.reconfigDone', { applied: payload.applied, skipped: payload.skipped }))
-        setStage('configure')
+      const preview = await runReconfig({ selectedRuleIds })
+      if (preview?.ok) {
+        Modal.confirm({
+          title: t('messages.reconfigReviewTitle'),
+          content: t('messages.reconfigReviewBody', { applied: preview.applied, skipped: preview.skipped, selected: preview.selected, backupDir: preview.backupDir }),
+          okText: t('messages.reconfigApply'),
+          cancelText: t('messages.reconfigCancel'),
+          onOk: async () => {
+            const payload = await runReconfig({ apply: true, selectedRuleIds })
+            if (payload?.ok) {
+              message.success(t('messages.reconfigDone', { applied: payload.applied, skipped: payload.skipped }))
+              if (Array.isArray(payload.serviceWarnings) && payload.serviceWarnings.length > 0) {
+                message.warning(t('messages.serviceWarning', { count: payload.serviceWarnings.length }))
+              }
+              setStage('configure')
+            } else {
+              message.error(payload?.stderr || payload?.error || t('messages.reconfigFailed'))
+            }
+          },
+        })
       } else {
-        message.error(payload?.stderr || payload?.error || t('messages.reconfigFailed'))
+        message.error(preview?.stderr || preview?.error || t('messages.reconfigFailed'))
       }
     } catch (error) {
       message.error(t('messages.reconfigFailedWithError', { error: String(error) }))
@@ -99,6 +121,8 @@ export default function App() {
               scanType={scanType}
               report={scanType === 'config' ? report : msfReport}
               scanItems={scanItems}
+              selectedRuleIds={selectedRuleIds}
+              onSelectedRuleIdsChange={setSelectedRuleIds}
               scanLoading={scanLoading}
               reconfigLoading={reconfigLoading}
               inventory={inventory}
@@ -111,6 +135,13 @@ export default function App() {
       </Content>
     </Layout>
   )
+}
+
+function failedRuleIds(items = []) {
+  return items
+    .filter((item) => String(item.verdict || (item.passed ? 'PASS' : 'FAIL')).toUpperCase() === 'FAIL')
+    .map((item) => item.ruleId || item.rule_id || item.id || item.title)
+    .filter(Boolean)
 }
 
 async function bootstrapApp(active, setters) {

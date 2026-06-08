@@ -22,8 +22,8 @@ def _start_server(server: ThreadingHTTPServer, name: str) -> threading.Thread:
     return thread
 
 
-def _build_frontend_url(api_host: str, api_port: int, ui_host: str, ui_port: int) -> str:
-    query = urlencode({"apiBase": f"http://{api_host}:{api_port}"})
+def _build_frontend_url(api_host: str, api_port: int, ui_host: str, ui_port: int, api_token: str) -> str:
+    query = urlencode({"apiBase": f"http://{api_host}:{api_port}", "apiToken": api_token})
     return f"http://{ui_host}:{ui_port}/?{query}"
 
 
@@ -34,7 +34,8 @@ def run_desktop_app(api_host: str = "127.0.0.1", api_port: int = 5000, ui_host: 
         print(f"Frontend build not found: {index_file}")
         return 2
 
-    api_server, api_thread = create_api_server(host=api_host, port=api_port)
+    allowed_origins = {f"http://{ui_host}:{ui_port}"}
+    api_server, api_thread = create_api_server(host=api_host, port=api_port, allowed_origins=allowed_origins)
     api_thread.start()
 
     ui_handler = partial(SimpleHTTPRequestHandler, directory=str(dist_dir))
@@ -43,7 +44,7 @@ def run_desktop_app(api_host: str = "127.0.0.1", api_port: int = 5000, ui_host: 
 
     window = webview.create_window(
         "VulnMngSys",
-        _build_frontend_url(api_host, api_port, ui_host, ui_port),
+        _build_frontend_url(api_host, api_port, ui_host, ui_port, getattr(api_server, "api_token", "")),
         width=1440,
         height=960,
     )

@@ -30,7 +30,9 @@ imports:
  &#8226;   <a href="#app_bootstrap.run_legacy_privilege_guard">app_bootstrap.run_legacy_privilege_guard</a>
  &#8226;   <a href="#app_bootstrap.runtime">app_bootstrap.runtime</a>
  &#8226;   <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.backup_manager">app_bootstrap.scanflow.backup_manager</a>
  &#8226;   <a href="#app_bootstrap.scanflow.comparator">app_bootstrap.scanflow.comparator</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.constants">app_bootstrap.scanflow.constants</a>
  &#8226;   <a href="#app_bootstrap.scanflow.evaluate">app_bootstrap.scanflow.evaluate</a>
  &#8226;   <a href="#app_bootstrap.scanflow.guidance">app_bootstrap.scanflow.guidance</a>
  &#8226;   <a href="#app_bootstrap.scanflow.inventory">app_bootstrap.scanflow.inventory</a>
@@ -51,15 +53,19 @@ imports:
  &#8226;   <a href="#app_bootstrap.scanflow.msf_audit.result_analyzer">app_bootstrap.scanflow.msf_audit.result_analyzer</a>
  &#8226;   <a href="#app_bootstrap.scanflow.msf_audit.score_calculator">app_bootstrap.scanflow.msf_audit.score_calculator</a>
  &#8226;   <a href="#app_bootstrap.scanflow.orchestrator">app_bootstrap.scanflow.orchestrator</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.protocols">app_bootstrap.scanflow.protocols</a>
  &#8226;   <a href="#app_bootstrap.scanflow.reconfig">app_bootstrap.scanflow.reconfig</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.remediation_logger">app_bootstrap.scanflow.remediation_logger</a>
  &#8226;   <a href="#app_bootstrap.scanflow.report_builder">app_bootstrap.scanflow.report_builder</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_catalog">app_bootstrap.scanflow.rule_catalog</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_metadata">app_bootstrap.scanflow.rule_metadata</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_profile_matcher">app_bootstrap.scanflow.rule_profile_matcher</a>
  &#8226;   <a href="#app_bootstrap.scanflow.scan_executor_client">app_bootstrap.scanflow.scan_executor_client</a>
  &#8226;   <a href="#app_bootstrap.scanflow.scanner">app_bootstrap.scanflow.scanner</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.security">app_bootstrap.scanflow.security</a>
  &#8226;   <a href="#app_bootstrap.scanflow.selection">app_bootstrap.scanflow.selection</a>
  &#8226;   <a href="#app_bootstrap.scanflow.service_id_map">app_bootstrap.scanflow.service_id_map</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.service_verifier">app_bootstrap.scanflow.service_verifier</a>
  &#8226;   <a href="#app_bootstrap.scanflow.standards">app_bootstrap.scanflow.standards</a>
  &#8226;   <a href="#app_bootstrap.scanflow.standards.validator">app_bootstrap.scanflow.standards.validator</a>
  &#8226;   <a href="#app_bootstrap.scanflow.views">app_bootstrap.scanflow.views</a>
@@ -3837,7 +3843,9 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#app_bootstrap.scanflow.comparator">app_bootstrap.scanflow.comparator</a>
+    <a href="#app_bootstrap.scanflow.backup_manager">app_bootstrap.scanflow.backup_manager</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.comparator">app_bootstrap.scanflow.comparator</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.constants">app_bootstrap.scanflow.constants</a>
  &#8226;   <a href="#app_bootstrap.scanflow.evaluate">app_bootstrap.scanflow.evaluate</a>
  &#8226;   <a href="#app_bootstrap.scanflow.guidance">app_bootstrap.scanflow.guidance</a>
  &#8226;   <a href="#app_bootstrap.scanflow.inventory">app_bootstrap.scanflow.inventory</a>
@@ -3846,15 +3854,19 @@ imported by:
  &#8226;   <a href="#app_bootstrap.scanflow.models">app_bootstrap.scanflow.models</a>
  &#8226;   <a href="#app_bootstrap.scanflow.msf_audit">app_bootstrap.scanflow.msf_audit</a>
  &#8226;   <a href="#app_bootstrap.scanflow.orchestrator">app_bootstrap.scanflow.orchestrator</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.protocols">app_bootstrap.scanflow.protocols</a>
  &#8226;   <a href="#app_bootstrap.scanflow.reconfig">app_bootstrap.scanflow.reconfig</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.remediation_logger">app_bootstrap.scanflow.remediation_logger</a>
  &#8226;   <a href="#app_bootstrap.scanflow.report_builder">app_bootstrap.scanflow.report_builder</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_catalog">app_bootstrap.scanflow.rule_catalog</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_metadata">app_bootstrap.scanflow.rule_metadata</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_profile_matcher">app_bootstrap.scanflow.rule_profile_matcher</a>
  &#8226;   <a href="#app_bootstrap.scanflow.scan_executor_client">app_bootstrap.scanflow.scan_executor_client</a>
  &#8226;   <a href="#app_bootstrap.scanflow.scanner">app_bootstrap.scanflow.scanner</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.security">app_bootstrap.scanflow.security</a>
  &#8226;   <a href="#app_bootstrap.scanflow.selection">app_bootstrap.scanflow.selection</a>
  &#8226;   <a href="#app_bootstrap.scanflow.service_id_map">app_bootstrap.scanflow.service_id_map</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.service_verifier">app_bootstrap.scanflow.service_verifier</a>
  &#8226;   <a href="#app_bootstrap.scanflow.standards">app_bootstrap.scanflow.standards</a>
  &#8226;   <a href="#app_bootstrap.scanflow.views">app_bootstrap.scanflow.views</a>
  &#8226;   <a href="#cli.py">cli.py</a>
@@ -3864,8 +3876,42 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="app_bootstrap.scanflow.backup_manager"></a>
+  <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/backup_manager.py" type="text/plain"><tt>app_bootstrap.scanflow.backup_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#pyarmor_runtime_000000">pyarmor_runtime_000000</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cli.py">cli.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="app_bootstrap.scanflow.comparator"></a>
   <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/comparator.py" type="text/plain"><tt>app_bootstrap.scanflow.comparator</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#pyarmor_runtime_000000">pyarmor_runtime_000000</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cli.py">cli.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="app_bootstrap.scanflow.constants"></a>
+  <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/constants.py" type="text/plain"><tt>app_bootstrap.scanflow.constants</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
@@ -4233,8 +4279,42 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="app_bootstrap.scanflow.protocols"></a>
+  <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/protocols.py" type="text/plain"><tt>app_bootstrap.scanflow.protocols</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#pyarmor_runtime_000000">pyarmor_runtime_000000</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cli.py">cli.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="app_bootstrap.scanflow.reconfig"></a>
   <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/reconfig.py" type="text/plain"><tt>app_bootstrap.scanflow.reconfig</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#pyarmor_runtime_000000">pyarmor_runtime_000000</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cli.py">cli.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="app_bootstrap.scanflow.remediation_logger"></a>
+  <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/remediation_logger.py" type="text/plain"><tt>app_bootstrap.scanflow.remediation_logger</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
@@ -4352,6 +4432,23 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="app_bootstrap.scanflow.security"></a>
+  <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/security.py" type="text/plain"><tt>app_bootstrap.scanflow.security</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#pyarmor_runtime_000000">pyarmor_runtime_000000</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cli.py">cli.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="app_bootstrap.scanflow.selection"></a>
   <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/selection.py" type="text/plain"><tt>app_bootstrap.scanflow.selection</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -4371,6 +4468,23 @@ imported by:
 <div class="node">
   <a name="app_bootstrap.scanflow.service_id_map"></a>
   <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/service_id_map.py" type="text/plain"><tt>app_bootstrap.scanflow.service_id_map</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#pyarmor_runtime_000000">pyarmor_runtime_000000</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cli.py">cli.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="app_bootstrap.scanflow.service_verifier"></a>
+  <a target="code" href="///D:/VulnMngSys/VulnMngSys/obfuscated_src/app_bootstrap/scanflow/service_verifier.py" type="text/plain"><tt>app_bootstrap.scanflow.service_verifier</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
@@ -15683,7 +15797,9 @@ imported by:
  &#8226;   <a href="#app_bootstrap.args">app_bootstrap.args</a>
  &#8226;   <a href="#app_bootstrap.runtime">app_bootstrap.runtime</a>
  &#8226;   <a href="#app_bootstrap.scanflow">app_bootstrap.scanflow</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.backup_manager">app_bootstrap.scanflow.backup_manager</a>
  &#8226;   <a href="#app_bootstrap.scanflow.comparator">app_bootstrap.scanflow.comparator</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.constants">app_bootstrap.scanflow.constants</a>
  &#8226;   <a href="#app_bootstrap.scanflow.evaluate">app_bootstrap.scanflow.evaluate</a>
  &#8226;   <a href="#app_bootstrap.scanflow.guidance">app_bootstrap.scanflow.guidance</a>
  &#8226;   <a href="#app_bootstrap.scanflow.inventory">app_bootstrap.scanflow.inventory</a>
@@ -15704,15 +15820,19 @@ imported by:
  &#8226;   <a href="#app_bootstrap.scanflow.msf_audit.result_analyzer">app_bootstrap.scanflow.msf_audit.result_analyzer</a>
  &#8226;   <a href="#app_bootstrap.scanflow.msf_audit.score_calculator">app_bootstrap.scanflow.msf_audit.score_calculator</a>
  &#8226;   <a href="#app_bootstrap.scanflow.orchestrator">app_bootstrap.scanflow.orchestrator</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.protocols">app_bootstrap.scanflow.protocols</a>
  &#8226;   <a href="#app_bootstrap.scanflow.reconfig">app_bootstrap.scanflow.reconfig</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.remediation_logger">app_bootstrap.scanflow.remediation_logger</a>
  &#8226;   <a href="#app_bootstrap.scanflow.report_builder">app_bootstrap.scanflow.report_builder</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_catalog">app_bootstrap.scanflow.rule_catalog</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_metadata">app_bootstrap.scanflow.rule_metadata</a>
  &#8226;   <a href="#app_bootstrap.scanflow.rule_profile_matcher">app_bootstrap.scanflow.rule_profile_matcher</a>
  &#8226;   <a href="#app_bootstrap.scanflow.scan_executor_client">app_bootstrap.scanflow.scan_executor_client</a>
  &#8226;   <a href="#app_bootstrap.scanflow.scanner">app_bootstrap.scanflow.scanner</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.security">app_bootstrap.scanflow.security</a>
  &#8226;   <a href="#app_bootstrap.scanflow.selection">app_bootstrap.scanflow.selection</a>
  &#8226;   <a href="#app_bootstrap.scanflow.service_id_map">app_bootstrap.scanflow.service_id_map</a>
+ &#8226;   <a href="#app_bootstrap.scanflow.service_verifier">app_bootstrap.scanflow.service_verifier</a>
  &#8226;   <a href="#app_bootstrap.scanflow.standards">app_bootstrap.scanflow.standards</a>
  &#8226;   <a href="#app_bootstrap.scanflow.standards.validator">app_bootstrap.scanflow.standards.validator</a>
  &#8226;   <a href="#app_bootstrap.scanflow.views">app_bootstrap.scanflow.views</a>

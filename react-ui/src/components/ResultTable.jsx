@@ -1,13 +1,23 @@
 import { useMemo, useState } from 'react'
-import { Button, Descriptions, Modal, Space, Table, Tag, Typography } from 'antd'
+import { Button, Descriptions, Modal, Space, Table, Tabs, Tag, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import './ResultTable.css'
 
 function verdictColor(verdict) {
-  return verdict === 'PASS' ? 'green' : 'volcano'
+  if (verdict === 'PASS') return 'green'
+  if (verdict === 'MANUAL') return 'gold'
+  return 'volcano'
 }
 
-export default function ResultTable({ items = [], compact = false }) {
+function ruleId(record) {
+  return record.ruleId || record.rule_id || record.id || record.title || ''
+}
+
+function verdictOf(record) {
+  return (record.verdict || (record.passed ? 'PASS' : 'FAIL') || 'FAIL').toUpperCase()
+}
+
+export default function ResultTable({ items = [], compact = false, selectedRuleIds = [], onSelectedRuleIdsChange }) {
   const { t } = useTranslation()
   const [selectedRow, setSelectedRow] = useState(null)
 
@@ -19,8 +29,36 @@ export default function ResultTable({ items = [], compact = false }) {
   }
 
   const safeItems = useMemo(() => items || [], [items])
+  const groupedItems = useMemo(() => {
+    const failedMap = new Map()
+    const passed = []
+    const manual = []
+    for (const item of safeItems) {
+      const verdict = verdictOf(item)
+      if (verdict === 'PASS') {
+        passed.push(item)
+      } else if (verdict === 'MANUAL') {
+        manual.push(item)
+      } else {
+        const service = item.serviceName || item.service_name || item.service || 'Windows OS'
+        if (!failedMap.has(service)) {
+          failedMap.set(service, {
+            isServiceRow: true,
+            ruleId: `[SERVICE] ${service}`,
+            title: `All rules for ${service}`,
+            service: service,
+            children: []
+          })
+        }
+        failedMap.get(service).children.push(item)
+      }
+    }
+    const failed = Array.from(failedMap.values())
+    return { failed, passed, manual }
+  }, [safeItems])
 
   function openDetails(record) {
+    if (record.isServiceRow) return
     setSelectedRow(record)
   }
 
@@ -34,30 +72,35 @@ export default function ResultTable({ items = [], compact = false }) {
       dataIndex: 'ruleId',
       key: 'ruleId',
       width: '25%',
-      render: (value, row) => (
-        <button
-          type="button"
-          className="result-rule-cell"
-          onClick={(event) => {
-            event.stopPropagation()
-            openDetails(row)
-          }}
-        >
-          <Typography.Text strong className="result-rule-id" ellipsis={{ tooltip: value || row.rule_id || '-' }}>
-            {value || row.rule_id || '-'}
-          </Typography.Text>
-          <Typography.Text type="secondary" className="result-rule-title" ellipsis={{ tooltip: row.title || '-' }}>
-            {row.title || '-'}
-          </Typography.Text>
-        </button>
-      ),
+      render: (value, row) => {
+        if (row.isServiceRow) {
+          return <Typography.Text strong>{value}</Typography.Text>
+        }
+        return (
+          <button
+            type="button"
+            className="result-rule-cell"
+            onClick={(event) => {
+              event.stopPropagation()
+              openDetails(row)
+            }}
+          >
+            <Typography.Text strong className="result-rule-id" ellipsis={{ tooltip: value || row.rule_id || '-' }}>
+              {value || row.rule_id || '-'}
+            </Typography.Text>
+            <Typography.Text type="secondary" className="result-rule-title" ellipsis={{ tooltip: row.title || '-' }}>
+              {row.title || '-'}
+            </Typography.Text>
+          </button>
+        )
+      },
     },
     {
       title: t('table.result'),
       dataIndex: 'verdict',
       key: 'verdict',
       width: '8%',
-      render: (value) => <Tag color={verdictColor(value)}>{value || 'FAIL'}</Tag>,
+      render: (value, row) => row.isServiceRow ? null : <Tag color={verdictColor(value)}>{value || 'FAIL'}</Tag>,
     },
     {
       title: t('table.expected'),
@@ -66,7 +109,7 @@ export default function ResultTable({ items = [], compact = false }) {
       width: '20%',
       responsive: compact ? ['lg'] : undefined,
       ellipsis: true,
-      render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
+      render: (value, row) => row.isServiceRow ? null : <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
     {
       title: t('table.actual'),
@@ -75,7 +118,7 @@ export default function ResultTable({ items = [], compact = false }) {
       width: '20%',
       responsive: compact ? ['md'] : undefined,
       ellipsis: true,
-      render: (value) => <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
+      render: (value, row) => row.isServiceRow ? null : <Typography.Text ellipsis={{ tooltip: value || '-' }}>{value || '-'}</Typography.Text>,
     },
     {
       title: t('table.status'),
@@ -83,6 +126,7 @@ export default function ResultTable({ items = [], compact = false }) {
       key: 'status',
       width: '8%',
       responsive: compact ? ['lg'] : undefined,
+      render: (value, row) => row.isServiceRow ? null : value,
     },
     {
       title: t('table.guidance'),
@@ -91,7 +135,8 @@ export default function ResultTable({ items = [], compact = false }) {
       width: '15%',
       responsive: compact ? ['xl'] : undefined,
       ellipsis: true,
-      render: (value) => {
+      render: (value, row) => {
+        if (row.isServiceRow) return null
         const guidance = Array.isArray(value) ? value : []
         if (guidance.length === 0) {
           return <Typography.Text type="secondary">-</Typography.Text>
@@ -103,36 +148,92 @@ export default function ResultTable({ items = [], compact = false }) {
       title: '',
       key: 'action',
       width: '4%',
-      render: (_, row) => (
-        <Button
-          type="link"
-          onClick={(event) => {
-            event.stopPropagation()
-            openDetails(row)
-          }}
-        >
-          {t('table.details')}
-        </Button>
-      ),
+      render: (_, row) => {
+        if (row.isServiceRow) return null
+        return (
+          <Button
+            type="link"
+            onClick={(event) => {
+              event.stopPropagation()
+              openDetails(row)
+            }}
+          >
+            {t('table.details')}
+          </Button>
+        )
+      },
     },
   ]
 
+  const selectedKeys = useMemo(() => {
+    const selected = new Set(selectedRuleIds)
+    const keys = []
+    
+    for (const group of groupedItems.failed) {
+      let allSelected = true
+      for (const child of group.children) {
+        const childId = ruleId(child)
+        if (selected.has(childId)) {
+          keys.push(childId)
+        } else {
+          allSelected = false
+        }
+      }
+      if (allSelected && group.children.length > 0) {
+        keys.push(`service-${group.service}`)
+      }
+    }
+    return keys
+  }, [groupedItems.failed, selectedRuleIds])
+
+  function renderTable(dataSource, selectable = false) {
+    const rowSelection = selectable && onSelectedRuleIdsChange ? {
+      selectedRowKeys: selectedKeys,
+      onChange: (_, selectedRows) => {
+        const childRows = selectedRows.filter(row => !row.isServiceRow)
+        onSelectedRuleIdsChange(childRows.map((row) => ruleId(row)).filter(Boolean))
+      },
+    } : undefined
+
+    return (
+      <Table
+          rowKey={(record) => record.isServiceRow ? `service-${record.service}` : ruleId(record)}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={selectable ? false : pagination}
+          size="small"
+          tableLayout="fixed"
+          scroll={{ x: compact ? 560 : 940 }}
+          style={{ width: '100%' }}
+          onRow={(record) => ({
+            onClick: () => openDetails(record),
+            style: { cursor: record.isServiceRow ? 'default' : 'pointer' },
+          })}
+        />
+    )
+  }
+
   return (
     <>
-      <Table
-        rowKey={(record, index) => `${record.ruleId || record.rule_id || record.title || 'row'}-${index}`}
-        columns={columns}
-        dataSource={safeItems}
-        pagination={pagination}
-        size="small"
-        // Use fixed table layout and 100% width so percent column widths are respected
-        tableLayout="fixed"
-        scroll={{ x: compact ? 520 : 900 }}
-        style={{ width: '100%' }}
-        onRow={(record) => ({
-          onClick: () => openDetails(record),
-          style: { cursor: 'pointer' },
-        })}
+      <Tabs
+        items={[
+          {
+            key: 'failed',
+            label: t('table.failedTab', { count: groupedItems.failed.length }),
+            children: renderTable(groupedItems.failed, true),
+          },
+          {
+            key: 'passed',
+            label: t('table.passedTab', { count: groupedItems.passed.length }),
+            children: renderTable(groupedItems.passed),
+          },
+          {
+            key: 'manual',
+            label: t('table.manualTab', { count: groupedItems.manual.length }),
+            children: renderTable(groupedItems.manual),
+          },
+        ]}
       />
 
       <Modal

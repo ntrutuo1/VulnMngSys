@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
+import re
+from ipaddress import ip_address
 from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 
@@ -12,10 +15,12 @@ from app_bootstrap.scanflow.msf_audit.module_loader import (
     load_safe_modules,
 )
 from app_bootstrap.scanflow.msf_audit.report_writer import write_html_report, write_json_report
+from infrastructure.logging.system_logger import logger
 
-from .api_helpers import json_response, read_json_body
+from .api_helpers import error_response, is_action_allowed, json_response, read_json_body, server_error_response
 
 _MSF_REPORT_PATH = Path(__file__).resolve().parents[2] / "reports" / "iis_msf_audit_report.json"
+_HOSTNAME_RE = re.compile(r"^(?=.{1,253}$)(?!-)[A-Za-z0-9.-]+(?<!-)$")
 
 
 def start_msf_runtime() -> None:
@@ -36,15 +41,23 @@ def handle_msf_get(handler: BaseHTTPRequestHandler, path: str, query: str) -> bo
 def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
     if path != "/api/msf/audit":
         return False
+    if not is_action_allowed(handler, "msf_audit"):
+        error_response(handler, 403, "ACTION_NOT_ALLOWED", "MSF audit action is not allowed.")
+        return True
     body = read_json_body(handler)
     target = str(body.get("target") or "127.0.0.1").strip()
     active_test = bool(body.get("activeTest", False))
+    target_error = _validate_msf_target(target, active_test=active_test)
+    if target_error:
+        error_response(handler, 400, "INVALID_TARGET", target_error)
+        return True
     manager = get_msf_manager()
     connected, message = manager.wait_until_connected()
     if not connected:
-        json_response(handler, 503, {"ok": False, "error": message})
+        error_response(handler, 503, "MSF_RPC_UNAVAILABLE", message)
         return True
     try:
+        logger.info("Starting MSF audit. target=%s active_test=%s", target, active_test)
         payload = run_iis_msf_audit(
             target=target,
             msfrpc_host=manager.config.host,
@@ -57,8 +70,30 @@ def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
         payload["htmlReportFile"] = str(write_html_report(payload))
         json_response(handler, 200, payload)
     except Exception as exc:
-        json_response(handler, 500, {"ok": False, "error": str(exc)})
+        logger.exception("MSF audit API failed: %s", exc)
+        server_error_response(handler, "MSF_AUDIT_FAILED")
     return True
+
+
+def _validate_msf_target(target: str, *, active_test: bool) -> str:
+    if not target:
+        return "Target is required."
+    if any(char.isspace() for char in target) or len(target) > 253:
+        return "Target must be a valid IP address or hostname."
+
+    try:
+        parsed_ip = ip_address(target)
+    except ValueError:
+        if not _HOSTNAME_RE.match(target) or ".." in target:
+            return "Target must be a valid IP address or hostname."
+        if active_test and target.casefold() != "localhost" and not os.getenv("VULNMNGSYS_ALLOW_REMOTE_MSF_ACTIVE_TEST"):
+            return "Active MSF tests are limited to localhost or private IP targets by default."
+        return ""
+
+    active_override = os.getenv("VULNMNGSYS_ALLOW_REMOTE_MSF_ACTIVE_TEST")
+    if active_test and not (parsed_ip.is_private or parsed_ip.is_loopback or parsed_ip.is_link_local or active_override):
+        return "Active MSF tests are limited to localhost or private IP targets by default."
+    return ""
 
 
 def _modules(handler: BaseHTTPRequestHandler, query: str) -> bool:
@@ -77,7 +112,8 @@ def _modules(handler: BaseHTTPRequestHandler, query: str) -> bool:
             },
         )
     except Exception as exc:
-        json_response(handler, 500, {"ok": False, "error": str(exc)})
+        logger.exception("MSF modules API failed: %s", exc)
+        server_error_response(handler, "MSF_MODULES_FAILED", "Unable to load MSF modules.")
     return True
 
 
@@ -90,5 +126,6 @@ def _report(handler: BaseHTTPRequestHandler) -> bool:
         payload.setdefault("ok", True)
         json_response(handler, 200, payload)
     except Exception as exc:
-        json_response(handler, 500, {"ok": False, "error": str(exc)})
+        logger.exception("MSF report API failed: %s", exc)
+        server_error_response(handler, "MSF_REPORT_FAILED", "Unable to load MSF report.")
     return True

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from typing import Callable, Optional
 
+from infrastructure.logging.system_logger import logger
 
 def _is_windows() -> bool:
     return sys.platform.startswith("win")
@@ -15,19 +16,9 @@ def is_admin() -> bool:
         return True
     try:
         return bool(ctypes.windll.shell32.IsUserAnAdmin())
-    except Exception:
+    except Exception as exc:
+        logger.warning(f"Failed to check admin status: {exc}")
         return False
-
-
-def _write_startup_log(message: str) -> None:
-    try:
-        import tempfile
-
-        p = Path(tempfile.gettempdir()) / "vulnmngsys_startup.log"
-        with p.open("a", encoding="utf-8") as fh:
-            fh.write(message + "\n")
-    except Exception:
-        pass
 
 
 def _show_elevation_prompt() -> bool:
@@ -56,21 +47,21 @@ def _relaunch_as_admin() -> bool:
 
 def ensure_admin_startup() -> None:
     if not _is_windows() or is_admin():
-        _write_startup_log(f"ensure_admin_startup: on_windows={_is_windows()} is_admin={is_admin()}")
+        logger.debug(f"ensure_admin_startup: on_windows={_is_windows()} is_admin={is_admin()}")
         return
 
     # Allow forcing the elevation prompt via environment for diagnostics
     force_prompt = os.environ.get("VMS_FORCE_ELEVATION_PROMPT") == "1"
 
     if not _show_elevation_prompt() and not force_prompt:
-        _write_startup_log("User declined elevation prompt or prompt returned false; exiting.")
+        logger.info("User declined elevation prompt or prompt returned false; exiting.")
         raise SystemExit(0)
 
     if not _relaunch_as_admin():
-        _write_startup_log("Failed to relaunch as admin via ShellExecuteW")
+        logger.error("Failed to relaunch as admin via ShellExecuteW")
         raise RuntimeError("Failed to relaunch process with Administrator permission.")
 
-    _write_startup_log("Relaunch requested; exiting current process to elevate.")
+    logger.info("Relaunch requested; exiting current process to elevate.")
     raise SystemExit(0)
 
 
@@ -80,5 +71,6 @@ def run_legacy_privilege_guard(ensure_privileged_func: Optional[Callable[[], Non
     try:
         ensure_privileged_func()
     except RuntimeError as exc:
-        print(f"Privilege escalation warning: {exc}", file=sys.stderr)
-        print("Continuing without elevation. Some config files may not be readable.", file=sys.stderr)
+        logger.warning(f"Privilege escalation warning: {exc}")
+        logger.warning("Continuing without elevation. Some config files may not be readable.")
+

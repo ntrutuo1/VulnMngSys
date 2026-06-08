@@ -76,14 +76,15 @@ def _matches_negative(output_lower: str) -> bool:
 def _extract_evidence(raw_output: str, max_chars: int = 300) -> str:
     """Extract the most relevant lines from raw output as evidence."""
     lines = [line.strip() for line in raw_output.replace("\r\n", "\n").replace("\r", "\n").split("\n")]
-    # Keep non-empty, non-header lines
+    # Keep non-empty module output, not msfconsole banner/prompt noise.
     relevant = [
         line for line in lines
         if line
-        and not line.startswith("msf")
+        and not line.lower().startswith(("msf", "meterpreter"))
         and not line.startswith("[*] Starting")
         and not line.startswith("[*] Scanned")
-        and "Metasploit" not in line
+        and "metasploit" not in line.lower()
+        and "rapid7" not in line.lower()
     ]
     evidence = " | ".join(relevant[:5])
     return evidence[:max_chars] if evidence else ""
