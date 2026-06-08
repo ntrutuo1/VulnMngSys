@@ -160,6 +160,7 @@ export default function ResultTable({ items = [], compact = false }) {
             <Descriptions.Item label={t('table.service')}>{selectedRow.serviceName || selectedRow.service_name || selectedRow.service || '-'}</Descriptions.Item>
             <Descriptions.Item label={t('table.checkType')}>{selectedRow.checkType || selectedRow.check_type || '-'}</Descriptions.Item>
             <Descriptions.Item label={t('table.source')}>{selectedRow.source || '-'}</Descriptions.Item>
+            <Descriptions.Item label={t('table.cisReference')}>{selectedRow.cis_reference || selectedRow.cisReference || '-'}</Descriptions.Item>
             <Descriptions.Item label={t('table.registryPath')}>{selectedRow.registry_path || '-'}</Descriptions.Item>
             <Descriptions.Item label={t('table.powershellCheck')}>
               <Typography.Paragraph style={{ marginBottom: 0, whiteSpace: 'pre-wrap' }} copyable>

@@ -13,6 +13,7 @@ import winreg
 
 from .guidance import build_guidance
 from .models import ComparisonSummary, RuleComparisonResult
+from .rule_metadata import cis_reference, short_reason
 from .rule_catalog import get_full_rule_files, get_quick_rule_file
 
 
@@ -905,7 +906,8 @@ def write_merged_scan_from_files(
                 "operator": str(rule.get("operator") or ""),
                 "powershell_check": str(rule.get("powershell_check") or ""),
                 "remediation": str(rule.get("remediation") or ""),
-                "reason": str(rule.get("reason") or ""),
+                "reason": short_reason(rule.get("reason")),
+                "cis_reference": cis_reference(profile_key, rule.get("id")),
                 "actual": item.actual,
                 "status": item.status,
                 "source": item.source,

@@ -3,8 +3,10 @@ from __future__ import annotations
 from http.server import BaseHTTPRequestHandler
 
 from app_bootstrap.scanflow.inventory import load_windows_inventory
+from app_bootstrap.scanflow.reconfig import run_reconfig_script
 from app_bootstrap.scanflow.views.scan_backend_view import (
     SCAN_FEATURE_MESSAGE,
+    get_scan_backend_view,
     load_report_file,
     run_scan_and_save_report,
 )
@@ -24,6 +26,8 @@ def handle_config_get(handler: BaseHTTPRequestHandler, path: str) -> bool:
 
 
 def handle_config_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
+    if path == "/api/reconfig":
+        return _reconfig(handler)
     if path != "/api/scan":
         return False
     body = read_json_body(handler)
@@ -38,6 +42,17 @@ def handle_config_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
         json_response(handler, 200, payload)
     except Exception as exc:
         json_response(handler, 500, {"ok": False, "error": str(exc) or SCAN_FEATURE_MESSAGE})
+    return True
+
+
+def _reconfig(handler: BaseHTTPRequestHandler) -> bool:
+    try:
+        view = get_scan_backend_view()
+        report = view.load_report_file()
+        payload = run_reconfig_script(report, view.app_root())
+        json_response(handler, 200 if payload.get("ok") else 500, payload)
+    except Exception as exc:
+        json_response(handler, 500, {"ok": False, "error": str(exc)})
     return True
 
 

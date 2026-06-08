@@ -39,6 +39,10 @@ export function startScan({ profileKey, fullScan = false } = {}) {
   })
 }
 
+export function runReconfig() {
+  return postJson('/api/reconfig', {})
+}
+
 export function fetchMsfModules(activeTest = false) {
   return getJson(`/api/msf/modules${activeTest ? '?active_test=true' : ''}`)
 }
