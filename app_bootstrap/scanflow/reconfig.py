@@ -20,8 +20,6 @@ def _ps(value: Any) -> str:
 
 
 def _as_list(value: Any) -> list[str]:
-    if value is None:
-        return []
     if isinstance(value, list):
         return [_text(item) for item in value if _text(item)]
     text = _text(value)
@@ -95,8 +93,7 @@ def _add_registry(row: dict[str, Any], lines: list[str]) -> bool:
     value, value_type = _registry_value(row.get("expected"), spec)
     lines += [
         f"# {row.get('id') or row.get('ruleId')}: {_text(row.get('title'))}",
-        f"New-Item -Path {_ps(path)} -Force | Out-Null",
-        f"New-ItemProperty -Path {_ps(path)} -Name {_ps(name)} -Value {value} -PropertyType {value_type} -Force | Out-Null",
+        f"Set-RegistryValue -Path {_ps(path)} -Name {_ps(name)} -Value {value} -Type {_ps(value_type)}",
         "",
     ]
     return True
@@ -154,6 +151,16 @@ def generate_reconfig_script(report: dict[str, Any], app_root: Path) -> dict[str
         "$principal = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()",
         "if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run as Administrator.' }",
         "$ErrorActionPreference = 'Stop'",
+        "function Set-RegistryValue {",
+        "  param([string]$Path, [string]$Name, [object]$Value, [string]$Type)",
+        "  if (-not (Test-Path -LiteralPath $Path)) { New-Item -Path $Path -Force | Out-Null }",
+        "  try {",
+        "    $null = Get-ItemPropertyValue -LiteralPath $Path -Name $Name -ErrorAction Stop",
+        "    Set-ItemProperty -LiteralPath $Path -Name $Name -Value $Value",
+        "  } catch {",
+        "    New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force | Out-Null",
+        "  }",
+        "}",
         "",
     ]
     system: dict[str, str] = {}
@@ -170,7 +177,7 @@ def generate_reconfig_script(report: dict[str, Any], app_root: Path) -> dict[str
         lines += ["# Skipped rules without safe automatic remediation:"]
         lines += [f"# - {item}" for item in skipped if item]
     lines.append("Write-Output 'VulnMngSys reconfiguration completed.'")
-    script.write_text("\r\n".join(lines) + "\r\n", encoding="utf-8")
+    script.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return {"scriptPath": str(script), "applied": applied, "skipped": len(skipped)}
 
 

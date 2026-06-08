@@ -1,23 +1,19 @@
 {
-  "profile_name": "iis_windows_server_2022_local_metasploit_scan",
+  "profile_name": "iis_http_sys_windows_server_2022_plus_metasploit_scan",
+  "schema_version": "2026-06-08",
   "scope": {
     "authorization": "local/authorized scanning only",
-    "target_os": "Windows Server 2022",
-    "target_service": "IIS / HTTP.sys",
-    "default_targets": [
-      "127.0.0.1",
-      "localhost"
-    ],
-    "default_ports": [
-      80,
-      443
-    ],
+    "target_os": "Windows Server 2022 and newer",
+    "target_service": "Microsoft IIS / HTTP.sys",
+    "module_policy": "Only IIS/HTTP.sys service checks relevant to Windows Server 2022+ are included. Legacy CVE probes and non-service content discovery modules are removed.",
+    "default_targets": ["127.0.0.1", "localhost"],
+    "default_ports": [80, 443],
     "execution_mode": "msfrpc + pymetasploit3",
     "safe_default": true,
     "notes": [
-      "This profile prefers auxiliary/scanner modules and avoids exploit payloads.",
-      "Some modules detect IIS/HTTP misconfiguration rather than a Windows Server 2022-specific CVE.",
-      "Module options can change between Metasploit versions; refresh via msfrpc module.info/options in your installed framework."
+      "This profile uses auxiliary scanner modules only.",
+      "DoS, memory dump, exploit payload, and pre-2022 legacy CVE modules are not loaded.",
+      "Module option names can differ between Metasploit releases; verify with module.info/options on the installed framework."
     ]
   },
   "common_http_options": {
@@ -28,7 +24,7 @@
     "THREADS": 1,
     "HttpClientTimeout": 20,
     "Proxies": "",
-    "UserAgent": "Mozilla/5.0 Metasploit local authorized scanner"
+    "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized scanner"
   },
   "common_https_options": {
     "RHOSTS": "127.0.0.1",
@@ -38,84 +34,19 @@
     "THREADS": 1,
     "HttpClientTimeout": 20,
     "Proxies": "",
-    "UserAgent": "Mozilla/5.0 Metasploit local authorized scanner"
+    "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized scanner"
   },
   "modules": [
     {
-      "id": "iis_internal_ip_http",
+      "id": "iis_http_version",
       "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/iis_internal_ip",
-      "name": "Microsoft IIS HTTP Internal IP Disclosure",
-      "category": "iis_specific_cve_or_legacy_misconfig",
-      "risk": "information_disclosure",
-      "cve": [
-        "CVE-2000-0649",
-        "CVE-2002-0422"
-      ],
-      "server_2022_relevance": "Legacy CVEs are not Server 2022-specific, but newer IIS can still leak internal IPs if Host/alternateHostName handling is misconfigured.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false
-        },
-        {
-          "RPORT": 443,
-          "SSL": true
-        }
-      ],
-      "expected_signal": "Reports internal RFC1918 IP leaked in Location header or PROPFIND response."
-    },
-    {
-      "id": "iis_shortname_scanner_http",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/iis_shortname_scanner",
-      "name": "Microsoft IIS shortname vulnerability scanner",
-      "category": "iis_specific_misconfiguration",
-      "risk": "information_disclosure",
+      "module": "auxiliary/scanner/http/http_version",
+      "name": "IIS / HTTP.sys service fingerprint",
+      "category": "iis_service_fingerprinting",
+      "risk": "banner_version_exposure",
       "cve": [],
-      "server_2022_relevance": "Checks whether IIS 8.3 short-name enumeration is possible with tilde requests.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "THREADS": 20
-      },
-      "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "PATH": "/"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "PATH": "/"
-        }
-      ],
-      "expected_signal": "Reports discovered 8.3-style short names for files/directories."
-    },
-    {
-      "id": "http_trace_xst",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/trace",
-      "name": "HTTP Cross-Site Tracing Detection",
-      "category": "http_method_misconfiguration_with_cve_reference",
-      "risk": "information_disclosure/session_header_reflection",
-      "cve": [
-        "CVE-2005-3398"
-      ],
-      "server_2022_relevance": "Detects TRACE being enabled; relevant to IIS hardening even if the CVE reference is historical/application-specific.",
+      "year_scope": "2022+",
+      "server_2022_relevance": "Collects HTTP service fingerprinting for IIS/HTTP.sys on Windows Server 2022 and newer.",
       "safe_to_run": true,
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -125,29 +56,21 @@
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false
-        },
-        {
-          "RPORT": 443,
-          "SSL": true
-        }
+        {"RPORT": 80, "SSL": false},
+        {"RPORT": 443, "SSL": true}
       ],
-      "expected_signal": "Reports vulnerable if TRACE reflects request content."
+      "expected_signal": "Reports HTTP server/banner fingerprint for IIS or HTTP.sys."
     },
     {
-      "id": "http_options",
+      "id": "iis_http_options",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/options",
-      "name": "HTTP Options Detection",
-      "category": "http_method_misconfiguration_with_cve_reference",
+      "name": "IIS allowed HTTP methods",
+      "category": "iis_service_method_hardening",
       "risk": "dangerous_methods_enabled",
-      "cve": [
-        "CVE-2005-3398",
-        "CVE-2005-3498"
-      ],
-      "server_2022_relevance": "Lists allowed HTTP methods on IIS and flags TRACE via Allow header.",
+      "cve": [],
+      "year_scope": "2022+",
+      "server_2022_relevance": "Checks exposed IIS HTTP methods on Windows Server 2022+ sites.",
       "safe_to_run": true,
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -158,28 +81,45 @@
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "TARGETURI": "/"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "TARGETURI": "/"
-        }
+        {"RPORT": 80, "SSL": false, "TARGETURI": "/"},
+        {"RPORT": 443, "SSL": true, "TARGETURI": "/"}
       ],
-      "expected_signal": "Reports Allow header and warns if TRACE/PUT/DELETE or other risky methods are enabled."
+      "expected_signal": "Reports Allow header and risky methods such as TRACE, PUT, DELETE, or WebDAV verbs."
     },
     {
-      "id": "webdav_scanner",
+      "id": "iis_trace_method",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/http/trace",
+      "name": "IIS TRACE method exposure",
+      "category": "iis_service_method_hardening",
+      "risk": "dangerous_methods_enabled",
+      "cve": [],
+      "year_scope": "2022+",
+      "server_2022_relevance": "Validates whether TRACE is enabled on IIS/HTTP.sys despite modern hardening expectations.",
+      "safe_to_run": true,
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 80,
+        "SSL": false,
+        "VHOST": "",
+        "THREADS": 1
+      },
+      "local_variants": [
+        {"RPORT": 80, "SSL": false},
+        {"RPORT": 443, "SSL": true}
+      ],
+      "expected_signal": "Reports vulnerable when TRACE reflects request content."
+    },
+    {
+      "id": "iis_webdav_scanner",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/webdav_scanner",
-      "name": "HTTP WebDAV Scanner",
-      "category": "iis_feature_misconfiguration",
+      "name": "IIS WebDAV service exposure",
+      "category": "iis_service_feature_hardening",
       "risk": "webdav_enabled",
       "cve": [],
-      "server_2022_relevance": "Detects WebDAV enabled on IIS; combine with method scan for PUT/DELETE exposure.",
+      "year_scope": "2022+",
+      "server_2022_relevance": "Detects WebDAV exposure on IIS where it is not required.",
       "safe_to_run": true,
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -190,28 +130,21 @@
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "PATH": "/"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "PATH": "/"
-        }
+        {"RPORT": 80, "SSL": false, "PATH": "/"},
+        {"RPORT": 443, "SSL": true, "PATH": "/"}
       ],
-      "expected_signal": "Reports WEBDAV or SHAREPOINT DAV enabled."
+      "expected_signal": "Reports WebDAV/SharePoint DAV support."
     },
     {
-      "id": "http_put_write_test",
+      "id": "iis_http_put_write_test",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/http_put",
-      "name": "HTTP Writable Path PUT/DELETE File Access",
-      "category": "active_misconfiguration_test",
+      "name": "IIS PUT write capability test",
+      "category": "iis_service_active_write_test",
       "risk": "unauthorized_write_delete",
       "cve": [],
-      "server_2022_relevance": "Actively verifies whether IIS path accepts PUT/DELETE. Use only on your own local lab because it writes a benign test file.",
+      "year_scope": "2022+",
+      "server_2022_relevance": "Actively verifies writable IIS paths. Only run against authorized lab/local targets.",
       "safe_to_run": "conditional",
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -219,36 +152,52 @@
         "SSL": false,
         "VHOST": "",
         "PATH": "/",
-        "FILENAME": "msf_http_put_test.txt",
-        "FILEDATA": "msf test file",
+        "FILENAME": "vulnmngsys_iis_put_test.txt",
+        "FILEDATA": "vulnmngsys authorized test file",
         "ACTION": "PUT",
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "PATH": "/",
-          "ACTION": "PUT"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "PATH": "/",
-          "ACTION": "PUT"
-        }
+        {"RPORT": 80, "SSL": false, "PATH": "/", "ACTION": "PUT"},
+        {"RPORT": 443, "SSL": true, "PATH": "/", "ACTION": "PUT"}
       ],
-      "expected_signal": "Reports file uploaded if path is writable."
+      "expected_signal": "Reports successful upload/write when IIS path accepts PUT."
     },
     {
-      "id": "http_dir_listing",
+      "id": "iis_shortname_scanner",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/http/iis_shortname_scanner",
+      "name": "IIS 8.3 short-name enumeration",
+      "category": "iis_service_information_disclosure",
+      "risk": "information_disclosure",
+      "cve": [],
+      "year_scope": "2022+",
+      "server_2022_relevance": "Checks whether modern IIS still exposes 8.3 short-name enumeration.",
+      "safe_to_run": true,
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 80,
+        "SSL": false,
+        "VHOST": "",
+        "PATH": "/",
+        "THREADS": 20
+      },
+      "local_variants": [
+        {"RPORT": 80, "SSL": false, "PATH": "/"},
+        {"RPORT": 443, "SSL": true, "PATH": "/"}
+      ],
+      "expected_signal": "Reports discovered 8.3-style short names."
+    },
+    {
+      "id": "iis_directory_listing",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/dir_listing",
-      "name": "HTTP Directory Listing Scanner",
-      "category": "content_exposure_misconfiguration",
+      "name": "IIS directory browsing exposure",
+      "category": "iis_service_content_exposure",
       "risk": "directory_listing",
       "cve": [],
-      "server_2022_relevance": "Checks if IIS exposes directory browsing on a path.",
+      "year_scope": "2022+",
+      "server_2022_relevance": "Checks whether IIS Directory Browsing is enabled on the target path.",
       "safe_to_run": true,
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -259,129 +208,21 @@
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "PATH": "/"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "PATH": "/"
-        }
+        {"RPORT": 80, "SSL": false, "PATH": "/"},
+        {"RPORT": 443, "SSL": true, "PATH": "/"}
       ],
-      "expected_signal": "Reports directory listing when Index/Parent Directory style listing is returned."
+      "expected_signal": "Reports index/directory listing output."
     },
     {
-      "id": "http_interesting_files",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/files_dir",
-      "name": "HTTP Interesting File Scanner",
-      "category": "content_exposure_misconfiguration",
-      "risk": "backup_config_log_file_disclosure",
-      "cve": [],
-      "server_2022_relevance": "Finds exposed backup/config/log files under IIS web root.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "EXT": "",
-        "DICTIONARY": "data/wmap/wmap_files.txt",
-        "ErrorCode": 404,
-        "HTTP404Sigs": "data/wmap/wmap_404s.txt",
-        "NoDetailMessages": true,
-        "TestThreads": 25,
-        "THREADS": 1
-      },
-      "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "PATH": "/"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "PATH": "/"
-        }
-      ],
-      "expected_signal": "Reports interesting files returning non-404/non-soft-404 responses."
-    },
-    {
-      "id": "robots_txt",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/robots_txt",
-      "name": "HTTP Robots.txt Content Scanner",
-      "category": "content_discovery",
-      "risk": "sensitive_path_disclosure",
-      "cve": [],
-      "server_2022_relevance": "Finds sensitive paths disclosed in robots.txt on IIS.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false,
-          "PATH": "/"
-        },
-        {
-          "RPORT": 443,
-          "SSL": true,
-          "PATH": "/"
-        }
-      ],
-      "expected_signal": "Reports Disallow/Allow paths from robots.txt."
-    },
-    {
-      "id": "http_version",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/http_version",
-      "name": "HTTP Version Detection",
-      "category": "fingerprinting",
-      "risk": "banner_version_exposure",
-      "cve": [],
-      "server_2022_relevance": "Fingerprints IIS/HTTP.sys banner to enrich CVE matching in your own rule engine.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {
-          "RPORT": 80,
-          "SSL": false
-        },
-        {
-          "RPORT": 443,
-          "SSL": true
-        }
-      ],
-      "expected_signal": "Reports HTTP service fingerprint."
-    },
-    {
-      "id": "ssl_tls_version",
+      "id": "iis_tls_versions",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/ssl/ssl_version",
-      "name": "SSL/TLS Version Detection",
-      "category": "tls_cve_and_crypto_misconfiguration",
+      "name": "IIS HTTPS TLS protocol check",
+      "category": "iis_service_tls_hardening",
       "risk": "weak_tls_protocols_or_ciphers",
-      "cve": [
-        "CVE-2014-3566"
-      ],
-      "server_2022_relevance": "Applies to IIS HTTPS bindings; checks deprecated protocols/ciphers and known TLS issues such as POODLE class exposure.",
+      "cve": [],
+      "year_scope": "2022+",
+      "server_2022_relevance": "Checks IIS HTTPS bindings for weak TLS protocol exposure on Windows Server 2022+.",
       "safe_to_run": true,
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -390,21 +231,20 @@
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 443
-        }
+        {"RPORT": 443}
       ],
-      "expected_signal": "Reports supported TLS versions/ciphers and weak/expired certificate indicators."
+      "expected_signal": "Reports supported SSL/TLS protocol versions and weak protocol exposure."
     },
     {
-      "id": "http_ssl_certificate",
+      "id": "iis_https_certificate",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/cert",
-      "name": "HTTP SSL Certificate Checker",
-      "category": "tls_certificate_misconfiguration",
+      "name": "IIS HTTPS certificate check",
+      "category": "iis_service_tls_certificate",
       "risk": "expired_or_untrusted_certificate",
       "cve": [],
-      "server_2022_relevance": "Checks IIS HTTPS certificate expiry and issuer match.",
+      "year_scope": "2022+",
+      "server_2022_relevance": "Checks IIS HTTPS certificate expiry and issuer properties.",
       "safe_to_run": true,
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
@@ -414,36 +254,17 @@
         "THREADS": 1
       },
       "local_variants": [
-        {
-          "RPORT": 443
-        }
+        {"RPORT": 443}
       ],
       "expected_signal": "Reports expired certificate or issuer mismatch."
     }
   ],
-  "excluded_or_dangerous_modules": [
-    {
-      "module": "auxiliary/dos/http/ms15_034_ulonglongadd",
-      "cve": [
-        "CVE-2015-1635"
-      ],
-      "reason": "DoS module; Rapid7 description says it tries to cause denial of service. Not included in safe local scan profile.",
-      "server_2022_relevance": "CVE-2015-1635 affected older Windows/Server versions, not Windows Server 2022."
-    },
-    {
-      "module": "auxiliary/scanner/http/ms15_034_http_sys_memory_dump",
-      "cve": [
-        "CVE-2015-1635"
-      ],
-      "reason": "Memory dump / crash risk; not included in safe profile.",
-      "server_2022_relevance": "Targets Windows 8.1/Server 2012/2012R2 according to Rapid7."
-    }
-  ],
+  "excluded_or_dangerous_modules": [],
   "pymetasploit3_runner_template": {
-    "description": "Use this pattern to load each module via msfrpc and override default_datastore per target/port.",
+    "description": "Load each module via msfrpc and override default_datastore per target/port.",
     "pseudo_code": [
       "from pymetasploit3.msfrpc import MsfRpcClient",
-      "client = MsfRpcClient('<password>', server='127.0.0.1', port=55552, ssl=True)",
+      "client = MsfRpcClient('<password>', server='127.0.0.1', port=55552, ssl=False)",
       "mod = client.modules.use('auxiliary', '<module path without auxiliary/>')",
       "for k, v in default_datastore.items(): mod[k] = v",
       "job = mod.execute()"

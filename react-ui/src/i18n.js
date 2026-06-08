@@ -1,4 +1,4 @@
-import i18n from 'i18next'
+﻿import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 const LANGUAGE_STORAGE_KEY = 'vulnmngsys-ui-language'
@@ -104,13 +104,13 @@ const resources = {
         testConnection: 'Test Connection',
         runAudit: 'Run IIS MSF Audit',
         activeTest: 'Active Test (PUT write)',
-        activeTestHint: 'Enable http_put_write_test — writes a benign test file. Only use in your own lab.',
+        activeTestHint: 'Enable http_put_write_test â€” writes a benign test file. Only use in your own lab.',
         target: 'Target',
         safeMode: 'Safe mode: excludes DoS and memory-dump modules',
-        moduleInfo: '12 auxiliary scanner modules · IIS / HTTP.sys on Windows Server 2022',
+        moduleInfo: 'IIS / HTTP.sys service scanners for Windows Server 2022+',
         noResult: 'Connect to msfRPC and click "Run IIS MSF Audit" to start the scan.',
-        running: 'Running IIS Metasploit audit… this may take a few minutes.',
-        done: 'IIS Audit complete — Score: {{score}}/100 ({{label}})',
+        running: 'Running IIS Metasploit auditâ€¦ this may take a few minutes.',
+        done: 'IIS Audit complete â€” Score: {{score}}/100 ({{label}})',
         failed: 'IIS Audit failed',
       },
     },
@@ -134,3 +134,4 @@ i18n.on('languageChanged', (language) => {
 })
 
 export default i18n
+

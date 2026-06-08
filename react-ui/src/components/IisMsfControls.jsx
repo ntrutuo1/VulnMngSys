@@ -56,7 +56,7 @@ export default function IisMsfControls({
         <SafetyCertificateOutlined />
         <span>Safe mode excludes DoS and memory-dump modules</span>
         <span>·</span>
-        <span>Auxiliary scanners target IIS / HTTP.sys on Windows Server</span>
+        <span>Auxiliary scanners target IIS / HTTP.sys on Windows Server 2022+</span>
       </Space>
     </Card>
   )

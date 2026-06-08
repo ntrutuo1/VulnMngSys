@@ -11,23 +11,6 @@ _PROFILE_JSON = (
     / "iis_windows_server_2022_msf_modules.json"
 )
 
-# Sequential display IDs for the 12 modules in order
-_MODULE_DISPLAY_IDS: dict[str, str] = {
-    "iis_internal_ip_http": "IIS-MSF-001",
-    "iis_shortname_scanner_http": "IIS-MSF-002",
-    "http_trace_xst": "IIS-MSF-003",
-    "http_options": "IIS-MSF-004",
-    "webdav_scanner": "IIS-MSF-005",
-    "http_put_write_test": "IIS-MSF-006",
-    "http_dir_listing": "IIS-MSF-007",
-    "http_interesting_files": "IIS-MSF-008",
-    "robots_txt": "IIS-MSF-009",
-    "http_version": "IIS-MSF-010",
-    "ssl_tls_version": "IIS-MSF-011",
-    "http_ssl_certificate": "IIS-MSF-012",
-}
-
-
 def _load_profile() -> dict[str, Any]:
     if not _PROFILE_JSON.exists():
         raise FileNotFoundError(f"MSF profile JSON not found: {_PROFILE_JSON}")
@@ -48,7 +31,7 @@ def load_safe_modules(active_test: bool = False) -> list[dict[str, Any]]:
     }
 
     result: list[dict[str, Any]] = []
-    for mod in modules:
+    for index, mod in enumerate(modules, start=1):
         module_path = mod.get("module", "")
         if module_path in excluded_paths:
             continue
@@ -65,7 +48,7 @@ def load_safe_modules(active_test: bool = False) -> list[dict[str, Any]]:
 
         module_id = mod.get("id", module_path)
         enriched = dict(mod)
-        enriched["display_id"] = _MODULE_DISPLAY_IDS.get(module_id, module_id)
+        enriched["display_id"] = f"IIS-MSF-{index:03d}"
         result.append(enriched)
 
     return result

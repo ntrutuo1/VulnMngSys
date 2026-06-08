@@ -74,7 +74,7 @@ class MsfRpcRunner:
         """Execute an auxiliary module and return its console output.
 
         Args:
-            module_path: Full auxiliary path, e.g. 'auxiliary/scanner/http/iis_internal_ip'.
+            module_path: Full auxiliary path, e.g. 'auxiliary/scanner/http/http_version'.
             datastore: Key-value options to set on the module.
             poll_interval: Seconds between job status polls.
             timeout: Maximum seconds to wait for module completion.
