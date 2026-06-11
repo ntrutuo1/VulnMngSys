@@ -2,8 +2,9 @@ __pycache__/
 node_modules/
 react-ui/node_modules/
 
-electron-dist/
 win-unpacked/
-build/
+electron-dist/
+
+build
 
 *.asar

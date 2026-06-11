@@ -227,7 +227,7 @@
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
         "RPORT": 443,
-        "SSLVersion": "Auto",
+        "SSLVersion": "All",
         "THREADS": 1
       },
       "local_variants": [

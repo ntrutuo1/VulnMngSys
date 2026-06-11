@@ -27,7 +27,7 @@ export default function IisMsfResults({ loading, report, onBack }) {
     )
   }
   return (
-    <Card className="glass-card" title={<ResultsTitle report={report} />} extra={onBack ? <Button onClick={onBack}>Back</Button> : null}>
+    <Card className="glass-card iis-msf-results-card" title={<ResultsTitle report={report} />} extra={onBack ? <Button onClick={onBack}>Back</Button> : null}>
       <Row gutter={[24, 16]} align="middle" style={{ marginBottom: 20 }}>
         <Col>
           <ScoreRing score={report.score ?? 0} label={report.score_label ?? '-'} color={report.score_color ?? 'red'} />
@@ -46,7 +46,7 @@ export default function IisMsfResults({ loading, report, onBack }) {
 
 function ResultsTitle({ report }) {
   return (
-    <Space size={8}>
+    <Space size={8} wrap>
       <FileTextOutlined style={{ color: '#0f766e' }} />
       <Text strong>Audit Results</Text>
       <Tag color={report.scan_mode === 'active' ? 'orange' : 'cyan'}>{report.scan_mode?.toUpperCase()} MODE</Tag>

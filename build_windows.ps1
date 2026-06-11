@@ -21,7 +21,7 @@ if (-not (Test-Path $PythonExe)) { $PythonExe = 'python' }
 
 $BuildTools = @('pyarmor', 'pyinstaller')
 $HiddenImports = @('platform', 'ctypes', '_ctypes', 'uuid', 'webbrowser', 'pymetasploit3', 'pymetasploit3.msfrpc')
-$CollectPackages = @('app_bootstrap', 'vulnmngsys_app', 'webview', 'pymetasploit3')
+$CollectPackages = @('app_bootstrap', 'vulnmngsys_app', 'application', 'domain', 'infrastructure', 'webview', 'pymetasploit3')
 $ObfuscateInputs = @('main.py', 'cli.py', 'app_bootstrap', 'vulnmngsys_app', 'scripts')
 $DataFolders = @(
   @{ Source = $FrontendDistDir; Target = 'vulnmngsys_app/frontend/dist'; DesktopOnly = $true },
@@ -148,7 +148,7 @@ function Invoke-PyInstallerBuild {
   Remove-PathIfExists $BuildDir
 
   $args = @('-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--name', $ExeName)
-  $args += @('--paths', (Split-Path $EntryPoint -Parent))
+  $args += @('--paths', (Split-Path $EntryPoint -Parent), '--paths', $RootDir)
   foreach ($name in $HiddenImports) { $args += @('--hidden-import', $name) }
   foreach ($name in $CollectPackages) { $args += @('--collect-submodules', $name) }
   $args += Get-PyArmorHiddenArgs

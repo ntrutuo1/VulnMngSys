@@ -119,9 +119,11 @@ class MsfRpcRunner:
             mod_suffix = mod_suffix[len("auxiliary/"):]
 
         mod = client.modules.use("auxiliary", mod_suffix)
+        accepted_datastore: dict[str, Any] = {}
         for key, value in datastore.items():
             try:
                 mod[key] = value
+                accepted_datastore[key] = value
             except Exception:
                 pass  # Silently skip unsupported options
 
@@ -131,7 +133,7 @@ class MsfRpcRunner:
             self._drain_console(console)
             # Build option set commands then run
             option_cmds = "\n".join(
-                f"set {k} {v}" for k, v in datastore.items()
+                f"set {k} {v}" for k, v in accepted_datastore.items()
             )
             console.write(f"use {module_path}\n{option_cmds}\nrun\n")
 

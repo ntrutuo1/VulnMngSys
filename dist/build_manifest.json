@@ -1,7 +1,7 @@
 ﻿{
-    "builtAt":  "2026-06-09T12:53:45",
+    "builtAt":  "2026-06-09T13:51:49",
     "python":  "Python 3.13.4",
-    "frontendBuilt":  true,
+    "frontendBuilt":  false,
     "obfuscated":  true,
     "outputs":  [
                     "D:\\VulnMngSys\\VulnMngSysDesktop.exe",

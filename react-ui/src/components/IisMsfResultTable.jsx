@@ -10,12 +10,14 @@ export default function IisMsfResultTable({ items = [] }) {
   return (
     <>
       <Table
+        className="iis-msf-result-table"
         rowKey={(record, idx) => `${record.id || record.module_id || 'row'}-${idx}`}
         columns={columns}
         dataSource={items}
         pagination={false}
         size="small"
-        tableLayout="auto"
+        tableLayout="fixed"
+        scroll={{ x: 980 }}
         style={{ width: '100%' }}
         onRow={(record) => ({ onClick: () => setSelectedRow(record), style: { cursor: 'pointer' } })}
         rowClassName={(record) => {
@@ -42,6 +44,7 @@ function buildColumns(setSelectedRow) {
       title: 'Module / Name',
       dataIndex: 'name',
       key: 'name',
+      width: 280,
       render: (value, row) => <ModuleName value={value} module={row.module} />,
     },
     {
@@ -71,6 +74,7 @@ function buildColumns(setSelectedRow) {
       title: 'Evidence',
       dataIndex: 'evidence',
       key: 'evidence',
+      width: 340,
       ellipsis: true,
       render: (value) => <Evidence value={value} />,
     },
@@ -86,8 +90,8 @@ function buildColumns(setSelectedRow) {
 function ModuleName({ value, module }) {
   return (
     <Space direction="vertical" size={2}>
-      <Typography.Text strong>{value}</Typography.Text>
-      <Typography.Text type="secondary" className="monospace-small">{module}</Typography.Text>
+      <Typography.Text strong ellipsis={{ tooltip: value }}>{value}</Typography.Text>
+      <Typography.Text type="secondary" className="monospace-small" ellipsis={{ tooltip: module }}>{module}</Typography.Text>
     </Space>
   )
 }
@@ -96,7 +100,7 @@ function Evidence({ value }) {
   if (!value) return <Typography.Text type="secondary">-</Typography.Text>
   return (
     <Tooltip title={value} placement="topLeft">
-      <Typography.Text className="msf-warning-text" ellipsis>{value}</Typography.Text>
+      <Typography.Text className="msf-warning-text evidence-cell-text" ellipsis>{value}</Typography.Text>
     </Tooltip>
   )
 }

@@ -15,14 +15,17 @@ html, body, #root {
   background: var(--page-bg);
 }
 
+body { overflow-x: hidden; }
+
 .app-shell {
   min-height: 100vh;
   background: var(--page-bg);
+  overflow-x: hidden;
 }
 
 .content-shell {
   width: 100%;
-  max-width: 1280px;
+  max-width: min(1280px, 100vw);
   margin: 0 auto;
   padding: 20px 24px 32px;
   transition: max-width 0.2s ease, padding 0.2s ease;
@@ -46,6 +49,7 @@ html, body, #root {
 
 .header-actions { align-items: flex-end; }
 .stage-shell { width: 100%; }
+.stage-shell, .glass-card, .ant-card, .ant-card-body { min-width: 0; }
 
 .glass-card {
   border-radius: var(--radius-card);
@@ -168,13 +172,55 @@ html, body, #root {
 
 .msf-warning-text { color: #b45309; }
 .nowrap { white-space: nowrap; }
-.monospace-small { font-family: monospace; font-size: 11px; }
+.monospace-small { font-family: monospace; font-size: 11px; max-width: 100%; }
 .compact-link { padding: 0; font-size: 13px; }
+
+.iis-msf-results-card .ant-card-head {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.iis-msf-results-card .ant-card-extra {
+  margin-left: 0;
+}
+
+.iis-msf-result-table,
+.iis-msf-result-table .ant-table-wrapper,
+.iis-msf-result-table .ant-table-container {
+  max-width: 100%;
+}
+
+.iis-msf-result-table .ant-table-content {
+  overflow-x: auto !important;
+}
+
+.iis-msf-result-table .ant-space,
+.iis-msf-result-table .ant-typography {
+  max-width: 100%;
+}
+
+.evidence-cell-text {
+  display: block;
+  max-width: 100%;
+}
+
+.msf-report-meta,
+.msf-report-meta .ant-typography {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 
 .rule-details-modal .ant-descriptions-item-content,
 .rule-details-modal .ant-typography {
   max-width: 100%;
-  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.ant-modal,
+.ant-modal-content,
+.ant-descriptions,
+.ant-descriptions-view {
+  max-width: calc(100vw - 24px);
 }
 
 .rule-details-modal .ant-modal-body {
@@ -185,4 +231,6 @@ html, body, #root {
 @media (max-width: 700px) {
   .content-shell { padding: 12px; }
   .strategy-grid { grid-template-columns: 1fr; }
+  .glass-card .ant-card-body { padding: 14px; }
+  .iis-msf-result-table .ant-table { min-width: 980px; }
 }

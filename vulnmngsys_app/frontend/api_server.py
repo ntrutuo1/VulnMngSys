@@ -31,8 +31,10 @@ def create_api_server(
     api_token: str | None = None,
     allowed_origins: set[str] | None = None,
     allowed_actions: set[str] | None = None,
+    start_msf: bool = True,
 ) -> tuple[ThreadingHTTPServer, threading.Thread]:
-    start_msf_runtime()
+    if start_msf:
+        start_msf_runtime()
     token = api_token or os.environ.get("VULNMNGSYS_API_TOKEN") or secrets.token_urlsafe(32)
 
     class Handler(BaseHTTPRequestHandler):
