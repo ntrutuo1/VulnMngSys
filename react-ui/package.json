@@ -11,7 +11,7 @@
     "electron:clean": "powershell -ExecutionPolicy Bypass -File ./clean_electron_build.ps1",
     "preview": "vite preview",
     "start:electron": "electron .",
-    "electron:build": "npm run build && npm run backend:build && npm run electron:clean && electron-builder --win"
+    "electron:build": "powershell -ExecutionPolicy Bypass -File ./build_electron.ps1"
   },
   "dependencies": {
     "antd": "^5.21.6",

@@ -1,4 +1,4 @@
-"""Metasploit RPC runner — connects via pymetasploit3 and executes auxiliary modules."""
+"""Metasploit RPC runner for safe auxiliary runs and exploit check mode."""
 from __future__ import annotations
 
 import time
@@ -22,7 +22,7 @@ def _is_console_noise(line: str) -> bool:
         return True
     if lower.startswith(_PROMPT_PREFIXES) and ">" in stripped:
         return True
-    if lower.startswith(("use ", "set ", "run", "back")):
+    if lower.startswith(("use ", "set ", "run", "check", "back")):
         return True
     if lower.startswith(("[*] starting", "[*] scanned")):
         return True
@@ -39,7 +39,7 @@ def sanitize_console_output(raw: str) -> str:
 
 
 class MsfRpcRunner:
-    """Wraps pymetasploit3 MsfRpcClient with connection test and module execution."""
+    """Wrap pymetasploit3 MsfRpcClient with connection test and execution helpers."""
 
     def __init__(
         self,
@@ -74,7 +74,7 @@ class MsfRpcRunner:
             )
         except Exception as exc:
             raise MsfRpcConnectionError(
-                f"Cannot connect to msfRPC at {self.host}:{self.port} — {exc}"
+                f"Cannot connect to msfRPC at {self.host}:{self.port}: {exc}"
             ) from exc
         return self._client
 
@@ -82,11 +82,10 @@ class MsfRpcRunner:
         """Try to connect and return (success, message)."""
         try:
             client = self._get_client()
-            # A simple API call to verify the session is alive
             version_attr = client.core.version
             version = version_attr() if callable(version_attr) else version_attr
             framework_version = (version or {}).get("version", "unknown")
-            return True, f"Connected — Metasploit Framework {framework_version}"
+            return True, f"Connected - Metasploit Framework {framework_version}"
         except MsfRpcConnectionError as exc:
             return False, str(exc)
         except Exception as exc:
@@ -100,42 +99,65 @@ class MsfRpcRunner:
         poll_interval: float = 0.5,
         timeout: float = 60.0,
     ) -> str:
-        """Execute an auxiliary module and return its console output.
+        """Execute an auxiliary module and return its console output."""
+        return self._run_console_command(
+            module_path=module_path,
+            datastore=datastore,
+            expected_type="auxiliary",
+            command="run",
+            poll_interval=poll_interval,
+            timeout=timeout,
+        )
 
-        Args:
-            module_path: Full auxiliary path, e.g. 'auxiliary/scanner/http/http_version'.
-            datastore: Key-value options to set on the module.
-            poll_interval: Seconds between job status polls.
-            timeout: Maximum seconds to wait for module completion.
+    def run_exploit_check(
+        self,
+        module_path: str,
+        datastore: dict[str, Any],
+        *,
+        poll_interval: float = 0.5,
+        timeout: float = 60.0,
+    ) -> str:
+        """Run an exploit module check without executing a payload."""
+        return self._run_console_command(
+            module_path=module_path,
+            datastore=datastore,
+            expected_type="exploit",
+            command="check",
+            poll_interval=poll_interval,
+            timeout=timeout,
+        )
 
-        Returns:
-            Raw console output string.
-        """
+    def _run_console_command(
+        self,
+        *,
+        module_path: str,
+        datastore: dict[str, Any],
+        expected_type: str,
+        command: str,
+        poll_interval: float,
+        timeout: float,
+    ) -> str:
         client = self._get_client()
+        module_type, mod_suffix = _split_module_path(module_path, default_type=expected_type)
+        if module_type != expected_type:
+            raise ValueError(f"{command} expects {expected_type} module, got {module_type}")
 
-        # Strip leading 'auxiliary/' prefix — pymetasploit3 expects the suffix
-        mod_suffix = module_path
-        if mod_suffix.startswith("auxiliary/"):
-            mod_suffix = mod_suffix[len("auxiliary/"):]
-
-        mod = client.modules.use("auxiliary", mod_suffix)
+        mod = client.modules.use(module_type, mod_suffix)
         accepted_datastore: dict[str, Any] = {}
         for key, value in datastore.items():
             try:
                 mod[key] = value
                 accepted_datastore[key] = value
             except Exception:
-                pass  # Silently skip unsupported options
+                pass
 
-        # Run via console so we capture real output
         console = client.consoles.console()
         try:
             self._drain_console(console)
-            # Build option set commands then run
             option_cmds = "\n".join(
-                f"set {k} {v}" for k, v in accepted_datastore.items()
+                f"set {key} {value}" for key, value in accepted_datastore.items()
             )
-            console.write(f"use {module_path}\n{option_cmds}\nrun\n")
+            console.write(f"use {module_path}\n{option_cmds}\n{command}\n")
 
             output_parts: list[str] = []
             elapsed = 0.0
@@ -162,3 +184,13 @@ class MsfRpcRunner:
             data = console.read()
             if not data.get("data"):
                 break
+
+
+def _split_module_path(module_path: str, *, default_type: str) -> tuple[str, str]:
+    path = (module_path or "").strip("/")
+    if "/" not in path:
+        return default_type, path
+    module_type, suffix = path.split("/", 1)
+    if module_type in {"auxiliary", "exploit"}:
+        return module_type, suffix
+    return default_type, path

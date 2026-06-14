@@ -1,13 +1,16 @@
-"""Orchestrator: run full IIS MSF audit and return structured payload."""
+"""Orchestrate the focused IIS critical CVE audit."""
 from __future__ import annotations
 
 import datetime
-from typing import Any
+import json
+import subprocess
+from ipaddress import ip_address
+from typing import Any, Iterable
 
-from .module_loader import load_safe_modules, load_profile_metadata
-from .msfrpc_runner import MsfRpcRunner, MsfRpcConnectionError
+from .module_loader import load_cve_modules, load_profile_metadata
+from .msfrpc_runner import MsfRpcConnectionError, MsfRpcRunner
 from .result_analyzer import analyze
-from .score_calculator import calculate_score, score_label, score_color
+from .score_calculator import calculate_score, score_color, score_label
 
 
 def run_iis_msf_audit(
@@ -18,20 +21,17 @@ def run_iis_msf_audit(
     msfrpc_password: str = "",
     msfrpc_ssl: bool = True,
     active_test: bool = False,
+    ports: Iterable[int] | None = None,
+    selected_cves: Iterable[str] | None = None,
 ) -> dict[str, Any]:
-    """Run all safe IIS Metasploit modules and return a report payload.
-
-    Args:
-        target: IP/hostname of the IIS server to scan.
-        msfrpc_host: msfrpc server address.
-        msfrpc_port: msfrpc port (default 55552).
-        msfrpc_password: msfrpc password.
-        msfrpc_ssl: Use SSL for msfrpc connection.
-        active_test: If True, include conditional modules (http_put_write_test).
-
-    Returns:
-        dict payload ready to be serialized to JSON or returned via API.
-    """
+    """Run focused IIS CVE checks and return a report payload."""
+    metadata = load_profile_metadata()
+    selected_ports = (
+        _normalize_ports(ports)
+        if ports is not None
+        else list(metadata.get("scope", {}).get("default_ports", []))
+    )
+    modules = load_cve_modules(selected_cves=selected_cves, ports=selected_ports)
     runner = MsfRpcRunner(
         host=msfrpc_host,
         port=msfrpc_port,
@@ -39,81 +39,132 @@ def run_iis_msf_audit(
         ssl=msfrpc_ssl,
     )
 
-    modules = load_safe_modules(active_test=active_test)
-    metadata = load_profile_metadata()
     results: list[dict[str, Any]] = []
-
     for mod in modules:
-        module_id = mod.get("id", "")
-        display_id = mod.get("display_id", module_id)
-        module_path = mod.get("module", "")
-        safe_to_run = mod.get("safe_to_run", True)
+        display_id = mod.get("display_id", mod.get("id", ""))
+        local_check_result = run_local_patch_check(
+            _primary_cve(mod),
+            target=target,
+            config=mod.get("local_check") or {},
+        )
 
-        # SKIPPED modules (conditional, active_test off)
-        if safe_to_run == "conditional" and not active_test:
-            results.append(_skipped_result(mod, display_id))
+        if mod.get("check_method") == "local_only":
+            analysis = analyze(mod, "", local_check_result)
+            results.append(
+                _build_result_entry(
+                    mod,
+                    display_id,
+                    analysis,
+                    local_check_result=local_check_result,
+                    msf_results=[],
+                    port="N/A",
+                    ssl=False,
+                )
+            )
             continue
 
-        # Run each local_variant (HTTP + HTTPS, etc.)
         variant_results: list[dict[str, Any]] = []
         for variant in mod.get("local_variants", [{}]):
             datastore = dict(mod.get("default_datastore", {}))
             datastore.update(variant)
             datastore["RHOSTS"] = target
+            raw_output = ""
 
             try:
-                raw_output = runner.run_module(module_path, datastore)
-                analysis = analyze(mod, raw_output)
+                if mod.get("module_type") == "exploit":
+                    raw_output = runner.run_exploit_check(str(mod.get("module") or ""), datastore)
+                else:
+                    raw_output = runner.run_module(str(mod.get("module") or ""), datastore)
+                analysis = analyze(mod, raw_output, local_check_result)
             except MsfRpcConnectionError as exc:
-                analysis = {
-                    "status": "ERROR",
-                    "evidence": f"msfrpc connection error: {exc}",
-                    "remediation": "Verify Metasploit Framework is running with msfRPC.",
-                }
+                raw_output = f"failed to load module: msfrpc connection error: {exc}"
+                analysis = analyze(mod, raw_output, local_check_result)
             except Exception as exc:
-                analysis = {
-                    "status": "ERROR",
-                    "evidence": f"Module execution error: {exc}",
-                    "remediation": "Check module options and target connectivity.",
-                }
+                raw_output = f"failed to load module: {exc}"
+                analysis = analyze(mod, raw_output, local_check_result)
 
             variant_results.append(
                 {
-                    "port": datastore.get("RPORT", 80),
+                    "port": datastore.get("RPORT", ""),
                     "ssl": bool(datastore.get("SSL", False)),
+                    "raw_output": raw_output,
                     **analysis,
                 }
             )
 
-        # Merge variant results: worst status wins
-        merged = _merge_variant_results(mod, display_id, variant_results)
-        results.append(merged)
+        results.append(
+            _merge_variant_results(
+                mod,
+                display_id,
+                variant_results,
+                local_check_result=local_check_result,
+            )
+        )
 
-    # Calculate score
     score = calculate_score(results)
-
-    # Build summary counters
     summary = _build_summary(results)
 
     return {
         "ok": True,
         "profile": metadata.get("profile_name", ""),
         "target": target,
-        "service": "IIS / HTTP.sys",
-        "scan_mode": "active" if active_test else "safe",
+        "service": "IIS / HTTP.sys / Web Deploy / WSUS",
+        "scan_mode": "focused_cve_local",
         "active_test": active_test,
         "timestamp": datetime.datetime.now().isoformat(),
+        "selected_ports": list(selected_ports),
+        "selected_cves": [cve for cve in selected_cves or []],
         "score": score,
         "score_label": score_label(score),
         "score_color": score_color(score),
         "summary": summary,
+        "kb_patch_summary": _build_kb_patch_summary(results),
         "results": results,
     }
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+def run_local_patch_check(
+    cve_id: str,
+    *,
+    target: str = "127.0.0.1",
+    config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Run the configured local PowerShell check for a CVE."""
+    if not _is_local_target(target):
+        return {
+            "status": "SKIPPED",
+            "cve_id": cve_id,
+            "evidence": "Local PowerShell check skipped because target is not localhost.",
+            "applicable": None,
+            "patch_found": None,
+        }
+
+    cfg = config or {}
+    try:
+        data = _run_powershell_json(_build_local_check_script(cfg))
+    except Exception as exc:
+        return {
+            "status": "ERROR",
+            "cve_id": cve_id,
+            "evidence": f"PowerShell local check failed: {exc}",
+            "applicable": None,
+            "patch_found": None,
+            "patch_after": cfg.get("patch_after", ""),
+            "patch_guidance": cfg.get("patch_guidance", ""),
+        }
+
+    return _evaluate_local_check(cve_id, cfg, data)
+
+
+def run_local_service_check(service_names: Iterable[str]) -> dict[str, Any]:
+    """Return local service status details for service_names."""
+    cfg = {"service_names": list(service_names), "patch_after": "1900-01-01"}
+    try:
+        data = _run_powershell_json(_build_local_check_script(cfg))
+    except Exception as exc:
+        return {"ok": False, "error": str(exc), "services": []}
+    return {"ok": True, "services": data.get("Services", [])}
+
 
 _STATUS_RANK: dict[str, int] = {
     "ERROR": 5,
@@ -129,46 +180,73 @@ def _merge_variant_results(
     mod: dict[str, Any],
     display_id: str,
     variant_results: list[dict[str, Any]],
+    *,
+    local_check_result: dict[str, Any],
 ) -> dict[str, Any]:
-    """Combine HTTP + HTTPS variant results, taking the worst status."""
     if not variant_results:
-        return _skipped_result(mod, display_id)
+        analysis = analyze(mod, "", local_check_result)
+        return _build_result_entry(
+            mod,
+            display_id,
+            analysis,
+            local_check_result=local_check_result,
+            msf_results=[],
+            port="N/A",
+            ssl=False,
+        )
 
-    # Sort by status severity, pick worst
-    worst = max(variant_results, key=lambda r: _STATUS_RANK.get(r.get("status", "PASS"), 0))
+    worst = max(
+        variant_results,
+        key=lambda r: _STATUS_RANK.get(str(r.get("status", "PASS")), 0),
+    )
+    return _build_result_entry(
+        mod,
+        display_id,
+        worst,
+        local_check_result=local_check_result,
+        msf_results=[
+            {
+                "port": item.get("port", ""),
+                "ssl": item.get("ssl", False),
+                "status": item.get("status", ""),
+                "evidence": item.get("evidence", ""),
+            }
+            for item in variant_results
+        ],
+        port=worst.get("port", ""),
+        ssl=bool(worst.get("ssl", False)),
+    )
 
+
+def _build_result_entry(
+    mod: dict[str, Any],
+    display_id: str,
+    analysis: dict[str, Any],
+    *,
+    local_check_result: dict[str, Any],
+    msf_results: list[dict[str, Any]],
+    port: int | str,
+    ssl: bool,
+) -> dict[str, Any]:
     return {
         "id": display_id,
         "module_id": mod.get("id", ""),
-        "module": mod.get("module", ""),
+        "module": mod.get("module") or "",
+        "module_type": mod.get("module_type", ""),
+        "check_method": mod.get("check_method", ""),
         "name": mod.get("name", ""),
         "category": mod.get("category", ""),
         "risk": mod.get("risk", ""),
         "cve": mod.get("cve", []),
-        "port": worst.get("port", 80),
-        "ssl": worst.get("ssl", False),
-        "status": worst.get("status", "PASS"),
-        "evidence": worst.get("evidence", ""),
-        "remediation": worst.get("remediation", ""),
-        "server_2022_relevance": mod.get("server_2022_relevance", ""),
-        "expected_signal": mod.get("expected_signal", ""),
-    }
-
-
-def _skipped_result(mod: dict[str, Any], display_id: str) -> dict[str, Any]:
-    return {
-        "id": display_id,
-        "module_id": mod.get("id", ""),
-        "module": mod.get("module", ""),
-        "name": mod.get("name", ""),
-        "category": mod.get("category", ""),
-        "risk": mod.get("risk", ""),
-        "cve": mod.get("cve", []),
-        "port": mod.get("default_datastore", {}).get("RPORT", 80),
-        "ssl": False,
-        "status": "SKIPPED",
-        "evidence": "Skipped: active test mode not enabled",
-        "remediation": "Enable active test mode to run this check.",
+        "severity": mod.get("severity", ""),
+        "cvss": mod.get("cvss"),
+        "port": port,
+        "ssl": ssl,
+        "status": analysis.get("status", "PASS"),
+        "evidence": analysis.get("evidence", ""),
+        "remediation": analysis.get("remediation", ""),
+        "local_check_result": local_check_result,
+        "msf_results": msf_results,
         "server_2022_relevance": mod.get("server_2022_relevance", ""),
         "expected_signal": mod.get("expected_signal", ""),
     }
@@ -183,8 +261,305 @@ def _build_summary(results: list[dict[str, Any]]) -> dict[str, int]:
         "skipped": 0,
         "error": 0,
     }
-    for r in results:
-        key = r.get("status", "").lower()
+    for result in results:
+        key = str(result.get("status", "")).lower()
         if key in counts:
             counts[key] += 1
     return counts
+
+
+def _build_kb_patch_summary(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    summary: list[dict[str, Any]] = []
+    for result in results:
+        local = result.get("local_check_result") or {}
+        summary.append(
+            {
+                "cve": _primary_cve(result),
+                "severity": result.get("severity", ""),
+                "status": local.get("status", result.get("status", "")),
+                "patch_after": local.get("patch_after", ""),
+                "patch_found": local.get("patch_found"),
+                "installed_hotfixes": [
+                    item.get("HotFixID", "")
+                    for item in local.get("hotfixes", [])
+                    if item.get("HotFixID")
+                ],
+                "required_patch": local.get("patch_guidance", ""),
+                "evidence": local.get("evidence", ""),
+            }
+        )
+    return summary
+
+
+def _evaluate_local_check(cve_id: str, cfg: dict[str, Any], data: dict[str, Any]) -> dict[str, Any]:
+    services = _ensure_list(data.get("Services"))
+    hotfixes = _ensure_list(data.get("HotFixesSincePatchDate"))
+    files = _ensure_list(data.get("FileVersions"))
+    features = _ensure_list(data.get("WindowsFeatures"))
+    registry = _ensure_list(data.get("Registry"))
+    service_names = cfg.get("service_names") or []
+    patch_after = str(cfg.get("patch_after") or "")
+    patch_found = bool(hotfixes)
+    service_present = bool(services)
+    installed_feature = any(str(item.get("InstallState", "")).lower() == "installed" for item in features)
+    existing_files = [item for item in files if item.get("Exists")]
+    existing_registry = [item for item in registry if item.get("Exists")]
+    local_payload = {
+        "cve_id": cve_id,
+        "patch_after": patch_after,
+        "patch_guidance": cfg.get("patch_guidance", ""),
+        "services": services,
+        "hotfixes": hotfixes,
+        "file_versions": files,
+        "windows_features": features,
+        "registry": registry,
+        "patch_found": patch_found,
+    }
+
+    if cve_id == "CVE-2025-53772":
+        applicable = service_present or bool(existing_files) or bool(existing_registry)
+        if not applicable:
+            return {
+                **local_payload,
+                "status": "PASS",
+                "applicable": False,
+                "evidence": "Web Deploy services/files/registry were not found locally; CVE is not applicable.",
+            }
+        return _patch_based_result(
+            local_payload,
+            patch_found,
+            f"Web Deploy is present ({_format_services(services)}).",
+        )
+
+    if cve_id == "CVE-2025-27473":
+        applicable = service_present or bool(existing_files)
+        if not applicable:
+            return {
+                **local_payload,
+                "status": "WARNING",
+                "applicable": None,
+                "evidence": "HTTP.sys service/driver details could not be confirmed locally.",
+            }
+        return _patch_based_result(
+            local_payload,
+            patch_found,
+            f"HTTP.sys/IIS local components are present ({_format_services(services)}).",
+        )
+
+    if cve_id == "CVE-2025-59282":
+        return _patch_based_result(
+            local_payload,
+            patch_found,
+            "Inbox COM libraries checked locally.",
+            applicable=True,
+        )
+
+    if cve_id == "CVE-2025-59287":
+        applicable = service_present or installed_feature or bool(existing_files)
+        if not applicable:
+            return {
+                **local_payload,
+                "status": "PASS",
+                "applicable": False,
+                "evidence": "WSUS service/role/files were not found locally; CVE is not applicable.",
+            }
+        return _patch_based_result(
+            local_payload,
+            patch_found,
+            f"WSUS is present ({_format_services(services)}).",
+        )
+
+    return _patch_based_result(local_payload, patch_found, "Local patch posture checked.")
+
+
+def _patch_based_result(
+    payload: dict[str, Any],
+    patch_found: bool,
+    base_evidence: str,
+    *,
+    applicable: bool = True,
+) -> dict[str, Any]:
+    patch_after = payload.get("patch_after") or "the configured patch date"
+    if patch_found:
+        hotfix_text = ", ".join(
+            item.get("HotFixID", "")
+            for item in payload.get("hotfixes", [])
+            if item.get("HotFixID")
+        )
+        return {
+            **payload,
+            "status": "PASS",
+            "applicable": applicable,
+            "evidence": f"{base_evidence} Found installed hotfix on/after {patch_after}: {hotfix_text or 'present'}.",
+        }
+    return {
+        **payload,
+        "status": "FAIL",
+        "applicable": applicable,
+        "evidence": f"{base_evidence} No installed hotfix was found on/after {patch_after}.",
+    }
+
+
+def _build_local_check_script(cfg: dict[str, Any]) -> str:
+    return f"""
+$ErrorActionPreference = 'SilentlyContinue'
+function Expand-EnvPath([string]$Path) {{
+  $expanded = $Path
+  if ($expanded -match '^\\$env:([^\\\\/]+)(.*)$') {{
+    $envValue = [Environment]::GetEnvironmentVariable($matches[1])
+    if ($envValue) {{
+      $expanded = $envValue + $matches[2]
+    }}
+  }}
+  [Environment]::ExpandEnvironmentVariables($expanded)
+}}
+function Convert-Date($Value) {{
+  try {{ return [datetime]$Value }} catch {{ return $null }}
+}}
+$serviceNames = {_ps_array(cfg.get("service_names") or [])}
+$featureNames = {_ps_array(cfg.get("windows_features") or [])}
+$filePaths = {_ps_array(cfg.get("file_paths") or [])}
+$registryPaths = {_ps_array(cfg.get("registry_paths") or [])}
+$patchAfter = Convert-Date {_ps(cfg.get("patch_after") or "1900-01-01")}
+$services = @()
+foreach ($name in $serviceNames) {{
+  $svc = Get-Service -Name $name -ErrorAction SilentlyContinue
+  if ($svc) {{
+    $services += [pscustomobject]@{{
+      Name = $svc.Name
+      Status = [string]$svc.Status
+      DisplayName = $svc.DisplayName
+    }}
+  }}
+}}
+$hotfixes = @()
+Get-HotFix -ErrorAction SilentlyContinue | ForEach-Object {{
+  $installed = Convert-Date $_.InstalledOn
+  if ($installed -and $installed -ge $patchAfter) {{
+    $hotfixes += [pscustomobject]@{{
+      HotFixID = $_.HotFixID
+      Description = $_.Description
+      InstalledOn = $installed.ToString('yyyy-MM-dd')
+    }}
+  }}
+}}
+$files = @()
+foreach ($path in $filePaths) {{
+  $expanded = Expand-EnvPath $path
+  $item = Get-Item -LiteralPath $expanded -ErrorAction SilentlyContinue
+  if ($item) {{
+    $files += [pscustomobject]@{{
+      Path = $expanded
+      Exists = $true
+      Version = [string]$item.VersionInfo.FileVersion
+      ProductVersion = [string]$item.VersionInfo.ProductVersion
+      LastWriteTime = $item.LastWriteTime.ToString('yyyy-MM-ddTHH:mm:ss')
+    }}
+  }} else {{
+    $files += [pscustomobject]@{{ Path = $expanded; Exists = $false }}
+  }}
+}}
+$features = @()
+if (Get-Command Get-WindowsFeature -ErrorAction SilentlyContinue) {{
+  foreach ($name in $featureNames) {{
+    $feature = Get-WindowsFeature -Name $name -ErrorAction SilentlyContinue
+    if ($feature) {{
+      $features += [pscustomobject]@{{
+        Name = $feature.Name
+        DisplayName = $feature.DisplayName
+        InstallState = [string]$feature.InstallState
+      }}
+    }}
+  }}
+}}
+$registry = @()
+foreach ($path in $registryPaths) {{
+  $item = Get-ItemProperty -Path $path -ErrorAction SilentlyContinue
+  $registry += [pscustomobject]@{{
+    Path = $path
+    Exists = [bool]$item
+  }}
+}}
+[pscustomobject]@{{
+  Services = @($services)
+  HotFixesSincePatchDate = @($hotfixes)
+  FileVersions = @($files)
+  WindowsFeatures = @($features)
+  Registry = @($registry)
+}} | ConvertTo-Json -Depth 6
+"""
+
+
+def _run_powershell_json(script: str) -> dict[str, Any]:
+    result = subprocess.run(
+        ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script],
+        capture_output=True,
+        text=True,
+        timeout=90,
+        check=False,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip() or "Unknown PowerShell error"
+        raise RuntimeError(detail)
+    text = result.stdout.strip()
+    if not text:
+        return {}
+    parsed = json.loads(text)
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def _normalize_ports(ports: Iterable[int] | None) -> list[int]:
+    normalized: list[int] = []
+    for port in ports or []:
+        try:
+            port_number = int(port)
+        except (TypeError, ValueError):
+            continue
+        if 1 <= port_number <= 65535 and port_number not in normalized:
+            normalized.append(port_number)
+    return normalized
+
+
+def _is_local_target(target: str) -> bool:
+    lowered = (target or "").strip().casefold()
+    if lowered in {"localhost", "::1"}:
+        return True
+    try:
+        return ip_address(lowered).is_loopback
+    except ValueError:
+        return False
+
+
+def _primary_cve(item: dict[str, Any]) -> str:
+    cves = item.get("cve") or []
+    return str(cves[0]) if cves else ""
+
+
+def _ensure_list(value: Any) -> list[dict[str, Any]]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, dict)]
+    if isinstance(value, dict):
+        return [value]
+    return []
+
+
+def _format_services(services: list[dict[str, Any]]) -> str:
+    if not services:
+        return "no matching service status returned"
+    return ", ".join(
+        f"{service.get('Name', '')}:{service.get('Status', '')}"
+        for service in services
+    )
+
+
+def _ps_array(values: Iterable[Any]) -> str:
+    values = [value for value in values if value]
+    if not values:
+        return "@()"
+    return "@(" + ", ".join(_ps(value) for value in values) + ")"
+
+
+def _ps(value: Any) -> str:
+    return "'" + str(value).replace("'", "''") + "'"

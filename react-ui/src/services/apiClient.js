@@ -67,6 +67,6 @@ export function fetchMsfReport() {
   return getJson('/api/msf/report')
 }
 
-export function startMsfAudit({ target = '127.0.0.1', activeTest = false } = {}) {
-  return postJson('/api/msf/audit', { target, activeTest })
+export function startMsfAudit({ target = '127.0.0.1', activeTest = false, ports, selectedCves } = {}) {
+  return postJson('/api/msf/audit', { target, activeTest, ports, selectedCves })
 }

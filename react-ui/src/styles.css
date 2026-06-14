@@ -210,6 +210,51 @@ body { overflow-x: hidden; }
   overflow-wrap: anywhere;
 }
 
+.iis-msf-controls-card .ant-card-body {
+  padding: 18px 20px;
+}
+
+.iis-msf-section-title {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.iis-msf-option-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.cve-option-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.iis-msf-option {
+  min-height: 74px;
+  margin-inline-start: 0 !important;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.iis-msf-option .ant-checkbox + span {
+  min-width: 0;
+}
+
+.iis-msf-option .ant-space,
+.iis-msf-option .ant-typography {
+  max-width: 100%;
+}
+
+.iis-msf-patch-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
 .rule-details-modal .ant-descriptions-item-content,
 .rule-details-modal .ant-typography {
   max-width: 100%;
@@ -232,5 +277,9 @@ body { overflow-x: hidden; }
   .content-shell { padding: 12px; }
   .strategy-grid { grid-template-columns: 1fr; }
   .glass-card .ant-card-body { padding: 14px; }
-  .iis-msf-result-table .ant-table { min-width: 980px; }
+  .iis-msf-result-table .ant-table { min-width: 1240px; }
+  .iis-msf-option-grid,
+  .cve-option-grid {
+    grid-template-columns: 1fr;
+  }
 }

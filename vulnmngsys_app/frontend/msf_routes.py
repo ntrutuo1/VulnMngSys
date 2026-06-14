@@ -47,17 +47,32 @@ def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
     body = read_json_body(handler)
     target = str(body.get("target") or "127.0.0.1").strip()
     active_test = bool(body.get("activeTest", False))
+    ports = _parse_ports(body.get("ports"), default=None)
+    selected_cves = _parse_cves(body.get("selectedCves") or body.get("cves"))
     target_error = _validate_msf_target(target, active_test=active_test)
     if target_error:
         error_response(handler, 400, "INVALID_TARGET", target_error)
         return True
+    requested_modules = load_safe_modules(
+        active_test=active_test,
+        selected_cves=selected_cves,
+        ports=ports,
+    )
+    requires_msf = any(module.get("check_method") != "local_only" for module in requested_modules)
     manager = get_msf_manager()
-    connected, message = manager.wait_until_connected()
-    if not connected:
-        error_response(handler, 503, "MSF_RPC_UNAVAILABLE", message)
-        return True
+    if requires_msf:
+        connected, message = manager.wait_until_connected()
+        if not connected:
+            error_response(handler, 503, "MSF_RPC_UNAVAILABLE", message)
+            return True
     try:
-        logger.info("Starting MSF audit. target=%s active_test=%s", target, active_test)
+        logger.info(
+            "Starting focused IIS CVE audit. target=%s active_test=%s ports=%s cves=%s",
+            target,
+            active_test,
+            ports,
+            selected_cves,
+        )
         payload = run_iis_msf_audit(
             target=target,
             msfrpc_host=manager.config.host,
@@ -65,6 +80,8 @@ def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
             msfrpc_password=manager.config.password,
             msfrpc_ssl=manager.config.ssl,
             active_test=active_test,
+            ports=ports,
+            selected_cves=selected_cves,
         )
         payload["reportFile"] = str(write_json_report(payload))
         payload["htmlReportFile"] = str(write_html_report(payload))
@@ -94,6 +111,33 @@ def _validate_msf_target(target: str, *, active_test: bool) -> str:
     if active_test and not (parsed_ip.is_private or parsed_ip.is_loopback or parsed_ip.is_link_local or active_override):
         return "Active MSF tests are limited to localhost or private IP targets by default."
     return ""
+
+
+def _parse_ports(value: object, *, default: list[int] | None) -> list[int] | None:
+    if value is None:
+        return default
+    raw_items = value if isinstance(value, list) else [value]
+    ports: list[int] = []
+    for item in raw_items:
+        try:
+            port = int(item)
+        except (TypeError, ValueError):
+            continue
+        if 1 <= port <= 65535 and port not in ports:
+            ports.append(port)
+    return ports
+
+
+def _parse_cves(value: object) -> list[str] | None:
+    if value is None:
+        return None
+    raw_items = value if isinstance(value, list) else [value]
+    cves = []
+    for item in raw_items:
+        cve = str(item or "").strip().upper()
+        if cve and cve.startswith("CVE-") and cve not in cves:
+            cves.append(cve)
+    return cves
 
 
 def _modules(handler: BaseHTTPRequestHandler, query: str) -> bool:

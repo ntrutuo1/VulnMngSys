@@ -1,6 +1,7 @@
-"""Write IIS MSF audit report to JSON and HTML files."""
+"""Write IIS critical CVE audit report to JSON and HTML files."""
 from __future__ import annotations
 
+import html
 import json
 from pathlib import Path
 from typing import Any
@@ -13,50 +14,62 @@ _HTML_TEMPLATE = """\
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IIS MSF Audit Report — {target}</title>
+<title>IIS Critical CVE Audit Report - {target}</title>
 <style>
-  body {{ font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f23; color: #e0e0e0; margin: 0; padding: 24px; }}
-  h1 {{ color: #60a5fa; margin-bottom: 4px; }}
-  .meta {{ color: #9ca3af; font-size: 0.875rem; margin-bottom: 24px; }}
-  .score-badge {{ display: inline-block; padding: 8px 20px; border-radius: 9999px;
-    font-size: 1.5rem; font-weight: bold; margin-bottom: 16px; }}
-  .score-green {{ background: #064e3b; color: #34d399; }}
-  .score-orange {{ background: #451a03; color: #fb923c; }}
-  .score-red {{ background: #450a0a; color: #f87171; }}
-  .summary {{ display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }}
-  .pill {{ padding: 4px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }}
-  .pill-PASS {{ background: #052e16; color: #4ade80; }}
-  .pill-FAIL {{ background: #450a0a; color: #f87171; }}
-  .pill-WARNING {{ background: #431407; color: #fb923c; }}
-  .pill-INFO {{ background: #0c1a3d; color: #60a5fa; }}
-  .pill-SKIPPED {{ background: #1f2937; color: #9ca3af; }}
-  .pill-ERROR {{ background: #2d0000; color: #ef4444; }}
-  table {{ width: 100%; border-collapse: collapse; font-size: 0.875rem; }}
-  th {{ background: #1e293b; color: #94a3b8; padding: 10px 12px; text-align: left; }}
-  td {{ padding: 10px 12px; border-bottom: 1px solid #1e293b; vertical-align: top; }}
-  tr:hover td {{ background: #1e293b; }}
-  .tag {{ display: inline-block; padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; }}
-  .tag-PASS {{ background: #052e16; color: #4ade80; }}
-  .tag-FAIL {{ background: #450a0a; color: #f87171; }}
-  .tag-WARNING {{ background: #431407; color: #fb923c; }}
-  .tag-INFO {{ background: #0c1a3d; color: #60a5fa; }}
-  .tag-SKIPPED {{ background: #1f2937; color: #9ca3af; }}
-  .tag-ERROR {{ background: #2d0000; color: #ef4444; }}
-  .evidence {{ color: #d97706; font-size: 0.8rem; }}
-  .remediation {{ color: #86efac; font-size: 0.8rem; }}
+  body {{ font-family: 'Segoe UI', Arial, sans-serif; background: #f5f7fb; color: #111827; margin: 0; padding: 24px; }}
+  h1 {{ color: #0f766e; margin: 0 0 4px; }}
+  h2 {{ color: #1f2937; margin: 28px 0 12px; font-size: 1.05rem; }}
+  .meta {{ color: #64748b; font-size: 0.875rem; margin-bottom: 24px; }}
+  .score-badge {{ display: inline-block; padding: 8px 18px; border-radius: 8px; font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; }}
+  .score-green {{ background: #dcfce7; color: #166534; }}
+  .score-orange {{ background: #ffedd5; color: #9a3412; }}
+  .score-red {{ background: #fee2e2; color: #991b1b; }}
+  .summary {{ display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }}
+  .pill {{ padding: 4px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; }}
+  .pill-PASS {{ background: #dcfce7; color: #166534; }}
+  .pill-FAIL {{ background: #fee2e2; color: #991b1b; }}
+  .pill-WARNING {{ background: #ffedd5; color: #9a3412; }}
+  .pill-INFO {{ background: #dbeafe; color: #1d4ed8; }}
+  .pill-SKIPPED {{ background: #e5e7eb; color: #374151; }}
+  .pill-ERROR {{ background: #fee2e2; color: #b91c1c; }}
+  table {{ width: 100%; border-collapse: collapse; font-size: 0.875rem; background: #fff; border: 1px solid #e5e7eb; }}
+  th {{ background: #f8fafc; color: #475569; padding: 10px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }}
+  td {{ padding: 10px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }}
+  .tag {{ display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.78rem; }}
+  .tag-PASS {{ background: #dcfce7; color: #166534; }}
+  .tag-FAIL {{ background: #fee2e2; color: #991b1b; }}
+  .tag-WARNING {{ background: #ffedd5; color: #9a3412; }}
+  .tag-INFO {{ background: #dbeafe; color: #1d4ed8; }}
+  .tag-SKIPPED {{ background: #e5e7eb; color: #374151; }}
+  .tag-ERROR {{ background: #fee2e2; color: #b91c1c; }}
+  .severity-CRITICAL {{ background: #7f1d1d; color: #fff; }}
+  .severity-HIGH {{ background: #c2410c; color: #fff; }}
+  .muted {{ color: #64748b; font-size: 0.8rem; }}
+  .evidence {{ color: #92400e; font-size: 0.82rem; }}
+  .remediation {{ color: #166534; font-size: 0.82rem; }}
 </style>
 </head>
 <body>
-<h1>IIS MSF Audit Report</h1>
-<div class="meta">Target: {target} &nbsp;|&nbsp; Mode: {scan_mode} &nbsp;|&nbsp; {timestamp}</div>
-<div class="score-badge {score_class}">Score: {score}/100 — {score_label}</div>
+<h1>IIS Critical CVE Audit Report</h1>
+<div class="meta">Target: {target} | Mode: {scan_mode} | {timestamp}</div>
+<div class="score-badge {score_class}">Score: {score}/100 - {score_label}</div>
 <div class="summary">{summary_pills}</div>
+<h2>Findings</h2>
 <table>
 <thead>
-<tr><th>#</th><th>Module</th><th>Category</th><th>Port</th><th>Status</th><th>Evidence</th><th>Remediation</th></tr>
+<tr><th>#</th><th>CVE</th><th>Severity</th><th>Module</th><th>Port</th><th>Status</th><th>Local Check</th><th>Evidence</th><th>Remediation</th></tr>
 </thead>
 <tbody>
 {rows}
+</tbody>
+</table>
+<h2>Patch Summary</h2>
+<table>
+<thead>
+<tr><th>CVE</th><th>Severity</th><th>Local Status</th><th>Patch Baseline</th><th>Installed HotFixes</th><th>Required Patch</th></tr>
+</thead>
+<tbody>
+{patch_rows}
 </tbody>
 </table>
 </body>
@@ -66,12 +79,25 @@ _HTML_TEMPLATE = """\
 _ROW_TEMPLATE = (
     "<tr>"
     "<td>{id}</td>"
-    "<td><strong>{name}</strong><br><small style='color:#6b7280'>{module}</small></td>"
-    "<td>{category}</td>"
+    "<td>{cve}</td>"
+    "<td><span class='tag severity-{severity}'>{severity}</span></td>"
+    "<td><strong>{name}</strong><br><span class='muted'>{module}</span></td>"
     "<td>{port}</td>"
     "<td><span class='tag tag-{status}'>{status}</span></td>"
+    "<td><span class='tag tag-{local_status}'>{local_status}</span><br><span class='muted'>{local_evidence}</span></td>"
     "<td class='evidence'>{evidence}</td>"
     "<td class='remediation'>{remediation}</td>"
+    "</tr>"
+)
+
+_PATCH_ROW_TEMPLATE = (
+    "<tr>"
+    "<td>{cve}</td>"
+    "<td><span class='tag severity-{severity}'>{severity}</span></td>"
+    "<td><span class='tag tag-{status}'>{status}</span></td>"
+    "<td>{patch_after}</td>"
+    "<td>{installed_hotfixes}</td>"
+    "<td>{required_patch}</td>"
     "</tr>"
 )
 
@@ -92,7 +118,7 @@ def write_html_report(payload: dict[str, Any]) -> Path:
     _REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     html_path = _REPORTS_DIR / "iis_msf_audit_report.html"
 
-    score = payload.get("score", 0)
+    score = int(payload.get("score", 0) or 0)
     if score >= 80:
         score_class = "score-green"
     elif score >= 60:
@@ -102,44 +128,62 @@ def write_html_report(payload: dict[str, Any]) -> Path:
 
     summary = payload.get("summary", {})
     pills = "".join(
-        f"<span class='pill pill-{k.upper()}'>{k.upper()}: {v}</span>"
+        f"<span class='pill pill-{html.escape(str(k).upper())}'>{html.escape(str(k).upper())}: {int(v)}</span>"
         for k, v in summary.items()
-        if v > 0
+        if int(v or 0) > 0
     )
 
-    rows = "\n".join(
-        _ROW_TEMPLATE.format(
-            id=r.get("id", ""),
-            name=_esc(r.get("name", "")),
-            module=_esc(r.get("module", "")),
-            category=_esc(r.get("category", "").replace("_", " ")),
-            port=r.get("port", ""),
-            status=r.get("status", ""),
-            evidence=_esc(r.get("evidence", "") or ""),
-            remediation=_esc(r.get("remediation", "") or ""),
-        )
-        for r in payload.get("results", [])
-    )
+    rows = "\n".join(_render_result_row(row) for row in payload.get("results", []))
+    patch_rows = "\n".join(_render_patch_row(row) for row in payload.get("kb_patch_summary", []))
 
-    html = _HTML_TEMPLATE.format(
+    rendered = _HTML_TEMPLATE.format(
         target=_esc(payload.get("target", "")),
-        scan_mode=payload.get("scan_mode", "safe"),
-        timestamp=payload.get("timestamp", ""),
+        scan_mode=_esc(payload.get("scan_mode", "focused_cve_local")),
+        timestamp=_esc(payload.get("timestamp", "")),
         score=score,
         score_label=_esc(payload.get("score_label", "")),
         score_class=score_class,
         summary_pills=pills,
         rows=rows,
+        patch_rows=patch_rows,
     )
-    html_path.write_text(html, encoding="utf-8")
+    html_path.write_text(rendered, encoding="utf-8")
     return html_path
 
 
-def _esc(text: str) -> str:
-    """Basic HTML escaping."""
-    return (
-        text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
+def _render_result_row(row: dict[str, Any]) -> str:
+    local = row.get("local_check_result") or {}
+    severity = str(row.get("severity") or "").upper()
+    local_status = str(local.get("status") or "INFO").upper()
+    port = row.get("port", "")
+    if row.get("ssl"):
+        port = f"{port} TLS"
+    return _ROW_TEMPLATE.format(
+        id=_esc(row.get("id", "")),
+        cve=_esc(", ".join(row.get("cve", []) or [])),
+        severity=_esc(severity),
+        name=_esc(row.get("name", "")),
+        module=_esc(row.get("module", "") or row.get("check_method", "")),
+        port=_esc(port),
+        status=_esc(row.get("status", "")),
+        local_status=_esc(local_status),
+        local_evidence=_esc(local.get("evidence", "")),
+        evidence=_esc(row.get("evidence", "") or ""),
+        remediation=_esc(row.get("remediation", "") or ""),
     )
+
+
+def _render_patch_row(row: dict[str, Any]) -> str:
+    hotfixes = row.get("installed_hotfixes") or []
+    return _PATCH_ROW_TEMPLATE.format(
+        cve=_esc(row.get("cve", "")),
+        severity=_esc(str(row.get("severity", "")).upper()),
+        status=_esc(str(row.get("status", "")).upper()),
+        patch_after=_esc(row.get("patch_after", "")),
+        installed_hotfixes=_esc(", ".join(hotfixes) if hotfixes else "-"),
+        required_patch=_esc(row.get("required_patch", "")),
+    )
+
+
+def _esc(value: Any) -> str:
+    return html.escape(str(value), quote=True)

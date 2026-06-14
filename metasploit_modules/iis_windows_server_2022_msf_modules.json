@@ -1,19 +1,19 @@
 {
-  "profile_name": "iis_http_sys_windows_server_2022_plus_metasploit_scan",
-  "schema_version": "2026-06-08",
+  "profile_name": "iis_critical_cve_2025_local_audit",
+  "schema_version": "2026-06-13",
   "scope": {
     "authorization": "local/authorized scanning only",
     "target_os": "Windows Server 2022 and newer",
-    "target_service": "Microsoft IIS / HTTP.sys",
-    "module_policy": "Only IIS/HTTP.sys service checks relevant to Windows Server 2022+ are included. Legacy CVE probes and non-service content discovery modules are removed.",
+    "target_service": "IIS / HTTP.sys / Web Deploy / WSUS",
+    "module_policy": "Only module checks mapped to CVE-2025-53772, CVE-2025-27473, CVE-2025-59282, and CVE-2025-59287 are loaded. Legacy IIS hardening modules are removed.",
     "default_targets": ["127.0.0.1", "localhost"],
-    "default_ports": [80, 443],
-    "execution_mode": "msfrpc + pymetasploit3",
+    "default_ports": [80, 443, 8172, 8530, 8531],
+    "execution_mode": "local USB audit: msfrpc check/probe plus PowerShell patch/service checks",
     "safe_default": true,
     "notes": [
-      "This profile uses auxiliary scanner modules only.",
-      "DoS, memory dump, exploit payload, and pre-2022 legacy CVE modules are not loaded.",
-      "Module option names can differ between Metasploit releases; verify with module.info/options on the installed framework."
+      "CVE-2025-53772 and CVE-2025-27473 use safe Metasploit HTTP fingerprint probes unless a custom scanner with the configured path is installed.",
+      "CVE-2025-59282 is local-only because no Metasploit module is configured.",
+      "CVE-2025-59287 is an exploit module and must be executed with the Metasploit check command only."
     ]
   },
   "common_http_options": {
@@ -24,7 +24,7 @@
     "THREADS": 1,
     "HttpClientTimeout": 20,
     "Proxies": "",
-    "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized scanner"
+    "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
   },
   "common_https_options": {
     "RHOSTS": "127.0.0.1",
@@ -34,20 +34,66 @@
     "THREADS": 1,
     "HttpClientTimeout": 20,
     "Proxies": "",
-    "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized scanner"
+    "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
   },
   "modules": [
     {
-      "id": "iis_http_version",
+      "id": "cve_2025_53772_webdeploy_rce",
+      "display_id_prefix": "IIS-CVE",
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/http_version",
-      "name": "IIS / HTTP.sys service fingerprint",
-      "category": "iis_service_fingerprinting",
-      "risk": "banner_version_exposure",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Collects HTTP service fingerprinting for IIS/HTTP.sys on Windows Server 2022 and newer.",
+      "preferred_module": "auxiliary/scanner/http/msdeploy_deserialization_check",
+      "name": "CVE-2025-53772 Web Deploy RCE check",
+      "category": "web_deploy_rce",
+      "risk": "unsafe_deserialization",
+      "cve": ["CVE-2025-53772"],
+      "severity": "CRITICAL",
+      "cvss": 8.8,
+      "check_method": "msf_and_local",
       "safe_to_run": true,
+      "server_2022_relevance": "Checks local Web Deploy / WMSvc exposure and patch posture on Windows Server 2022+.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 8172,
+        "SSL": true,
+        "VHOST": "",
+        "TARGETURI": "/msdeploy.axd",
+        "THREADS": 1
+      },
+      "local_variants": [
+        {"RPORT": 8172, "SSL": true, "TARGETURI": "/msdeploy.axd"}
+      ],
+      "local_check": {
+        "cve_id": "CVE-2025-53772",
+        "service_names": ["WMSvc", "MsDepSvc"],
+        "service_required": true,
+        "patch_after": "2025-07-01",
+        "patch_guidance": "Install the Microsoft Web Deploy / IIS cumulative update that remediates CVE-2025-53772.",
+        "file_paths": [
+          "$env:ProgramFiles\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe",
+          "$env:ProgramFiles\\IIS\\Microsoft Web Deploy V3\\msdepsvc.exe"
+        ],
+        "registry_paths": [
+          "HKLM:\\SOFTWARE\\Microsoft\\IIS Extensions\\MSDeploy\\3"
+        ]
+      },
+      "expected_signal": "Reports Web Deploy endpoint reachability, deserialization/BinaryFormatter findings, and local Web Deploy patch state."
+    },
+    {
+      "id": "cve_2025_27473_httpsys_dos",
+      "display_id_prefix": "IIS-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/http/http_version",
+      "preferred_module": "auxiliary/dos/http/http_sys_resource_exhaustion",
+      "name": "CVE-2025-27473 HTTP.sys DoS check",
+      "category": "httpsys_resource_exhaustion",
+      "risk": "resource_exhaustion",
+      "cve": ["CVE-2025-27473"],
+      "severity": "HIGH",
+      "cvss": 7.5,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Checks local HTTP.sys/IIS listeners and April 2025 or later patch posture.",
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
         "RPORT": 80,
@@ -59,215 +105,128 @@
         {"RPORT": 80, "SSL": false},
         {"RPORT": 443, "SSL": true}
       ],
-      "expected_signal": "Reports HTTP server/banner fingerprint for IIS or HTTP.sys."
+      "local_check": {
+        "cve_id": "CVE-2025-27473",
+        "service_names": ["HTTP", "W3SVC"],
+        "service_required": true,
+        "patch_after": "2025-04-01",
+        "patch_guidance": "Install the April 2025 or later Windows Server cumulative update that remediates CVE-2025-27473.",
+        "file_paths": [
+          "$env:windir\\System32\\drivers\\http.sys"
+        ]
+      },
+      "expected_signal": "Reports HTTP.sys/IIS fingerprinting, resource exhaustion indicators, and local HTTP.sys patch state."
     },
     {
-      "id": "iis_http_options",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/options",
-      "name": "IIS allowed HTTP methods",
-      "category": "iis_service_method_hardening",
-      "risk": "dangerous_methods_enabled",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Checks exposed IIS HTTP methods on Windows Server 2022+ sites.",
+      "id": "cve_2025_59282_com_race",
+      "display_id_prefix": "IIS-CVE",
+      "module_type": "local",
+      "module": null,
+      "name": "CVE-2025-59282 Inbox COM Objects race condition check",
+      "category": "inbox_com_race_condition",
+      "risk": "race_condition_uaf",
+      "cve": ["CVE-2025-59282"],
+      "severity": "HIGH",
+      "cvss": 7.0,
+      "check_method": "local_only",
       "safe_to_run": true,
+      "server_2022_relevance": "Checks October 2025 or later patch posture and selected COM library versions on the local host.",
+      "default_datastore": {},
+      "local_variants": [],
+      "local_check": {
+        "cve_id": "CVE-2025-59282",
+        "service_names": [],
+        "service_required": false,
+        "patch_after": "2025-10-01",
+        "patch_guidance": "Install the October 2025 or later Windows Server cumulative update that remediates CVE-2025-59282.",
+        "file_paths": [
+          "$env:windir\\System32\\ole32.dll",
+          "$env:windir\\System32\\combase.dll",
+          "$env:windir\\System32\\rpcrt4.dll"
+        ]
+      },
+      "expected_signal": "Reports local patch and COM DLL version posture; no Metasploit module is required."
+    },
+    {
+      "id": "cve_2025_59287_wsus_rce",
+      "display_id_prefix": "IIS-CVE",
+      "module_type": "exploit",
+      "module": "exploit/windows/http/wsus_deserialization_rce",
+      "name": "CVE-2025-59287 WSUS deserialization RCE check",
+      "category": "wsus_deserialization_rce",
+      "risk": "unsafe_deserialization",
+      "cve": ["CVE-2025-59287"],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Checks local WSUS HTTP/HTTPS endpoints in Metasploit check mode and verifies local WSUS patch/service posture.",
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
+        "RPORT": 8530,
         "SSL": false,
-        "VHOST": "",
         "TARGETURI": "/",
-        "THREADS": 1
+        "VHOST": ""
       },
       "local_variants": [
-        {"RPORT": 80, "SSL": false, "TARGETURI": "/"},
-        {"RPORT": 443, "SSL": true, "TARGETURI": "/"}
+        {"RPORT": 8530, "SSL": false, "TARGETURI": "/"},
+        {"RPORT": 8531, "SSL": true, "TARGETURI": "/"}
       ],
-      "expected_signal": "Reports Allow header and risky methods such as TRACE, PUT, DELETE, or WebDAV verbs."
-    },
-    {
-      "id": "iis_trace_method",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/trace",
-      "name": "IIS TRACE method exposure",
-      "category": "iis_service_method_hardening",
-      "risk": "dangerous_methods_enabled",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Validates whether TRACE is enabled on IIS/HTTP.sys despite modern hardening expectations.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "THREADS": 1
+      "local_check": {
+        "cve_id": "CVE-2025-59287",
+        "service_names": ["WsusService", "W3SVC"],
+        "service_required": true,
+        "windows_features": ["UpdateServices", "UpdateServices-Services", "UpdateServices-WidDB"],
+        "patch_after": "2025-10-01",
+        "patch_guidance": "Install the October 2025 or later Windows Server cumulative update and WSUS update that remediates CVE-2025-59287.",
+        "file_paths": [
+          "$env:ProgramFiles\\Update Services\\Services\\WsusService.exe",
+          "$env:ProgramFiles\\Update Services\\WebServices\\ClientWebService\\bin\\Microsoft.UpdateServices.WebServices.Client.dll"
+        ]
       },
-      "local_variants": [
-        {"RPORT": 80, "SSL": false},
-        {"RPORT": 443, "SSL": true}
-      ],
-      "expected_signal": "Reports vulnerable when TRACE reflects request content."
-    },
-    {
-      "id": "iis_webdav_scanner",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/webdav_scanner",
-      "name": "IIS WebDAV service exposure",
-      "category": "iis_service_feature_hardening",
-      "risk": "webdav_enabled",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Detects WebDAV exposure on IIS where it is not required.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {"RPORT": 80, "SSL": false, "PATH": "/"},
-        {"RPORT": 443, "SSL": true, "PATH": "/"}
-      ],
-      "expected_signal": "Reports WebDAV/SharePoint DAV support."
-    },
-    {
-      "id": "iis_http_put_write_test",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/http_put",
-      "name": "IIS PUT write capability test",
-      "category": "iis_service_active_write_test",
-      "risk": "unauthorized_write_delete",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Actively verifies writable IIS paths. Only run against authorized lab/local targets.",
-      "safe_to_run": "conditional",
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "FILENAME": "vulnmngsys_iis_put_test.txt",
-        "FILEDATA": "vulnmngsys authorized test file",
-        "ACTION": "PUT",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {"RPORT": 80, "SSL": false, "PATH": "/", "ACTION": "PUT"},
-        {"RPORT": 443, "SSL": true, "PATH": "/", "ACTION": "PUT"}
-      ],
-      "expected_signal": "Reports successful upload/write when IIS path accepts PUT."
-    },
-    {
-      "id": "iis_shortname_scanner",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/iis_shortname_scanner",
-      "name": "IIS 8.3 short-name enumeration",
-      "category": "iis_service_information_disclosure",
-      "risk": "information_disclosure",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Checks whether modern IIS still exposes 8.3 short-name enumeration.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "THREADS": 20
-      },
-      "local_variants": [
-        {"RPORT": 80, "SSL": false, "PATH": "/"},
-        {"RPORT": 443, "SSL": true, "PATH": "/"}
-      ],
-      "expected_signal": "Reports discovered 8.3-style short names."
-    },
-    {
-      "id": "iis_directory_listing",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/dir_listing",
-      "name": "IIS directory browsing exposure",
-      "category": "iis_service_content_exposure",
-      "risk": "directory_listing",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Checks whether IIS Directory Browsing is enabled on the target path.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 80,
-        "SSL": false,
-        "VHOST": "",
-        "PATH": "/",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {"RPORT": 80, "SSL": false, "PATH": "/"},
-        {"RPORT": 443, "SSL": true, "PATH": "/"}
-      ],
-      "expected_signal": "Reports index/directory listing output."
-    },
-    {
-      "id": "iis_tls_versions",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/ssl/ssl_version",
-      "name": "IIS HTTPS TLS protocol check",
-      "category": "iis_service_tls_hardening",
-      "risk": "weak_tls_protocols_or_ciphers",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Checks IIS HTTPS bindings for weak TLS protocol exposure on Windows Server 2022+.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 443,
-        "SSLVersion": "All",
-        "THREADS": 1
-      },
-      "local_variants": [
-        {"RPORT": 443}
-      ],
-      "expected_signal": "Reports supported SSL/TLS protocol versions and weak protocol exposure."
-    },
-    {
-      "id": "iis_https_certificate",
-      "module_type": "auxiliary",
-      "module": "auxiliary/scanner/http/cert",
-      "name": "IIS HTTPS certificate check",
-      "category": "iis_service_tls_certificate",
-      "risk": "expired_or_untrusted_certificate",
-      "cve": [],
-      "year_scope": "2022+",
-      "server_2022_relevance": "Checks IIS HTTPS certificate expiry and issuer properties.",
-      "safe_to_run": true,
-      "default_datastore": {
-        "RHOSTS": "127.0.0.1",
-        "RPORT": 443,
-        "ISSUER": ".*",
-        "SHOWALL": false,
-        "THREADS": 1
-      },
-      "local_variants": [
-        {"RPORT": 443}
-      ],
-      "expected_signal": "Reports expired certificate or issuer mismatch."
+      "expected_signal": "Reports vulnerable/check output for GetCookie, AuthorizationCookie, BinaryFormatter, and local WSUS patch state."
     }
   ],
-  "excluded_or_dangerous_modules": [],
+  "excluded_or_dangerous_modules": [
+    {
+      "module": "auxiliary/scanner/http/options",
+      "reason": "Removed from focused 2025 CVE profile."
+    },
+    {
+      "module": "auxiliary/scanner/http/trace",
+      "reason": "Removed from focused 2025 CVE profile."
+    },
+    {
+      "module": "auxiliary/scanner/http/webdav_scanner",
+      "reason": "Removed from focused 2025 CVE profile."
+    },
+    {
+      "module": "auxiliary/scanner/http/http_put",
+      "reason": "Removed from focused 2025 CVE profile; active write tests are not part of this audit."
+    },
+    {
+      "module": "auxiliary/scanner/http/iis_shortname_scanner",
+      "reason": "Removed from focused 2025 CVE profile."
+    },
+    {
+      "module": "auxiliary/scanner/http/dir_listing",
+      "reason": "Removed from focused 2025 CVE profile."
+    },
+    {
+      "module": "auxiliary/scanner/ssl/ssl_version",
+      "reason": "Removed from focused 2025 CVE profile."
+    },
+    {
+      "module": "auxiliary/scanner/http/cert",
+      "reason": "Removed from focused 2025 CVE profile."
+    }
+  ],
   "pymetasploit3_runner_template": {
-    "description": "Load each module via msfrpc and override default_datastore per target/port.",
+    "description": "Load each module via msfrpc, override target/port options, run auxiliary modules with run and exploit modules with check.",
     "pseudo_code": [
-      "from pymetasploit3.msfrpc import MsfRpcClient",
-      "client = MsfRpcClient('<password>', server='127.0.0.1', port=55552, ssl=False)",
-      "mod = client.modules.use('auxiliary', '<module path without auxiliary/>')",
+      "mod = client.modules.use('<module_type>', '<module path without prefix/>')",
       "for k, v in default_datastore.items(): mod[k] = v",
-      "job = mod.execute()"
+      "console.write('use <module>\\nset ...\\nrun|check\\n')"
     ]
   }
 }

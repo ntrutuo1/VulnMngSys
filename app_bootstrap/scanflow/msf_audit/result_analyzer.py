@@ -1,323 +1,237 @@
-"""Analyze raw Metasploit module output and assign PASS/FAIL/WARNING/INFO status."""
+"""Analyze IIS critical CVE audit output from MSF and local checks."""
 from __future__ import annotations
 
-import re
 from typing import Any
 
 
-# Signals that are considered informational regardless of match
-_INFO_RISK_KEYWORDS = {"banner_version_exposure", "sensitive_path_disclosure"}
-
-# Signals that yield WARNING instead of FAIL
-_WARNING_RISK_KEYWORDS = {
-    "webdav_enabled",
-    "dangerous_methods_enabled",
-    "weak_tls_protocols_or_ciphers",
-}
-
-# Phrases in module output that indicate "nothing found / clean"
-_NEGATIVE_PHRASES = {
-    "no vulnerabilities found",
-    "no webdav",
-    "webdav is not enabled",
-    "not vulnerable",
-    "does not support trace",
-    "trace method is disabled",
-    "no shortnames found",
-    "certificate appears valid",
-    "no interesting files",
-    "no directory listing",
-    "robots.txt not found",
-}
-
-# Phrases indicating an actual finding
 _POSITIVE_PHRASES = {
-    "internal ip",
-    "short name",
-    "8.3",
-    "tilde",
-    "webdav",
-    "sharepoint",
-    "put",
-    "delete",
-    "directory listing",
-    "index of",
-    "file found",
-    "interesting file",
-    "robots.txt",
-    "disallow",
-    "ssl",
-    "tls",
-    "sslv",
-    "expired",
-    "issuer mismatch",
-    "self-signed",
-    "weak cipher",
+    "authorizationcookie",
+    "binaryformatter",
+    "deserialization",
+    "deserialized",
+    "getcookie",
+    "msdeploy.axd accessible",
+    "resource exhaustion",
+    "target is vulnerable",
+    "the target appears to be vulnerable",
     "vulnerable",
-    "found:",
-    "uploaded",
 }
 
-_NOISE_PHRASES = (
-    "auxiliary module execution completed",
-    "changing the ssl option's value may require changing rport",
-)
+_NEGATIVE_PHRASES = {
+    "already patched",
+    "does not appear to be vulnerable",
+    "not exploitable",
+    "not installed",
+    "not vulnerable",
+    "patch detected",
+    "patched",
+}
 
-_DANGEROUS_METHODS = {"PUT", "DELETE", "TRACE", "TRACK", "CONNECT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK"}
+_CONNECTION_INFO_PHRASES = {
+    "connection refused",
+    "no response",
+    "not found",
+    "404",
+    "server returned no response",
+}
+
+_ERROR_PHRASES = {
+    "failed to load module",
+    "failed to validate",
+    "module not found",
+    "no such module",
+    "unknown command",
+}
+
+
+def analyze(
+    module_def: dict[str, Any],
+    raw_output: str,
+    local_check_result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Determine final CVE status from MSF output and PowerShell local check."""
+    module_id = str(module_def.get("id", "")).lower()
+    if module_id == "cve_2025_53772_webdeploy_rce":
+        msf = _analyze_webdeploy_rce(raw_output)
+    elif module_id == "cve_2025_27473_httpsys_dos":
+        msf = _analyze_httpsys_dos(raw_output)
+    elif module_id == "cve_2025_59282_com_race":
+        msf = {"status": "INFO", "evidence": "No Metasploit module configured for this local-only CVE."}
+    elif module_id == "cve_2025_59287_wsus_rce":
+        msf = _analyze_wsus_rce(raw_output)
+    else:
+        msf = _analyze_generic_cve(raw_output)
+
+    return _combine_msf_and_local(module_def, msf, local_check_result or {})
+
+
+def _analyze_webdeploy_rce(raw_output: str) -> dict[str, str]:
+    out = _output_lower(raw_output)
+    if not out:
+        return {"status": "INFO", "evidence": "MSF Web Deploy probe did not return output."}
+    if _has_error(out):
+        return {"status": "ERROR", "evidence": _evidence_or_default(raw_output, "MSF Web Deploy check failed.")}
+    if any(phrase in out for phrase in ("msdeploy.axd accessible", "binaryformatter", "deserialization", "vulnerable")):
+        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "Web Deploy deserialization signal detected.")}
+    if any(phrase in out for phrase in _NEGATIVE_PHRASES):
+        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "MSF did not find a Web Deploy RCE signal.")}
+    if any(phrase in out for phrase in _CONNECTION_INFO_PHRASES):
+        return {"status": "INFO", "evidence": _evidence_or_default(raw_output, "Web Deploy endpoint did not respond on the scanned port.")}
+    return {"status": "INFO", "evidence": _evidence_or_default(raw_output, "Web Deploy probe completed without a direct vulnerable signal.")}
+
+
+def _analyze_httpsys_dos(raw_output: str) -> dict[str, str]:
+    out = _output_lower(raw_output)
+    if not out:
+        return {"status": "INFO", "evidence": "MSF HTTP.sys probe did not return output."}
+    if _has_error(out):
+        return {"status": "ERROR", "evidence": _evidence_or_default(raw_output, "MSF HTTP.sys check failed.")}
+    if any(phrase in out for phrase in ("resource exhaustion", "cwe-400", "target is vulnerable", "vulnerable")):
+        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "HTTP.sys resource exhaustion signal detected.")}
+    if any(phrase in out for phrase in _NEGATIVE_PHRASES):
+        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "MSF did not find an HTTP.sys DoS signal.")}
+    return {"status": "INFO", "evidence": _evidence_or_default(raw_output, "HTTP.sys fingerprint probe completed.")}
+
+
+def _analyze_wsus_rce(raw_output: str) -> dict[str, str]:
+    out = _output_lower(raw_output)
+    if not out:
+        return {"status": "INFO", "evidence": "MSF WSUS check mode did not return output."}
+    if _has_error(out):
+        return {"status": "ERROR", "evidence": _evidence_or_default(raw_output, "MSF WSUS check mode failed.")}
+    if any(phrase in out for phrase in ("getcookie", "authorizationcookie", "binaryformatter", "deserialization", "vulnerable")):
+        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "WSUS deserialization RCE signal detected.")}
+    if any(phrase in out for phrase in _NEGATIVE_PHRASES):
+        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "MSF check mode did not find a WSUS RCE signal.")}
+    if any(phrase in out for phrase in _CONNECTION_INFO_PHRASES):
+        return {"status": "INFO", "evidence": _evidence_or_default(raw_output, "WSUS endpoint did not respond on the scanned port.")}
+    return {"status": "INFO", "evidence": _evidence_or_default(raw_output, "WSUS check mode completed without a direct vulnerable signal.")}
+
+
+def _analyze_generic_cve(raw_output: str) -> dict[str, str]:
+    out = _output_lower(raw_output)
+    if not out:
+        return {"status": "INFO", "evidence": "No MSF output received."}
+    if _has_error(out):
+        return {"status": "ERROR", "evidence": _evidence_or_default(raw_output, "MSF check failed.")}
+    if any(phrase in out for phrase in _POSITIVE_PHRASES):
+        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "Vulnerability signal detected.")}
+    if any(phrase in out for phrase in _NEGATIVE_PHRASES):
+        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "No vulnerable signal detected.")}
+    return {"status": "INFO", "evidence": _evidence_or_default(raw_output, "MSF check completed.")}
+
+
+def _combine_msf_and_local(
+    module_def: dict[str, Any],
+    msf: dict[str, str],
+    local: dict[str, Any],
+) -> dict[str, Any]:
+    local_status = str(local.get("status") or "").upper()
+    msf_status = str(msf.get("status") or "INFO").upper()
+    evidence = _join_evidence(
+        _prefix("Local", str(local.get("evidence") or "")),
+        _prefix("MSF", str(msf.get("evidence") or "")),
+    )
+
+    if local_status == "FAIL":
+        return {
+            "status": "FAIL",
+            "evidence": evidence or "Local patch check indicates the host is exposed.",
+            "remediation": _get_remediation(module_def),
+        }
+    if msf_status == "FAIL":
+        return {
+            "status": "FAIL",
+            "evidence": evidence or "Metasploit returned a vulnerable signal.",
+            "remediation": _get_remediation(module_def),
+        }
+    if local_status == "WARNING" or (msf_status == "ERROR" and local_status == "PASS"):
+        return {
+            "status": "WARNING",
+            "evidence": evidence or "Local check passed, but MSF verification was incomplete.",
+            "remediation": _get_remediation(module_def),
+        }
+    if local_status == "ERROR":
+        return {
+            "status": "ERROR" if msf_status == "ERROR" else "WARNING",
+            "evidence": evidence or "Local PowerShell check failed.",
+            "remediation": "Rerun the audit with local administrator privileges and verify PowerShell is available.",
+        }
+    if msf_status == "ERROR":
+        return {
+            "status": "ERROR",
+            "evidence": evidence or "MSF verification failed.",
+            "remediation": "Verify the configured Metasploit module is installed and check mode options are valid.",
+        }
+    if local_status == "SKIPPED":
+        return {
+            "status": msf_status if msf_status in {"PASS", "WARNING", "INFO"} else "INFO",
+            "evidence": evidence or "Local check was skipped.",
+            "remediation": "" if msf_status == "PASS" else _get_remediation(module_def),
+        }
+
+    if local_status == "PASS":
+        return {
+            "status": "PASS",
+            "evidence": evidence or "Local patch/service check passed.",
+            "remediation": "",
+        }
+
+    return {
+        "status": msf_status,
+        "evidence": evidence or str(msf.get("evidence") or "CVE check completed."),
+        "remediation": "" if msf_status in {"PASS", "INFO"} else _get_remediation(module_def),
+    }
+
+
+def _get_remediation(module_def: dict[str, Any]) -> str:
+    cves = ", ".join(module_def.get("cve", []) or [])
+    module_id = str(module_def.get("id", ""))
+    local_check = module_def.get("local_check") or {}
+    patch_guidance = str(local_check.get("patch_guidance") or "").strip()
+    hints: dict[str, str] = {
+        "cve_2025_53772_webdeploy_rce": "Patch or disable Web Deploy/WMSvc if it is not required.",
+        "cve_2025_27473_httpsys_dos": "Patch Windows Server HTTP.sys and restrict exposed IIS listeners to required networks.",
+        "cve_2025_59282_com_race": "Install the October 2025 or later Windows Server cumulative update.",
+        "cve_2025_59287_wsus_rce": "Patch WSUS, verify Update Services role exposure, and restrict ports 8530/8531.",
+    }
+    base = patch_guidance or hints.get(module_id, "Install the vendor remediation and review the affected service configuration.")
+    return f"{base} See: {cves}." if cves else base
 
 
 def _output_lower(raw: str) -> str:
-    return raw.lower()
+    return (raw or "").lower()
 
 
-def _matches_positive(output_lower: str) -> bool:
-    return any(phrase in output_lower for phrase in _POSITIVE_PHRASES)
+def _has_error(output_lower: str) -> bool:
+    return any(phrase in output_lower for phrase in _ERROR_PHRASES)
 
 
-def _matches_negative(output_lower: str) -> bool:
-    return any(phrase in output_lower for phrase in _NEGATIVE_PHRASES)
-
-
-def _extract_evidence(raw_output: str, max_chars: int = 300) -> str:
-    """Extract the most relevant lines from raw output as evidence."""
-    lines = [line.strip() for line in raw_output.replace("\r\n", "\n").replace("\r", "\n").split("\n")]
-    # Keep non-empty module output, not msfconsole banner/prompt noise.
+def _extract_evidence(raw_output: str, max_chars: int = 360) -> str:
+    lines = [
+        line.strip()
+        for line in (raw_output or "").replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    ]
     relevant = [
         line for line in lines
         if line
         and not line.lower().startswith(("msf", "meterpreter"))
-        and not line.startswith("[*] Starting")
-        and not line.startswith("[*] Scanned")
         and "metasploit" not in line.lower()
         and "rapid7" not in line.lower()
-        and not any(noise in line.lower() for noise in _NOISE_PHRASES)
+        and "auxiliary module execution completed" not in line.lower()
     ]
     evidence = " | ".join(relevant[:5])
     return evidence[:max_chars] if evidence else ""
 
 
-def _plain_evidence(raw_output: str) -> str:
-    return _extract_evidence(raw_output, max_chars=500)
-
-
 def _evidence_or_default(raw_output: str, default: str) -> str:
-    return _plain_evidence(raw_output) or default
+    return _extract_evidence(raw_output) or default
 
 
-def _parse_allowed_methods(raw_output: str) -> set[str]:
-    methods: set[str] = set()
-    for line in raw_output.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
-        upper = line.upper()
-        if "ALLOW" not in upper and "METHOD" not in upper and "SUPPORTED" not in upper:
-            continue
-        for method in re.findall(r"\b[A-Z]{3,10}\b", upper):
-            if method in _DANGEROUS_METHODS or method in {"GET", "HEAD", "POST", "OPTIONS"}:
-                methods.add(method)
-    return methods
+def _prefix(label: str, value: str) -> str:
+    value = value.strip()
+    return f"{label}: {value}" if value else ""
 
 
-def _analyze_http_options(raw_output: str) -> dict[str, Any] | None:
-    methods = _parse_allowed_methods(raw_output)
-    if not methods:
-        return None
-    dangerous = sorted(methods & _DANGEROUS_METHODS)
-    if dangerous:
-        return {
-            "status": "WARNING",
-            "evidence": f"Dangerous HTTP methods exposed: {', '.join(dangerous)}. Allowed methods observed: {', '.join(sorted(methods))}.",
-            "remediation": "",
-        }
-    return {
-        "status": "PASS",
-        "evidence": f"Allowed HTTP methods observed: {', '.join(sorted(methods))}. No dangerous methods detected.",
-        "remediation": "",
-    }
-
-
-def _analyze_trace(raw_output: str) -> dict[str, Any] | None:
-    out_lower = _output_lower(raw_output)
-    if "does not support trace" in out_lower or "trace method is disabled" in out_lower or "not vulnerable" in out_lower:
-        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "TRACE method was not accepted by IIS."), "remediation": ""}
-    if "trace" in out_lower and any(word in out_lower for word in ("enabled", "vulnerable", "allows", "accepted", "reflected")):
-        return {"status": "WARNING", "evidence": _evidence_or_default(raw_output, "TRACE method appears enabled."), "remediation": ""}
-    return None
-
-
-def _analyze_webdav(raw_output: str) -> dict[str, Any] | None:
-    out_lower = _output_lower(raw_output)
-    if "no webdav" in out_lower or "webdav is not enabled" in out_lower or "not found" in out_lower:
-        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "WebDAV was not detected on the IIS endpoint."), "remediation": ""}
-    if "webdav" in out_lower or "sharepoint" in out_lower or "dav" in out_lower:
-        return {"status": "WARNING", "evidence": _evidence_or_default(raw_output, "WebDAV support was detected."), "remediation": ""}
-    return None
-
-
-def _analyze_directory_listing(raw_output: str) -> dict[str, Any] | None:
-    out_lower = _output_lower(raw_output)
-    if "no directory listing" in out_lower or "not found" in out_lower or "403" in out_lower:
-        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "Directory browsing was not exposed."), "remediation": ""}
-    if "directory listing" in out_lower or "index of" in out_lower:
-        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "Directory listing content was exposed."), "remediation": ""}
-    return None
-
-
-def _analyze_shortname(raw_output: str) -> dict[str, Any] | None:
-    out_lower = _output_lower(raw_output)
-    if "no shortnames found" in out_lower or "not vulnerable" in out_lower:
-        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "IIS 8.3 short-name enumeration was not detected."), "remediation": ""}
-    if any(phrase in out_lower for phrase in ("short name", "shortname", "8.3", "tilde")):
-        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "IIS 8.3 short-name enumeration signal was detected."), "remediation": ""}
-    return None
-
-
-def _analyze_tls(raw_output: str) -> dict[str, Any] | None:
-    out_lower = _output_lower(raw_output)
-    weak_protocols = []
-    for label, patterns in {
-        "SSLv2": ("sslv2", "ssl 2"),
-        "SSLv3": ("sslv3", "ssl 3"),
-        "TLS 1.0": ("tlsv1 ", "tls 1.0", "tls1.0"),
-        "TLS 1.1": ("tlsv1.1", "tls 1.1", "tls1.1"),
-    }.items():
-        if any(pattern in out_lower for pattern in patterns):
-            weak_protocols.append(label)
-    if weak_protocols:
-        details = _plain_evidence(raw_output)
-        return {
-            "status": "WARNING",
-            "evidence": f"Weak TLS protocol support observed: {', '.join(weak_protocols)}. {details}".strip(),
-            "remediation": "",
-        }
-    if "server does not appear to support ssl/tls" in out_lower or "connection refused" in out_lower or "no response" in out_lower:
-        return {"status": "ERROR", "evidence": _evidence_or_default(raw_output, "HTTPS/TLS endpoint did not respond on the scanned port."), "remediation": "Verify IIS HTTPS binding and target port."}
-    if any(token in out_lower for token in ("tlsv1.2", "tlsv1.3", "tls 1.2", "tls 1.3")):
-        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "TLS scan completed; no weak protocol support was detected."), "remediation": ""}
-    return None
-
-
-def _analyze_certificate(raw_output: str) -> dict[str, Any] | None:
-    out_lower = _output_lower(raw_output)
-    if any(phrase in out_lower for phrase in ("expired", "issuer mismatch", "self-signed", "not trusted")):
-        return {"status": "FAIL", "evidence": _evidence_or_default(raw_output, "Certificate trust, issuer, or expiry issue detected."), "remediation": ""}
-    if "certificate appears valid" in out_lower or "subject" in out_lower or "issuer" in out_lower:
-        return {"status": "PASS", "evidence": _evidence_or_default(raw_output, "Certificate details were collected and no issue was detected."), "remediation": ""}
-    return None
-
-
-def _module_specific_analysis(module_def: dict[str, Any], raw_output: str) -> dict[str, Any] | None:
-    module_id = str(module_def.get("id", "")).lower()
-    module_path = str(module_def.get("module", "")).lower()
-    if module_id == "iis_http_options" or module_path.endswith("/options"):
-        return _analyze_http_options(raw_output)
-    if module_id == "iis_trace_method" or module_path.endswith("/trace"):
-        return _analyze_trace(raw_output)
-    if module_id == "iis_webdav_scanner":
-        return _analyze_webdav(raw_output)
-    if module_id == "iis_directory_listing":
-        return _analyze_directory_listing(raw_output)
-    if module_id == "iis_shortname_scanner":
-        return _analyze_shortname(raw_output)
-    if module_id == "iis_tls_versions":
-        return _analyze_tls(raw_output)
-    if module_id == "iis_https_certificate":
-        return _analyze_certificate(raw_output)
-    return None
-
-
-def analyze(module_def: dict[str, Any], raw_output: str) -> dict[str, Any]:
-    """Determine scan status from module definition and raw console output.
-
-    Returns:
-        dict with keys: status, evidence, remediation
-    """
-    risk = str(module_def.get("risk", "")).lower()
-    category = str(module_def.get("category", "")).lower()
-    safe_to_run = module_def.get("safe_to_run", True)
-
-    # SKIPPED — module was excluded (conditional not in active mode)
-    if safe_to_run == "conditional":
-        return {
-            "status": "SKIPPED",
-            "evidence": "Skipped: active test mode not enabled",
-            "remediation": "",
-        }
-
-    if not raw_output.strip():
-        return {
-            "status": "ERROR",
-            "evidence": "No output received from module",
-            "remediation": "Verify msfrpc connection and module availability",
-        }
-
-    out_lower = _output_lower(raw_output)
-    evidence = _extract_evidence(raw_output)
-
-    # Error indicators in output
-    if any(phrase in out_lower for phrase in ("error:", "failed to", "exploit failed", "no route", "failed to validate")):
-        return {
-            "status": "ERROR",
-            "evidence": evidence or "Module execution error",
-            "remediation": "Check module options and target connectivity",
-        }
-
-    module_specific = _module_specific_analysis(module_def, raw_output)
-    if module_specific:
-        if module_specific["status"] in {"WARNING", "FAIL"}:
-            module_specific["remediation"] = module_specific.get("remediation") or _get_remediation(module_def)
-        return module_specific
-
-    positive_match = _matches_positive(out_lower)
-    negative_match = _matches_negative(out_lower)
-
-    # INFO category: always just collect info
-    if risk in _INFO_RISK_KEYWORDS or category == "fingerprinting" or category == "content_discovery":
-        return {
-            "status": "INFO",
-            "evidence": evidence or "Module completed but did not return a service banner.",
-            "remediation": "Review collected information for further analysis",
-        }
-
-    if positive_match and not negative_match:
-        # Determine severity
-        if risk in _WARNING_RISK_KEYWORDS:
-            return {
-                "status": "WARNING",
-                "evidence": evidence,
-                "remediation": _get_remediation(module_def),
-            }
-        return {
-            "status": "FAIL",
-            "evidence": evidence,
-            "remediation": _get_remediation(module_def),
-        }
-
-    # Clean / no finding
-    return {
-        "status": "PASS",
-        "evidence": evidence or "No finding signal was returned by the module.",
-        "remediation": "",
-    }
-
-
-def _get_remediation(module_def: dict[str, Any]) -> str:
-    """Build a remediation hint from module metadata."""
-    risk = module_def.get("risk", "")
-    name = module_def.get("name", "")
-    cves = module_def.get("cve", [])
-    cve_text = ", ".join(cves) if cves else ""
-
-    hints: dict[str, str] = {
-        "information_disclosure": "Review IIS configuration to suppress internal IP / header disclosure.",
-        "webdav_enabled": "Disable WebDAV in IIS Manager if not required.",
-        "dangerous_methods_enabled": "Restrict HTTP methods in IIS to GET and POST only.",
-        "directory_listing": "Disable Directory Browsing in IIS site settings.",
-        "backup_config_log_file_disclosure": "Remove or restrict access to backup/config/log files in web root.",
-        "unauthorized_write_delete": "Disable write permissions on IIS paths; disable WebDAV PUT/DELETE.",
-        "weak_tls_protocols_or_ciphers": "Disable TLS 1.0/1.1 and weak cipher suites via IIS Crypto or Group Policy.",
-        "expired_or_untrusted_certificate": "Renew or replace the SSL certificate; ensure issuer chain is trusted.",
-    }
-
-    base = hints.get(risk, f"Review {name} configuration for security hardening.")
-    if cve_text:
-        base += f" See: {cve_text}."
-    return base
+def _join_evidence(*parts: str) -> str:
+    return " | ".join(part for part in parts if part)

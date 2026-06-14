@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Button, Space, Table, Tooltip, Typography } from 'antd'
+import { Button, Space, Table, Tag, Tooltip, Typography } from 'antd'
 import IisMsfDetailModal from './IisMsfDetailModal'
 import { CategoryLabel, STATUS_ANT_COLOR, StatusTag } from './IisMsfStatus'
 
@@ -17,7 +17,7 @@ export default function IisMsfResultTable({ items = [] }) {
         pagination={false}
         size="small"
         tableLayout="fixed"
-        scroll={{ x: 980 }}
+        scroll={{ x: 1240 }}
         style={{ width: '100%' }}
         onRow={(record) => ({ onClick: () => setSelectedRow(record), style: { cursor: 'pointer' } })}
         rowClassName={(record) => {
@@ -37,14 +37,28 @@ function buildColumns(setSelectedRow) {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 104,
+      width: 110,
       render: (value) => <Typography.Text code className="nowrap">{value}</Typography.Text>,
+    },
+    {
+      title: 'CVE',
+      dataIndex: 'cve',
+      key: 'cve',
+      width: 150,
+      render: (value) => <CveList cves={value} />,
+    },
+    {
+      title: 'Severity',
+      dataIndex: 'severity',
+      key: 'severity',
+      width: 104,
+      render: (value) => <SeverityTag severity={value} />,
     },
     {
       title: 'Module / Name',
       dataIndex: 'name',
       key: 'name',
-      width: 280,
+      width: 260,
       render: (value, row) => <ModuleName value={value} module={row.module} />,
     },
     {
@@ -71,10 +85,17 @@ function buildColumns(setSelectedRow) {
       render: (value) => <StatusTag status={value} />,
     },
     {
+      title: 'Local Check',
+      dataIndex: 'local_check_result',
+      key: 'local_check_result',
+      width: 138,
+      render: (value) => <LocalCheck value={value} />,
+    },
+    {
       title: 'Evidence',
       dataIndex: 'evidence',
       key: 'evidence',
-      width: 340,
+      width: 300,
       ellipsis: true,
       render: (value) => <Evidence value={value} />,
     },
@@ -87,12 +108,35 @@ function buildColumns(setSelectedRow) {
   ]
 }
 
+function CveList({ cves = [] }) {
+  if (!cves.length) return <Typography.Text type="secondary">-</Typography.Text>
+  return (
+    <Space size={4} wrap>
+      {cves.map((cve) => <Typography.Text key={cve} code className="nowrap">{cve}</Typography.Text>)}
+    </Space>
+  )
+}
+
+function SeverityTag({ severity }) {
+  const value = String(severity || '').toUpperCase()
+  return <Tag color={value === 'CRITICAL' ? 'red' : 'orange'}>{value || '-'}</Tag>
+}
+
 function ModuleName({ value, module }) {
   return (
     <Space direction="vertical" size={2}>
       <Typography.Text strong ellipsis={{ tooltip: value }}>{value}</Typography.Text>
       <Typography.Text type="secondary" className="monospace-small" ellipsis={{ tooltip: module }}>{module}</Typography.Text>
     </Space>
+  )
+}
+
+function LocalCheck({ value }) {
+  if (!value) return <Typography.Text type="secondary">-</Typography.Text>
+  return (
+    <Tooltip title={value.evidence || ''} placement="topLeft">
+      <span><StatusTag status={value.status || 'INFO'} /></span>
+    </Tooltip>
   )
 }
 
