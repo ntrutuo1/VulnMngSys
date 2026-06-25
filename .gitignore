@@ -1,10 +1,18 @@
 __pycache__/
 node_modules/
 react-ui/node_modules/
+react-ui/.electron-cache/
+react-ui/.electron-builder-cache/
 
 win-unpacked/
 electron-dist/
 
-build
+build/
+dist/
+logs/
+reports/temp/
+reports/scan_compare_report_contract.json
+*.log
+*.pyc
 
 *.asar

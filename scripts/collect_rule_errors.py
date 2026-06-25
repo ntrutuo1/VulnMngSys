@@ -1,16 +1,16 @@
 """Collect non-Collected rule evaluations and save to reports/scan_errors.json
-Run from project root (where `app_bootstrap` package is importable).
+Run from project root (where `vulnmngsys_app.services.scanflow` is importable).
 """
 import json
 from pathlib import Path
 import sys
 
 # Ensure project root (one level up from scripts/) is on sys.path so
-# `app_bootstrap` can be imported when running this script directly.
+# `vulnmngsys_app.services.scanflow` can be imported when running this script directly.
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app_bootstrap.scanflow.json_rule_engine import _compare_rule, _load_snapshots
+from vulnmngsys_app.services.scanflow.json_rule_engine import _compare_rule, _load_snapshots
 
 OUT = Path('reports')
 OUT.mkdir(exist_ok=True)

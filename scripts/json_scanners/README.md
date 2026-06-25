@@ -3,7 +3,7 @@
 The Python backend uses two entry points:
 
 1. **Startup / inventory** - directly invokes `Get-WindowsServerInventory.ps1` (OS version, services).
-2. **Primary scan** - goes through the internal JSON rule engine in `app_bootstrap.scanflow`.
+2. **Primary scan** - goes through the internal JSON rule engine in `vulnmngsys_app.services.scanflow`.
 
 ```powershell
 # Inventory (startup)
@@ -27,7 +27,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Get-WindowsServerInventory
 
 ## Scan Wizard Flow
 
-`app_bootstrap/scan_wizard.py` will call the inventory script and display a selection dialog:
+`vulnmngsys_app/services/scanflow` will call the inventory script and display a selection dialog:
 
 - `Yes`: Quick scan (profile `_rules`)
 - `No`: Full scan (entire script profile)

@@ -6,7 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from infrastructure.backup_manager import BackupManager, _normalize_reg_path
+from vulnmngsys_app.adapters.backup_manager import BackupManager, _normalize_reg_path
 
 
 class BackupManagerTests(unittest.TestCase):
@@ -28,7 +28,7 @@ class BackupManagerTests(unittest.TestCase):
             return SimpleNamespace(returncode=0, stderr="")
 
         with tempfile.TemporaryDirectory() as tmp:
-            with patch("infrastructure.backup_manager.subprocess.run", side_effect=fake_run):
+            with patch("vulnmngsys_app.adapters.backup_manager.subprocess.run", side_effect=fake_run):
                 BackupManager()._backup_registry(
                     Path(tmp),
                     ["HKLM:\\Software\\VulnMngSysTest", "HKLM\\Software\\VulnMngSysTest"],
@@ -52,7 +52,7 @@ class BackupManagerTests(unittest.TestCase):
             registry_dir.mkdir(parents=True)
             (registry_dir / "001_HKLM_Software_Test.reg").write_text("Windows Registry Editor Version 5.00", encoding="utf-8")
 
-            with patch("infrastructure.backup_manager.subprocess.run", side_effect=fake_run):
+            with patch("vulnmngsys_app.adapters.backup_manager.subprocess.run", side_effect=fake_run):
                 self.assertTrue(manager.rollback_config("backup-1"))
 
         self.assertIn(["reg", "import", str(registry_dir / "001_HKLM_Software_Test.reg")], commands)

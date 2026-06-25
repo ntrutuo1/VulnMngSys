@@ -1,0 +1,58 @@
+[
+  {
+    "hash_id": "516a59bdb157",
+    "service": "File_Explorer",
+    "id": "18.10.29.2",
+    "title": "Ensure 'Do not apply the Mark of the Web tag to files copied from insecure sources' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\DisableMotWOnInsecurePathCopy",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'DisableMotWOnInsecurePathCopy' -ErrorAction Stop).DisableMotWOnInsecurePathCopy } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Do not apply the Mark of the Web tag to files copied from insecure sources to 'Disabled'",
+    "reason": "MOTW is an important security feature that ensures files from insecure locations are treated with extra caution.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "c1ac5ff20a7f",
+    "service": "File_Explorer",
+    "id": "18.10.29.3",
+    "title": "Ensure 'Turn off Data Execution Prevention for Explorer' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoDataExecutionPrevention",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'NoDataExecutionPrevention' -ErrorAction Stop).NoDataExecutionPrevention } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off Data Execution Prevention for Explorer to 'Disabled'",
+    "reason": "Data Execution Prevention is an important security feature supported by Explorer that helps to limit the impact of certain types of malware.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "25891c0079ad",
+    "service": "File_Explorer",
+    "id": "18.10.29.4",
+    "title": "Ensure 'Turn off heap termination on corruption' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoHeapTerminationOnCorruption",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'NoHeapTerminationOnCorruption' -ErrorAction Stop).NoHeapTerminationOnCorruption } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off heap termination on corruption to 'Disabled'",
+    "reason": "Allowing an application to function after its session has become corrupt increases the risk posture to the system.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "9f22a8566ace",
+    "service": "File_Explorer",
+    "id": "18.10.29.5",
+    "title": "Ensure 'Turn off shell protocol protected mode' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\PreXPSP2ShellProtocolBehavior",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'PreXPSP2ShellProtocolBehavior' -ErrorAction Stop).PreXPSP2ShellProtocolBehavior } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\File Explorer\\Turn off shell protocol protected mode to 'Disabled'",
+    "reason": "Limiting the opening of files and folders to a limited set reduces the attack surface of the system.",
+    "service_id": 18
+  }
+]

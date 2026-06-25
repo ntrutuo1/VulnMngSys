@@ -2,11 +2,7 @@
 from PyInstaller.utils.hooks import collect_submodules
 
 hiddenimports = ['platform', 'ctypes', '_ctypes', 'uuid', 'pymetasploit3', 'pymetasploit3.msfrpc']
-hiddenimports += collect_submodules('app_bootstrap')
 hiddenimports += collect_submodules('vulnmngsys_app')
-hiddenimports += collect_submodules('application')
-hiddenimports += collect_submodules('domain')
-hiddenimports += collect_submodules('infrastructure')
 hiddenimports += collect_submodules('pymetasploit3')
 
 

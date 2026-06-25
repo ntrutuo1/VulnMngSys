@@ -1,4 +1,4 @@
-﻿import i18n from 'i18next'
+import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 const LANGUAGE_STORAGE_KEY = 'vulnmngsys-ui-language'
@@ -64,6 +64,7 @@ const resources = {
         actual: 'Actual',
         status: 'Status',
         service: 'Service',
+        hashId: 'Hash ID',
         checkType: 'Check type',
         source: 'Source',
         cisReference: 'CIS reference',
@@ -117,8 +118,8 @@ const resources = {
         safeMode: 'Focused mode: CVE-mapped probes plus local PowerShell patch checks',
         moduleInfo: 'IIS / HTTP.sys / Web Deploy / WSUS CVE checks for Windows Server 2022+',
         noResult: 'Connect to msfRPC and click "Run IIS CVE Audit" to start the scan.',
-        running: 'Running IIS Metasploit auditâ€¦ this may take a few minutes.',
-        done: 'IIS Audit complete â€” Score: {{score}}/100 ({{label}})',
+        running: 'Running IIS Metasploit audit… this may take a few minutes.',
+        done: 'IIS Audit complete — Score: {{score}}/100 ({{label}})',
         failed: 'IIS Audit failed',
       },
     },

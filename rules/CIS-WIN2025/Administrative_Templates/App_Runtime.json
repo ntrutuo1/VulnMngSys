@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "41254b5428ef",
+    "service": "App_Runtime",
+    "id": "18.10.6.1",
+    "title": "Ensure 'Allow Microsoft accounts to be optional' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\MSAOptional",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'MSAOptional' -ErrorAction Stop).MSAOptional } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\App runtime\\Allow Microsoft accounts to be optional to 'Enabled'",
+    "reason": "Enabling this setting allows an organization to use their enterprise user accounts instead of using their Microsoft accounts when accessing Windows store apps. This provides the organization with greater control over relevant credentials.",
+    "service_id": 18
+  }
+]

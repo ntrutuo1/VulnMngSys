@@ -1,5 +1,5 @@
 const { app, BrowserWindow, dialog } = require('electron');
-const { spawn } = require('node:child_process');
+const { execFileSync, spawn } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -102,6 +102,36 @@ function startBackend() {
   });
 }
 
+function killBackendTree() {
+  if (!backendProcess || backendProcess.killed) return;
+
+  const { pid } = backendProcess;
+  if (!pid) {
+    backendProcess = null;
+    return;
+  }
+
+  try {
+    if (process.platform === 'win32') {
+      execFileSync('taskkill', ['/F', '/T', '/PID', String(pid)], {
+        windowsHide: true,
+        timeout: 5000,
+        stdio: 'ignore',
+      });
+    } else {
+      backendProcess.kill('SIGKILL');
+    }
+  } catch (_) {
+    try {
+      backendProcess.kill('SIGKILL');
+    } catch (_) {
+      // Best-effort cleanup during application shutdown.
+    }
+  } finally {
+    backendProcess = null;
+  }
+}
+
 function createWindow(backend) {
   const win = new BrowserWindow({
     width: 1280,
@@ -143,7 +173,13 @@ app.on('window-all-closed', function () {
 });
 
 app.on('before-quit', () => {
-  if (backendProcess && !backendProcess.killed) {
-    backendProcess.kill();
-  }
+  killBackendTree();
+});
+
+app.on('will-quit', () => {
+  killBackendTree();
+});
+
+app.on('quit', () => {
+  killBackendTree();
 });

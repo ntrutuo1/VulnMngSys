@@ -138,6 +138,200 @@ body { overflow-x: hidden; }
 .view-mobile .ant-table { min-width: 760px; }
 .view-mobile .ant-table-wrapper { overflow-x: auto; }
 
+.results-service-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+}
+
+.service-sidebar {
+  position: sticky;
+  top: 12px;
+  min-width: 0;
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+
+.service-sidebar-head,
+.service-filters,
+.service-card-inner,
+.service-detail-head,
+.compliance-summary {
+  display: flex;
+  align-items: center;
+}
+
+.service-sidebar-head,
+.service-filters,
+.service-detail-head,
+.compliance-summary {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.service-tree-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.service-tree-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.service-tree-badge .ant-badge-count {
+  box-shadow: none;
+  font-size: 11px;
+}
+
+.results-service-main {
+  min-width: 0;
+}
+
+.service-dashboard,
+.service-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.compliance-summary {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+
+.compliance-summary .ant-typography,
+.service-detail-head .ant-typography {
+  margin: 0;
+}
+
+.service-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.service-card {
+  border-radius: var(--radius-card);
+}
+
+.service-card .ant-card-body {
+  padding: 14px;
+}
+
+.service-card-inner {
+  gap: 12px;
+}
+
+.service-card-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.service-card-copy .ant-typography {
+  max-width: 100%;
+}
+
+.service-card-failed { color: #dc2626; }
+.service-card-ok { color: #16a34a; }
+
+.service-detail-head {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+
+.service-detail-progress {
+  width: min(320px, 45%);
+}
+
+.result-row-highlight td {
+  background: #ecfdf5 !important;
+}
+
+.rule-details-drawer .ant-drawer-body,
+.rule-details-drawer .ant-descriptions-item-content,
+.rule-details-drawer .ant-typography {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.rule-details-drawer .ant-drawer-title {
+  white-space: normal;
+}
+
+.scan-progress-card .ant-card-body {
+  min-height: 360px;
+}
+
+.scan-progress-summary {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+
+.scan-progress-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scan-progress-copy .ant-typography {
+  margin: 0;
+}
+
+.scan-current-rule {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.scan-progress-list {
+  background: #fff;
+}
+
+.scan-progress-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
+}
+
+.scan-progress-title {
+  display: block;
+  max-width: 100%;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .msf-row-fail td { background: rgba(239, 68, 68, 0.04) !important; }
 .msf-row-warning td { background: rgba(251, 146, 60, 0.04) !important; }
 
@@ -277,6 +471,30 @@ body { overflow-x: hidden; }
   .content-shell { padding: 12px; }
   .strategy-grid { grid-template-columns: 1fr; }
   .glass-card .ant-card-body { padding: 14px; }
+  .results-service-layout {
+    grid-template-columns: 1fr;
+  }
+  .service-sidebar {
+    position: static;
+    max-height: 320px;
+  }
+  .service-filters,
+  .service-detail-head,
+  .compliance-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .service-detail-progress {
+    width: 100%;
+  }
+  .scan-progress-summary {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .scan-current-rule {
+    align-items: center;
+  }
   .iis-msf-result-table .ant-table { min-width: 1240px; }
   .iis-msf-option-grid,
   .cve-option-grid {

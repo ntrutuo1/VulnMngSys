@@ -1,0 +1,72 @@
+[
+  {
+    "hash_id": "1d3293b98420",
+    "service": "Windows_Ink_Workspace",
+    "id": "18.10.81.1",
+    "title": "Ensure 'Allow suggested apps in Windows Ink Workspace' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace\\AllowSuggestedAppsInWindowsInkWorkspace",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace' -Name 'AllowSuggestedAppsInWindowsInkWorkspace' -ErrorAction Stop).AllowSuggestedAppsInWindowsInkWorkspace } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Ink Workspace\\Allow suggested apps in Windows Ink Workspace to 'Disabled'",
+    "reason": "This Microsoft feature is designed to collect data and suggest apps based on that data collected. Disabling this setting will help ensure your data is not shared.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "10202f1e91ff",
+    "service": "Windows_Ink_Workspace",
+    "id": "18.10.81.2",
+    "title": "Ensure 'Allow Windows Ink Workspace' is set to 'Enabled: On, but disallow access above lock' OR 'Enabled: Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace\\AllowWindowsInkWorkspace",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace' -Name 'AllowWindowsInkWorkspace' -ErrorAction Stop).AllowWindowsInkWorkspace; if ($v -eq 0 -or $v -eq 1) { 1 } else { 0 } } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Ink Workspace\\Allow Windows Ink Workspace to 'Enabled: On, but disallow access above lock' OR 'Enabled: Disabled'",
+    "reason": "Allowing any apps to be accessed while system is locked is not recommended. If permitted, it should only be accessible once a user authenticates.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "fc26bb8776d4",
+    "service": "Windows_Installer",
+    "id": "18.10.82.1",
+    "title": "Ensure 'Allow user control over installs' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\EnableUserControl",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'EnableUserControl' -ErrorAction Stop).EnableUserControl } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Allow user control over installs to 'Disabled'",
+    "reason": "If Windows Installer detects that an installation package has permitted the user to change a protected option, it stops the installation.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "2a13bd435474",
+    "service": "Windows_Installer",
+    "id": "18.10.82.2",
+    "title": "Ensure 'Always install with elevated privileges' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\AlwaysInstallElevated",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'AlwaysInstallElevated' -ErrorAction Stop).AlwaysInstallElevated } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Always install with elevated privileges to 'Disabled'",
+    "reason": "If enabled, skilled users can take advantage of the permissions this setting grants to change their privileges and gain permanent access to restricted files and folders.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "b0e1a9456919",
+    "service": "Windows_Installer",
+    "id": "18.10.82.3",
+    "title": "Ensure 'Prevent Internet Explorer security prompt for Windows Installer scripts' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\SafeForScripting",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'SafeForScripting' -ErrorAction Stop).SafeForScripting } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Installer\\Prevent Internet Explorer security prompt for Windows Installer scripts to 'Disabled'",
+    "reason": "Suppressing the system warning can pose a security risk and increase the attack surface on the system.",
+    "service_id": 18
+  }
+]

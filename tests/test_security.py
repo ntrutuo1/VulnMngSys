@@ -7,16 +7,16 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from domain.protocols import Rule
-from infrastructure.checkers.powershell_checker import PowerShellChecker
-from app_bootstrap.scanflow.security import (
+from vulnmngsys_app.models.protocols import Rule
+from vulnmngsys_app.adapters.checkers.powershell_checker import PowerShellChecker
+from vulnmngsys_app.services.scanflow.security import (
     RuleIntegrityError,
     UnsafePowerShellCommandError,
     validate_powershell_check,
     verify_rule_file_integrity,
 )
-from vulnmngsys_app.frontend.api_helpers import RequestBodyTooLarge, is_action_allowed, is_authorized, read_json_body
-from vulnmngsys_app.frontend.msf_routes import _validate_msf_target
+from vulnmngsys_app.controllers.api_helpers import RequestBodyTooLarge, is_action_allowed, is_authorized, read_json_body
+from vulnmngsys_app.controllers.msf_routes import _validate_msf_target
 
 
 class SecurityTests(unittest.TestCase):
@@ -96,6 +96,25 @@ class SecurityTests(unittest.TestCase):
 
         with self.assertRaises(UnsafePowerShellCommandError):
             checker.check(rule, collector)
+
+    def test_powershell_checker_handles_secpol_export_checks(self) -> None:
+        checker = PowerShellChecker()
+        command = r"& secedit /export /cfg $env:TEMP\secpol.inf /quiet; Select-String -Path $env:TEMP\secpol.inf -Pattern '^PasswordComplexity'"
+        rule = Rule(
+            id="1.1.5",
+            title="Password complexity",
+            service="AccountPolicy",
+            check_type="AccountPolicy",
+            expected=1,
+            raw_spec={"powershell_check": command, "expected": 1},
+        )
+        collector = SimpleNamespace(run_powershell=lambda received: "1")
+
+        result = checker.check(rule, collector)
+
+        self.assertTrue(checker.can_handle(rule))
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.actual_value, "1")
 
 
 if __name__ == "__main__":

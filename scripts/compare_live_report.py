@@ -11,8 +11,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app_bootstrap.scanflow.evaluate import evaluate_numeric_expected, evaluate_rule_verdict, format_expected_display
-from app_bootstrap.scanflow.matching import RuleLookupIndex
+from vulnmngsys_app.services.scanflow.evaluate import evaluate_numeric_expected, evaluate_rule_verdict, format_expected_display
+from vulnmngsys_app.services.scanflow.matching import RuleLookupIndex
 
 
 def _load_rules(path: Path) -> RuleLookupIndex:

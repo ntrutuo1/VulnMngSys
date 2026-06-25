@@ -1,10 +1,15 @@
 import { Alert, Button, Card, Radio, Space, Spin, Steps, Typography } from 'antd'
 import { BugOutlined, LeftOutlined, SafetyOutlined } from '@ant-design/icons'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import IisMsfAudit from './IisMsfAudit'
 import IisMsfResults from './IisMsfResults'
-import ResultTable from './ResultTable'
+import ScanProgressView from './ScanProgressView'
+import ServiceDashboard from './ServiceDashboard'
+import ServiceDetail from './ServiceDetail'
+import ServiceSidebar from './ServiceSidebar'
 import StatusCards from './StatusCards'
+import { findGroup, normalizeGroups, summarizeGroups } from './serviceGroups'
 
 const stages = ['strategy', 'configure', 'results']
 
@@ -48,6 +53,9 @@ export function ConfigureStage(props) {
   if (props.scanType === 'iis_msf') {
     return <IisMsfAudit showResults={false} onReport={props.onMsfReport} onBack={props.onBack} />
   }
+  if (props.scanLoading) {
+    return <ScanProgressView progress={props.scanProgress} />
+  }
   return (
     <Space direction="vertical" size="middle" className="stage-shell">
       <StatusCards inventory={props.inventory} />
@@ -71,6 +79,7 @@ export function ResultsStage({
   scanType,
   report,
   scanItems,
+  serviceTree,
   scanLoading,
   reconfigLoading,
   inventory,
@@ -81,6 +90,10 @@ export function ResultsStage({
   compact,
 }) {
   const { t } = useTranslation()
+  const [selectedService, setSelectedService] = useState(null)
+  const groups = useMemo(() => normalizeGroups({ report, serviceTree, scanItems }), [report, serviceTree, scanItems])
+  const selectedGroup = useMemo(() => findGroup(groups, selectedService), [groups, selectedService])
+  const groupSummary = useMemo(() => summarizeGroups(groups), [groups])
   if (scanType === 'iis_msf') return <IisMsfResults loading={false} report={report} onBack={onBack} />
   const actions = (
     <Space>
@@ -96,12 +109,26 @@ export function ResultsStage({
           <Typography.Text type="secondary">
             {t('scan.profileMode', { profile: report.profileKey || inventory?.profileKey || t('report.na'), mode: report.fullScan ? t('report.modeFull') : t('report.modeQuick') })}
           </Typography.Text>
-          <ResultTable
-            items={scanItems}
-            compact={compact}
-            selectedRuleIds={selectedRuleIds}
-            onSelectedRuleIdsChange={onSelectedRuleIdsChange}
-          />
+          <div className="results-service-layout">
+            <ServiceSidebar
+              groups={groups}
+              selectedService={selectedGroup?.serviceId || null}
+              total={report.total || report.total_rules || groupSummary.total}
+              onSelect={setSelectedService}
+            />
+            <main className="results-service-main">
+              {selectedGroup ? (
+                <ServiceDetail
+                  group={selectedGroup}
+                  compact={compact}
+                  selectedRuleIds={selectedRuleIds}
+                  onSelectedRuleIdsChange={onSelectedRuleIdsChange}
+                />
+              ) : (
+                <ServiceDashboard groups={groups} onSelect={setSelectedService} />
+              )}
+            </main>
+          </div>
         </Space>
       ) : <Typography.Text type="secondary">{t('scan.noResult')}</Typography.Text>}
     </Card>

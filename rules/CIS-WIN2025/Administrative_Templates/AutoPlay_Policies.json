@@ -1,0 +1,44 @@
+[
+  {
+    "hash_id": "6e83c5ad5be8",
+    "service": "AutoPlay_Policies",
+    "id": "18.10.8.1",
+    "title": "Ensure 'Disallow Autoplay for non-volume devices' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoAutoplayfornonVolume",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer' -Name 'NoAutoplayfornonVolume' -ErrorAction Stop).NoAutoplayfornonVolume } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Disallow Autoplay for non-volume devices to 'Enabled'",
+    "reason": "A threat actor could use this feature to launch a program to damage a client computer or data on the computer.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "8c76ce1b1ea8",
+    "service": "AutoPlay_Policies",
+    "id": "18.10.8.2",
+    "title": "Ensure 'Set the default behavior for AutoRun' is set to 'Enabled: Do not execute any autorun commands'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoAutorun",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoAutorun' -ErrorAction Stop).NoAutorun } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Set the default behavior for AutoRun to 'Enabled: Do not execute any autorun commands'",
+    "reason": "Prior to Windows Vista, when media containing an autorun command is inserted, the system will automatically execute the program without user intervention. This creates a major security concern as code may be executed without user's knowledge.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "92dc04584d55",
+    "service": "AutoPlay_Policies",
+    "id": "18.10.8.3",
+    "title": "Ensure 'Turn off Autoplay' is set to 'Enabled: All drives'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoDriveTypeAutoRun",
+    "expected": 255,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoDriveTypeAutoRun' -ErrorAction Stop).NoDriveTypeAutoRun } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\AutoPlay Policies\\Turn off Autoplay to 'Enabled: All drives'",
+    "reason": "A threat actor could use this feature to launch a program to damage a client computer or data on the computer.",
+    "service_id": 18
+  }
+]

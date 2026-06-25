@@ -19,7 +19,7 @@ async function getJson(path) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: authHeaders(),
   })
-  return response.json()
+  return parseJsonResponse(response)
 }
 
 async function postJson(path, body) {
@@ -28,7 +28,22 @@ async function postJson(path, body) {
     headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(body),
   })
-  return response.json()
+  return parseJsonResponse(response)
+}
+
+async function parseJsonResponse(response) {
+  const text = await response.text()
+  let payload = {}
+  try {
+    payload = text ? JSON.parse(text) : {}
+  } catch {
+    payload = { ok: false, error: text || response.statusText || 'Invalid server response' }
+  }
+  if (!response.ok && payload && payload.ok !== false) {
+    payload.ok = false
+    payload.error = payload.error || response.statusText || `HTTP ${response.status}`
+  }
+  return payload
 }
 
 export function fetchStatus() {
@@ -43,8 +58,17 @@ export function fetchReport() {
   return getJson('/api/report')
 }
 
-export function startScan({ profileKey, fullScan = false } = {}) {
+export function fetchServiceTree() {
+  return getJson('/api/service-tree')
+}
+
+export function fetchScanProgress(scanId) {
+  return getJson(`/api/scan/progress?scanId=${encodeURIComponent(scanId || '')}`)
+}
+
+export function startScan({ profileKey, fullScan = false, scanId = '' } = {}) {
   return postJson('/api/scan', {
+    scanId,
     profileKey,
     fullScan,
     mode: fullScan ? 'full' : 'quick',

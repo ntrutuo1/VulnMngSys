@@ -1,21 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_submodules
 
-hiddenimports = ['platform', 'ctypes', '_ctypes', 'uuid', 'webbrowser', 'pymetasploit3', 'pymetasploit3.msfrpc', 'pyarmor_runtime_000000']
-hiddenimports += collect_submodules('app_bootstrap')
+hiddenimports = ['platform', 'ctypes', '_ctypes', 'uuid', 'webbrowser', 'pymetasploit3', 'pymetasploit3.msfrpc']
 hiddenimports += collect_submodules('vulnmngsys_app')
-hiddenimports += collect_submodules('application')
-hiddenimports += collect_submodules('domain')
-hiddenimports += collect_submodules('infrastructure')
 hiddenimports += collect_submodules('webview')
 hiddenimports += collect_submodules('pymetasploit3')
 
 
 a = Analysis(
-    ['D:\\VulnMngSys\\VulnMngSys\\obfuscated_src\\main.py'],
-    pathex=['D:\\VulnMngSys\\VulnMngSys\\obfuscated_src', 'D:\\VulnMngSys\\VulnMngSys'],
+    ['D:\\VulnMngSys\\VulnMngSys\\main.py'],
+    pathex=['D:\\VulnMngSys\\VulnMngSys', 'D:\\VulnMngSys\\VulnMngSys'],
     binaries=[],
-    datas=[('D:\\VulnMngSys\\VulnMngSys\\vulnmngsys_app\\frontend\\dist', 'vulnmngsys_app/frontend/dist'), ('D:\\VulnMngSys\\VulnMngSys\\rules', 'rules'), ('D:\\VulnMngSys\\VulnMngSys\\scripts', 'scripts'), ('D:\\VulnMngSys\\VulnMngSys\\metasploit_modules', 'metasploit_modules')],
+    datas=[('D:\\VulnMngSys\\VulnMngSys\\vulnmngsys_app\\views\\dist', 'vulnmngsys_app/views/dist'), ('D:\\VulnMngSys\\VulnMngSys\\rules', 'rules'), ('D:\\VulnMngSys\\VulnMngSys\\scripts', 'scripts'), ('D:\\VulnMngSys\\VulnMngSys\\metasploit_modules', 'metasploit_modules')],
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},

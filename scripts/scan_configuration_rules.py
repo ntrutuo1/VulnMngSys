@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app_bootstrap.scanflow.json_rule_engine import scan_profile, write_merged_scan
+from vulnmngsys_app.services.scanflow.json_rule_engine import scan_profile, write_merged_scan
 
 
 def _build_payload(profile_key: str, full_scan: bool) -> dict[str, object]:

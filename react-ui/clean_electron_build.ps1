@@ -15,17 +15,21 @@ foreach ($name in $ProcessNames) {
     Stop-Process -Force -ErrorAction SilentlyContinue
 }
 
-Get-CimInstance Win32_Process |
-  Where-Object {
-    $_.Name -in @('electron.exe', 'makensis.exe', '7z.exe', '7za.exe') -and
-    (
-      ($_.CommandLine -and $_.CommandLine.Contains($RootDir)) -or
-      ($_.ExecutablePath -and $_.ExecutablePath.StartsWith($RootDir, [System.StringComparison]::OrdinalIgnoreCase))
-    )
-  } |
-  ForEach-Object {
-    Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
-  }
+try {
+  Get-CimInstance Win32_Process -ErrorAction Stop |
+    Where-Object {
+      $_.Name -in @('electron.exe', 'makensis.exe', '7z.exe', '7za.exe') -and
+      (
+        ($_.CommandLine -and $_.CommandLine.Contains($RootDir)) -or
+        ($_.ExecutablePath -and $_.ExecutablePath.StartsWith($RootDir, [System.StringComparison]::OrdinalIgnoreCase))
+      )
+    } |
+    ForEach-Object {
+      Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+    }
+} catch {
+  Write-Warning "Unable to inspect build helper processes. Continuing with electron-dist cleanup. Original error: $($_.Exception.Message)"
+}
 
 Start-Sleep -Milliseconds 500
 

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from app_bootstrap.scanflow.json_rule_engine import _load_service_catalog, _classify_rule_service, _normalize_text
+from vulnmngsys_app.services.scanflow.json_rule_engine import _load_service_catalog, _classify_rule_service, _normalize_text
 
 
 def annotate_rules(profile_key: str, rules_dir: Path) -> list[Path]:

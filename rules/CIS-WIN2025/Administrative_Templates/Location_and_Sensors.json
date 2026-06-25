@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "772d1c5b5306",
+    "service": "Location_and_Sensors",
+    "id": "18.10.36.1",
+    "title": "Ensure 'Turn off location' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors\\DisableLocation",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors' -Name 'DisableLocation' -ErrorAction Stop).DisableLocation } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Location and Sensors\\Turn off location to 'Enabled'",
+    "reason": "From a security perspective, it’s not a good idea to reveal your location to software in most cases, especially in high security environments.",
+    "service_id": 18
+  }
+]

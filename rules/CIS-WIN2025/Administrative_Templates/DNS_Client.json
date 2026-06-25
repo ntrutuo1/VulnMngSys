@@ -1,0 +1,58 @@
+[
+  {
+    "hash_id": "ff43b26b4043",
+    "service": "DNS_Client",
+    "id": "18.6.4.1",
+    "title": "Ensure 'Configure multicast DNS (mDNS) protocol' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\\EnableMDNS",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableMDNS' -ErrorAction Stop).EnableMDNS } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Configure multicast DNS (mDNS) protocol to 'Disabled'",
+    "reason": "A threat actor can listen on a network over UDP port 5353 and respond to them, tricking the host into thinking that it knows the location of the requested system.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "dc526339d463",
+    "service": "DNS_Client",
+    "id": "18.6.4.2",
+    "title": "Ensure 'Configure NetBIOS settings' is set to 'Enabled: Disable NetBIOS name resolution on public networks'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\\EnableNetbios",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableNetbios' -ErrorAction Stop).EnableNetbios; if ($v -eq 0 -or $v -eq 2) { 1 } else { 0 } } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Configure NetBIOS settings to 'Enabled: Disable NetBIOS name resolution on public networks'",
+    "reason": "NetBIOS does not perform authentication and can allow remote threat actors to cause a denial-of-service by sending spoofed Name Conflicts or Name Release datagrams.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "c610ccdd96f1",
+    "service": "DNS_Client",
+    "id": "18.6.4.3",
+    "title": "Ensure 'Turn off default IPv6 DNS Servers' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\\DisableIPv6DefaultDnsServers",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'DisableIPv6DefaultDnsServers' -ErrorAction Stop).DisableIPv6DefaultDnsServers } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Turn off default IPv6 DNS Servers to 'Enabled'",
+    "reason": "Disabling the use of IPv6 DNS server addresses removes a possible attack surface that is also harder to monitor the traffic on.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "b50a47a2be07",
+    "service": "DNS_Client",
+    "id": "18.6.4.4",
+    "title": "Ensure 'Turn off multicast name resolution' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\\EnableMulticast",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableMulticast' -ErrorAction Stop).EnableMulticast } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\DNS Client\\Turn off multicast name resolution to 'Enabled'",
+    "reason": "A threat actors can listen on a network for these LLMNR (UDP/5355) or NBT-NS (UDP/137) broadcasts and respond to them.",
+    "service_id": 18
+  }
+]

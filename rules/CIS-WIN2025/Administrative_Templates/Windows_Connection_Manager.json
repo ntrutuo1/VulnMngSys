@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "78c6759b2258",
+    "service": "Windows_Connection_Manager",
+    "id": "18.6.21.1",
+    "title": "Ensure 'Minimize the number of simultaneous connections to the Internet or a Windows Domain' is set to 'Enabled: 3 = Prevent Wi-Fi when on Ethernet'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\fMinimizeConnections",
+    "expected": 3,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy' -Name 'fMinimizeConnections' -ErrorAction Stop).fMinimizeConnections } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connection Manager\\Minimize the number of simultaneous connections to the Internet or a Windows Domain to 'Enabled: 3 = Prevent Wi-Fi when on Ethernet'",
+    "reason": "Preventing bridged network connections can help prevent a user unknowingly allowing traffic to route between internal and external networks.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "8d7eb3d26f31",
+    "service": "Windows_Connection_Manager",
+    "id": "18.6.21.2",
+    "title": "Ensure 'Prohibit connection to non-domain networks when connected to domain authenticated network' is set to 'Enabled' (MS only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\fBlockNonDomain",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy' -Name 'fBlockNonDomain' -ErrorAction Stop).fBlockNonDomain } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Network\\Windows Connection Manager\\Prohibit connection to non-domain networks when connected to domain authenticated network to 'Enabled'",
+    "reason": "The potential concern is that a user would unknowingly allow network traffic to flow between the insecure public network and the enterprise managed network.",
+    "service_id": 18
+  }
+]

@@ -1,6 +1,7 @@
 param(
   [switch]$SkipFrontend,
   [switch]$SkipToolInstall,
+  [switch]$Obfuscate,
   [switch]$NoObfuscate,
   [switch]$CliOnly
 )
@@ -15,16 +16,18 @@ $DistDir = Join-Path $RootDir 'dist'
 $ObfuscatedDir = Join-Path $RootDir 'obfuscated_src'
 $ReactUiDir = Join-Path $RootDir 'react-ui'
 $ReactDistDir = Join-Path $ReactUiDir 'dist'
-$FrontendDistDir = Join-Path $RootDir 'vulnmngsys_app\frontend\dist'
+$FrontendDistDir = Join-Path $RootDir 'vulnmngsys_app\views\dist'
 $PythonExe = Join-Path $ParentDir '.venv\Scripts\python.exe'
 if (-not (Test-Path $PythonExe)) { $PythonExe = 'python' }
 
-$BuildTools = @('pyarmor', 'pyinstaller')
+$UseObfuscation = $Obfuscate -and -not $NoObfuscate
+$BuildTools = @('pyinstaller')
+if ($UseObfuscation) { $BuildTools += 'pyarmor' }
 $HiddenImports = @('platform', 'ctypes', '_ctypes', 'uuid', 'webbrowser', 'pymetasploit3', 'pymetasploit3.msfrpc')
-$CollectPackages = @('app_bootstrap', 'vulnmngsys_app', 'application', 'domain', 'infrastructure', 'webview', 'pymetasploit3')
-$ObfuscateInputs = @('main.py', 'cli.py', 'app_bootstrap', 'vulnmngsys_app', 'scripts')
+$CollectPackages = @('vulnmngsys_app', 'webview', 'pymetasploit3')
+$ObfuscateInputs = @('main.py', 'cli.py', 'vulnmngsys_app', 'scripts')
 $DataFolders = @(
-  @{ Source = $FrontendDistDir; Target = 'vulnmngsys_app/frontend/dist'; DesktopOnly = $true },
+  @{ Source = $FrontendDistDir; Target = 'vulnmngsys_app/views/dist'; DesktopOnly = $true },
   @{ Source = (Join-Path $RootDir 'rules'); Target = 'rules'; DesktopOnly = $false },
   @{ Source = (Join-Path $RootDir 'scripts'); Target = 'scripts'; DesktopOnly = $false },
   @{ Source = (Join-Path $RootDir 'metasploit_modules'); Target = 'metasploit_modules'; DesktopOnly = $false }
@@ -73,7 +76,13 @@ function Build-Frontend {
   if ($SkipFrontend -or $CliOnly) { return }
   Write-Step 'Building React frontend'
   Push-Location $ReactUiDir
-  try { Invoke-Checked 'npm' @('run', 'build') }
+  try {
+    Invoke-Checked 'npm' @('run', 'build')
+  }
+  catch {
+    if (-not (Test-Path (Join-Path $ReactDistDir 'index.html'))) { throw }
+    Write-Warning "npm build failed; reusing existing frontend dist: $ReactDistDir"
+  }
   finally { Pop-Location }
 
   Remove-PathIfExists $FrontendDistDir
@@ -83,7 +92,7 @@ function Build-Frontend {
 
 function Test-Source {
   Write-Step 'Checking Python source syntax'
-  Invoke-Checked $PythonExe @('-m', 'compileall', '-q', 'main.py', 'cli.py', 'app_bootstrap', 'vulnmngsys_app')
+  Invoke-Checked $PythonExe @('-m', 'compileall', '-q', 'main.py', 'cli.py', 'vulnmngsys_app')
   if (Test-Path (Join-Path $RootDir 'scripts\install_metasploit.ps1')) {
     $errors = $null
     [void][System.Management.Automation.PSParser]::Tokenize(
@@ -95,7 +104,7 @@ function Test-Source {
 }
 
 function New-ObfuscatedSource {
-  if ($NoObfuscate) { return $RootDir }
+  if (-not $UseObfuscation) { return $RootDir }
   Write-Step 'Obfuscating Python sources with PyArmor'
   Remove-PathIfExists $ObfuscatedDir
   $existingInputs = $ObfuscateInputs | Where-Object { Test-Path (Join-Path $RootDir $_) }
@@ -108,7 +117,7 @@ function New-ObfuscatedSource {
 }
 
 function Get-PyArmorHiddenArgs {
-  if ($NoObfuscate -or -not (Test-Path $ObfuscatedDir)) { return @() }
+  if (-not $UseObfuscation -or -not (Test-Path $ObfuscatedDir)) { return @() }
   $runtime = Get-ChildItem -Path $ObfuscatedDir -Directory -Filter 'pyarmor_runtime_*' |
     Select-Object -First 1
   if (-not $runtime) { return @() }
@@ -144,7 +153,6 @@ function Invoke-PyInstallerBuild {
   )
   Write-Step "Packaging $ExeName"
   Stop-ExistingExe "$ExeName.exe"
-  Remove-PathIfExists $DistDir
   Remove-PathIfExists $BuildDir
 
   $args = @('-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--name', $ExeName)
@@ -158,8 +166,16 @@ function Invoke-PyInstallerBuild {
   Invoke-Checked $PythonExe $args
   $builtExe = Join-Path $DistDir "$ExeName.exe"
   if (-not (Test-Path $builtExe)) { throw "Expected output not found: $builtExe" }
-  Copy-Item -Path $builtExe -Destination $FinalExePath -Force
-  return $FinalExePath
+  if ($builtExe -ne $FinalExePath) {
+    try {
+      Copy-Item -Path $builtExe -Destination $FinalExePath -Force -ErrorAction Stop
+      return $FinalExePath
+    }
+    catch {
+      Write-Warning "Could not copy '$builtExe' to '$FinalExePath': $($_.Exception.Message)"
+    }
+  }
+  return $builtExe
 }
 
 function Write-BuildManifest {
@@ -168,7 +184,7 @@ function Write-BuildManifest {
     builtAt = (Get-Date).ToString('s')
     python = (& $PythonExe --version)
     frontendBuilt = (-not $SkipFrontend -and -not $CliOnly)
-    obfuscated = (-not $NoObfuscate)
+    obfuscated = $UseObfuscation
     outputs = $Outputs
     dataFolders = $DataFolders | ForEach-Object { $_.Target }
   }
@@ -183,11 +199,12 @@ Build-Frontend
 Test-Source
 $SourceRoot = New-ObfuscatedSource
 
+Remove-PathIfExists $DistDir
 $outputs = @()
 if (-not $CliOnly) {
-  $outputs += Invoke-PyInstallerBuild -EntryPoint (Join-Path $SourceRoot 'main.py') -ExeName 'VulnMngSysDesktop' -FinalExePath (Join-Path $ParentDir 'VulnMngSysDesktop.exe') -Desktop $true
+  $outputs += Invoke-PyInstallerBuild -EntryPoint (Join-Path $SourceRoot 'main.py') -ExeName 'VulnMngSysDesktop' -FinalExePath (Join-Path $DistDir 'VulnMngSysDesktop.exe') -Desktop $true
 }
-$outputs += Invoke-PyInstallerBuild -EntryPoint (Join-Path $SourceRoot 'cli.py') -ExeName 'VulnMngSysDesktop-CLI' -FinalExePath (Join-Path $ParentDir 'VulnMngSysDesktop-CLI.exe') -Desktop $false
+$outputs += Invoke-PyInstallerBuild -EntryPoint (Join-Path $SourceRoot 'cli.py') -ExeName 'VulnMngSysDesktop-CLI' -FinalExePath (Join-Path $DistDir 'VulnMngSysDesktop-CLI.exe') -Desktop $false
 
 Write-BuildManifest -Outputs $outputs
 Write-Host ''

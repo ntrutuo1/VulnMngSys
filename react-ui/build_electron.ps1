@@ -4,8 +4,13 @@ Set-StrictMode -Version Latest
 $RootDir = $PSScriptRoot
 $CleanScript = Join-Path $RootDir 'clean_electron_build.ps1'
 $BackendBuildScript = Join-Path $RootDir '..\build_backend.ps1'
+$ElectronCache = Join-Path $RootDir '.electron-cache'
+$ElectronBuilderCache = Join-Path $RootDir '.electron-builder-cache'
 
 Set-Location $RootDir
+New-Item -ItemType Directory -Path $ElectronCache, $ElectronBuilderCache -Force | Out-Null
+$env:ELECTRON_CACHE = $ElectronCache
+$env:ELECTRON_BUILDER_CACHE = $ElectronBuilderCache
 
 function Invoke-Checked {
   param(

@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "d1638971d25c",
+    "service": "Internet_Communication_Management",
+    "id": "19.6.6.1.1",
+    "title": "Ensure 'Turn off Help Experience Improvement Program' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Assistance\\Client\\1.0\\NoExplicitFeedback",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Assistance\\Client\\1.0\" -Name 'NoExplicitFeedback' -ErrorAction SilentlyContinue).NoExplicitFeedback; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\System\\Internet Communication Management\\Internet Communication Settings\\Turn off Help Experience Improvement Program to 'Enabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information.",
+    "service_id": 19
+  }
+]

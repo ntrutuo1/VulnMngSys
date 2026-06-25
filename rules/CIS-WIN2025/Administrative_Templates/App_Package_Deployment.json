@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "c91fa314c54c",
+    "service": "App_Package_Deployment",
+    "id": "18.10.4.1",
+    "title": "Ensure 'Allow a Windows app to share application data between users' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\AppModel\\StateManager\\AllowSharedLocalAppData",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\AppModel\\StateManager' -Name 'AllowSharedLocalAppData' -ErrorAction Stop).AllowSharedLocalAppData } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\App Package Deployment\\Allow a Windows app to share application data between users to 'Disabled'",
+    "reason": "Users of a system could accidentally share sensitive data with other users on the same system.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "7354ec2c7835",
+    "service": "App_Package_Deployment",
+    "id": "18.10.4.2",
+    "title": "Ensure 'Not allow per-user unsigned packages to install by default (requires explicitly allow per install)' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Appx\\DisablePerUserUnsignedPackagesByDefault",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Appx' -Name 'DisablePerUserUnsignedPackagesByDefault' -ErrorAction Stop).DisablePerUserUnsignedPackagesByDefault } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\App Package Deployment\\Not allow per-user unsigned packages to install by default (requires explicitly allow per install) to 'Enabled'",
+    "reason": "In a corporate managed environment, application installations should be managed centrally by IT staff, not by end users.",
+    "service_id": 18
+  }
+]

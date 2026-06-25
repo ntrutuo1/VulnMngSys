@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "f1b586eef295",
+    "service": "Biometrics",
+    "id": "18.10.9.1.1",
+    "title": "Ensure 'Configure enhanced anti-spoofing' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures\\EnhancedAntiSpoofing",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures' -Name 'EnhancedAntiSpoofing' -ErrorAction Stop).EnhancedAntiSpoofing } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Biometrics\\Facial Features\\Configure enhanced anti-spoofing to 'Enabled'",
+    "reason": "Enterprise managed environments are now supporting a wider range of mobile devices, increasing the security on these devices will help protect against unauthorized access on your network.",
+    "service_id": 18
+  }
+]

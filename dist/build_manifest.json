@@ -1,14 +1,14 @@
 ﻿{
-    "builtAt":  "2026-06-09T13:51:49",
+    "builtAt":  "2026-06-25T00:00:18",
     "python":  "Python 3.13.4",
-    "frontendBuilt":  false,
-    "obfuscated":  true,
+    "frontendBuilt":  true,
+    "obfuscated":  false,
     "outputs":  [
                     "D:\\VulnMngSys\\VulnMngSysDesktop.exe",
                     "D:\\VulnMngSys\\VulnMngSysDesktop-CLI.exe"
                 ],
     "dataFolders":  [
-                        "vulnmngsys_app/frontend/dist",
+                        "vulnmngsys_app/views/dist",
                         "rules",
                         "scripts",
                         "metasploit_modules"

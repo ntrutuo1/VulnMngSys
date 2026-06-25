@@ -1,2 +1,209 @@
 [2026-06-09 12:42:37] [INFO] [msf_routes.py:60] Starting MSF audit. target=127.0.0.1 active_test=False
 [2026-06-09 12:58:12] [INFO] [msf_routes.py:60] Starting MSF audit. target=127.0.0.1 active_test=False
+[2026-06-15 17:35:48] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:35:48] [ERROR] [scan_service.py:60] Error while checking rule A: boom
+[2026-06-15 17:35:48] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:35:48] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:35:48] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:35:48] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:35:48] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:31] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:31] [ERROR] [scan_service.py:60] Error while checking rule A: boom
+[2026-06-15 17:36:31] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:31] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:31] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:31] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:31] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:39] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-15 17:36:39] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-15 17:36:39] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:39] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:39] [ERROR] [scan_service.py:60] Error while checking rule A: boom
+[2026-06-15 17:36:39] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:36:39] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:37:18] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-15 17:37:18] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-15 17:37:18] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:37:18] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:37:18] [ERROR] [scan_service.py:60] Error while checking rule A: boom
+[2026-06-15 17:37:18] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:37:18] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:38:48] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-15 17:38:48] [INFO] [scan_service.py:44] Starting configuration scan for 11 rules.
+[2026-06-15 17:38:49] [INFO] [windows_collector.py:66] Đang thu thập Snapshot từ Secedit và Auditpol...
+[2026-06-15 17:38:49] [ERROR] [scan_service.py:60] Error while checking rule 1.1.5: You do not have sufficient permissions to perform this command.  Make sure that you are running as the local administrator or have opened the command prompt using the 'Run as administrator' option.
+[2026-06-15 17:38:49] [INFO] [windows_collector.py:66] Đang thu thập Snapshot từ Secedit và Auditpol...
+[2026-06-15 17:38:49] [ERROR] [scan_service.py:60] Error while checking rule 1.1.7: You do not have sufficient permissions to perform this command.  Make sure that you are running as the local administrator or have opened the command prompt using the 'Run as administrator' option.
+[2026-06-15 17:38:49] [INFO] [windows_collector.py:66] Đang thu thập Snapshot từ Secedit và Auditpol...
+[2026-06-15 17:38:49] [ERROR] [scan_service.py:60] Error while checking rule 1.2.3: You do not have sufficient permissions to perform this command.  Make sure that you are running as the local administrator or have opened the command prompt using the 'Run as administrator' option.
+[2026-06-15 17:38:50] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:42:07] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-15 17:42:07] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-15 17:42:07] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:42:07] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:42:07] [ERROR] [scan_service.py:60] Error while checking rule A: boom
+[2026-06-15 17:42:07] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:44] Starting configuration scan for 1 rules.
+[2026-06-15 17:42:07] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:43:28] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-15 17:43:28] [INFO] [scan_service.py:44] Starting configuration scan for 11 rules.
+[2026-06-15 17:43:31] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-15 17:44:02] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-15 17:44:02] [INFO] [scan_service.py:44] Starting configuration scan for 341 rules.
+[2026-06-15 17:45:06] [ERROR] [scan_service.py:60] Error while checking rule 18.10.88.1: Blocked unsafe PowerShell check: \b(?:cmd|powershell|pwsh|wscript|cscript|mshta|rundll32)(?:\.exe)?\b
+[2026-06-15 17:45:06] [ERROR] [scan_service.py:60] Error while checking rule 18.10.88.2: Blocked unsafe PowerShell check: \b(?:cmd|powershell|pwsh|wscript|cscript|mshta|rundll32)(?:\.exe)?\b
+[2026-06-15 17:45:10] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-16 19:46:04] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-16 19:46:04] [INFO] [scan_service.py:44] Starting configuration scan for 341 rules.
+[2026-06-16 19:47:13] [ERROR] [scan_service.py:60] Error while checking rule 18.10.88.1: Blocked unsafe PowerShell check: \b(?:cmd|powershell|pwsh|wscript|cscript|mshta|rundll32)(?:\.exe)?\b
+[2026-06-16 19:47:13] [ERROR] [scan_service.py:60] Error while checking rule 18.10.88.2: Blocked unsafe PowerShell check: \b(?:cmd|powershell|pwsh|wscript|cscript|mshta|rundll32)(?:\.exe)?\b
+[2026-06-16 19:47:18] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-16 19:48:28] [INFO] [scanner.py:39] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-16 19:48:28] [INFO] [scan_service.py:44] Starting configuration scan for 27 rules.
+[2026-06-16 19:48:42] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-16 19:49:32] [INFO] [scanner.py:41] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-16 19:49:32] [INFO] [scan_service.py:44] Starting configuration scan for 27 rules.
+[2026-06-16 19:49:45] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-16 19:51:50] [INFO] [scanner.py:42] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-16 19:51:50] [INFO] [scan_service.py:44] Starting configuration scan for 27 rules.
+[2026-06-16 19:52:03] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-16 20:02:47] [INFO] [scanner.py:42] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-16 20:02:47] [INFO] [scan_service.py:44] Starting configuration scan for 341 rules.
+[2026-06-16 20:04:03] [ERROR] [scan_service.py:60] Error while checking rule 18.10.88.1: Blocked unsafe PowerShell check: \b(?:cmd|powershell|pwsh|wscript|cscript|mshta|rundll32)(?:\.exe)?\b
+[2026-06-16 20:04:03] [ERROR] [scan_service.py:60] Error while checking rule 18.10.88.2: Blocked unsafe PowerShell check: \b(?:cmd|powershell|pwsh|wscript|cscript|mshta|rundll32)(?:\.exe)?\b
+[2026-06-16 20:04:08] [INFO] [scan_service.py:50] Configuration scan completed.
+[2026-06-16 20:08:50] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-16 20:08:50] [INFO] [scan_service.py:50] Starting configuration scan for 27 rules.
+[2026-06-16 20:09:05] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-16 20:12:26] [INFO] [msf_routes.py:70] Starting focused IIS CVE audit. target=127.0.0.1 active_test=False ports=[] cves=['CVE-2025-59282']
+[2026-06-21 20:43:58] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-21 20:43:58] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-21 20:43:58] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-21 20:43:58] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-21 20:43:58] [ERROR] [scan_service.py:85] Error while checking rule A: boom
+[2026-06-21 20:43:58] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-21 20:43:58] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:33:49] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:33:49] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:33:49] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:33:49] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:33:49] [ERROR] [scan_service.py:85] Error while checking rule A: boom
+[2026-06-24 22:33:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:33:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:24] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:34:24] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:34:24] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:24] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:24] [ERROR] [scan_service.py:85] Error while checking rule A: boom
+[2026-06-24 22:34:24] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:24] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:49] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:34:49] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:34:49] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:49] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:49] [ERROR] [scan_service.py:85] Error while checking rule A: boom
+[2026-06-24 22:34:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:34:49] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:35:08] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:35:08] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:35:08] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:35:08] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:35:08] [ERROR] [scan_service.py:85] Error while checking rule A: boom
+[2026-06-24 22:35:08] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:35:08] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:38:37] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:38:37] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:38:37] [INFO] [scanner.py:46] Initializing ScanService with WindowsCollector and strategy checkers.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:38:37] [ERROR] [reconfig.py:322] System health check failed after reconfig. Starting rollback.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:38:37] [ERROR] [scan_service.py:85] Error while checking rule A: boom
+[2026-06-24 22:38:37] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:50] Starting configuration scan for 1 rules.
+[2026-06-24 22:38:37] [INFO] [scan_service.py:59] Configuration scan completed.
+[2026-06-24 22:48:26] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:48:26] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:49:01] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:49:01] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:49:43] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:49:43] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:50:35] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:50:35] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:56:59] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:56:59] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 22:58:07] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 22:58:07] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 23:13:30] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 23:13:30] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 23:14:53] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 23:14:53] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 23:27:46] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 23:27:46] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 23:35:10] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 23:35:10] [INFO] [backup_manager.py:162] Rollback completed. success=True
+[2026-06-24 23:37:23] [WARNING] [backup_manager.py:100] Starting rollback from backup ID=backup-1
+[2026-06-24 23:37:23] [INFO] [backup_manager.py:162] Rollback completed. success=True

@@ -5,9 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app_bootstrap.scanflow import scanner
-from domain.protocols import RuleComparisonResult
-from infrastructure.checkers.checker_registry import CheckerRegistry, default_checker_registry
+from vulnmngsys_app.services.scanflow import scanner
+from vulnmngsys_app.models.protocols import RuleComparisonResult
+from vulnmngsys_app.adapters.checkers.checker_registry import CheckerRegistry, default_checker_registry
 
 
 class FakeRepository:
@@ -32,6 +32,7 @@ class ExtensibilityTests(unittest.TestCase):
         checkers = default_checker_registry().build()
         checker_names = {checker.__class__.__name__ for checker in checkers}
 
+        self.assertEqual(checkers[0].__class__.__name__, "PowerShellChecker")
         self.assertIn("RegistryChecker", checker_names)
         self.assertIn("SeceditChecker", checker_names)
         self.assertIn("AuditpolChecker", checker_names)
@@ -40,20 +41,16 @@ class ExtensibilityTests(unittest.TestCase):
     def test_run_scan_for_profile_accepts_repository_and_checker_registry(self) -> None:
         registry = CheckerRegistry()
         registry.register(FakeChecker)
-        original_collector = scanner.WindowsCollector
-        scanner.WindowsCollector = FakeCollector
-        try:
-            with tempfile.TemporaryDirectory() as tmp:
-                merged_path = scanner.run_scan_for_profile(
-                    "PROFILE",
-                    full_scan=False,
-                    rule_repository=FakeRepository(),
-                    checker_registry=registry,
-                    app_root=Path(tmp),
-                )
-                payload = json.loads(Path(merged_path).read_text(encoding="utf-8-sig"))
-        finally:
-            scanner.WindowsCollector = original_collector
+        with tempfile.TemporaryDirectory() as tmp:
+            merged_path = scanner.run_scan_for_profile(
+                "PROFILE",
+                full_scan=False,
+                rule_repository=FakeRepository(),
+                collector=FakeCollector(),
+                checkers=registry.build(),
+                app_root=Path(tmp),
+            )
+            payload = json.loads(Path(merged_path).read_text(encoding="utf-8-sig"))
 
         self.assertEqual(payload[0]["id"], "PROFILE")
         self.assertEqual(payload[0]["verdict"], "PASS")

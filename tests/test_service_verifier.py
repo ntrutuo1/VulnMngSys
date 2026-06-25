@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app_bootstrap.scanflow.remediation_logger import close_remediation_loggers, log_reconfig_event
-from app_bootstrap.scanflow.service_verifier import ServiceStatus, verify_service_health, warnings_payload
+from vulnmngsys_app.services.scanflow.remediation_logger import close_remediation_loggers, log_reconfig_event
+from vulnmngsys_app.services.scanflow.service_verifier import ServiceStatus, verify_service_health, warnings_payload
 
 
 class ServiceVerifierTests(unittest.TestCase):

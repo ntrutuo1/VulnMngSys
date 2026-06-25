@@ -3,7 +3,7 @@ import { Layout, Modal, Space, message } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { ConfigureStage, NonServerAlert, ResultsStage, StageSteps, StrategyStage } from './components/ConfigWorkflowStages'
 import HeaderBar from './components/HeaderBar'
-import { fetchInventory, fetchReport, fetchStatus, runReconfig, startScan } from './services/apiClient'
+import { fetchInventory, fetchReport, fetchScanProgress, fetchServiceTree, fetchStatus, runReconfig, startScan } from './services/apiClient'
 
 const { Content } = Layout
 const VIEW_MODE_KEY = 'vulnmngsys-view-mode'
@@ -15,8 +15,11 @@ export default function App() {
   const [statusOk, setStatusOk] = useState(false)
   const [inventory, setInventory] = useState(null)
   const [report, setReport] = useState(null)
+  const [serviceTree, setServiceTree] = useState(null)
   const [msfReport, setMsfReport] = useState(null)
   const [scanLoading, setScanLoading] = useState(false)
+  const [activeScanId, setActiveScanId] = useState('')
+  const [scanProgress, setScanProgress] = useState(null)
   const [reconfigLoading, setReconfigLoading] = useState(false)
   const [fullScan, setFullScan] = useState(false)
   const [selectedRuleIds, setSelectedRuleIds] = useState([])
@@ -29,9 +32,26 @@ export default function App() {
 
   useEffect(() => {
     let active = true
-    bootstrapApp(active, { setStatusOk, setInventory, setReport, t })
+    bootstrapApp(active, { setStatusOk, setInventory, setReport, setServiceTree, t })
     return () => { active = false }
   }, [t])
+
+  useEffect(() => {
+    if (!scanLoading || !activeScanId) return undefined
+    let active = true
+    async function refreshProgress() {
+      try {
+        const payload = await fetchScanProgress(activeScanId)
+        if (active && payload?.ok) setScanProgress(payload)
+      } catch {}
+    }
+    refreshProgress()
+    const timer = window.setInterval(refreshProgress, 700)
+    return () => {
+      active = false
+      window.clearInterval(timer)
+    }
+  }, [scanLoading, activeScanId])
 
   function setViewMode(nextMode) {
     const normalized = nextMode === 'mobile' ? 'mobile' : 'desktop'
@@ -40,9 +60,21 @@ export default function App() {
   }
 
   async function runConfigScan() {
+    const scanId = createScanId()
+    setActiveScanId(scanId)
+    setScanProgress({
+      ok: true,
+      scanId,
+      status: 'running',
+      total: 0,
+      completed: 0,
+      percent: 0,
+      currentRule: null,
+      recentRules: [],
+    })
     setScanLoading(true)
     try {
-      const payload = await startScan({ profileKey: inventory?.profileKey, fullScan })
+      const payload = await startScan({ profileKey: inventory?.profileKey, fullScan, scanId })
       if (payload?.ok) {
         setReport(payload)
         setSelectedRuleIds(failedRuleIds(payload.items || []))
@@ -55,6 +87,7 @@ export default function App() {
       message.error(t('messages.scanFailedWithError', { error: String(error) }))
     } finally {
       setScanLoading(false)
+      setActiveScanId('')
     }
   }
 
@@ -109,6 +142,7 @@ export default function App() {
               onFullScanChange={setFullScan}
               onRunConfig={runConfigScan}
               scanLoading={scanLoading}
+              scanProgress={scanProgress}
               onBack={() => setStage('strategy')}
               onMsfReport={(payload) => {
                 setMsfReport(payload)
@@ -121,6 +155,7 @@ export default function App() {
               scanType={scanType}
               report={scanType === 'config' ? report : msfReport}
               scanItems={scanItems}
+              serviceTree={serviceTree}
               selectedRuleIds={selectedRuleIds}
               onSelectedRuleIdsChange={setSelectedRuleIds}
               scanLoading={scanLoading}
@@ -137,6 +172,10 @@ export default function App() {
   )
 }
 
+function createScanId() {
+  return `scan-${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
 function failedRuleIds(items = []) {
   return items
     .filter((item) => String(item.verdict || (item.passed ? 'PASS' : 'FAIL')).toUpperCase() === 'FAIL')
@@ -145,7 +184,7 @@ function failedRuleIds(items = []) {
 }
 
 async function bootstrapApp(active, setters) {
-  const { setStatusOk, setInventory, setReport, t } = setters
+  const { setStatusOk, setInventory, setReport, setServiceTree, t } = setters
   try {
     const status = await fetchStatus()
     if (active) setStatusOk(Boolean(status?.ok))
@@ -161,5 +200,9 @@ async function bootstrapApp(active, setters) {
   try {
     const existingReport = await fetchReport()
     if (active && existingReport?.ok) setReport(existingReport)
+  } catch {}
+  try {
+    const tree = await fetchServiceTree()
+    if (active && tree?.ok) setServiceTree(tree)
   } catch {}
 }

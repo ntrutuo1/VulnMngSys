@@ -1,15 +1,19 @@
 [CmdletBinding()]
 param(
     [string]$DownloadURL = $env:VULNMNGSYS_MSF_INSTALLER_URL,
-    [string]$DownloadLocation = "$env:APPDATA\Metasploit",
+    [string]$DownloadLocation = "",
     [string]$InstallLocation = "C:\Tools",
     [string]$LogLocation = ""
 )
 
 $ErrorActionPreference = "Stop"
 
-if (-not $DownloadURL) {
-    $DownloadURL = "https://windows.metasploit.com/metasploitframework-latest.msi"
+if (-not $DownloadLocation) {
+    $installParent = Split-Path -Parent $InstallLocation
+    if (-not $installParent) {
+        $installParent = $InstallLocation
+    }
+    $DownloadLocation = Join-Path $installParent "installer"
 }
 if (-not $LogLocation) {
     $LogLocation = Join-Path $DownloadLocation "install.log"
@@ -17,18 +21,8 @@ if (-not $LogLocation) {
 
 $rpcNames = @("msfrpcd.bat", "msfrpcd.cmd", "msfrpcd.exe", "msfrpcd")
 
-function Test-CommandExists {
-    param([string]$Name)
-    return $null -ne (Get-Command $Name -ErrorAction SilentlyContinue)
-}
-
 function Find-MsfRpcd {
     param([string[]]$Roots)
-    foreach ($name in $rpcNames) {
-        if (Test-CommandExists $name) {
-            return (Get-Command $name -ErrorAction Stop).Source
-        }
-    }
     foreach ($root in ($Roots | Where-Object { $_ -and (Test-Path $_) })) {
         $found = Get-ChildItem -Path $root -Recurse -File -Include $rpcNames -ErrorAction SilentlyContinue |
             Select-Object -First 1
@@ -39,15 +33,9 @@ function Find-MsfRpcd {
     return $null
 }
 
-$commonRoots = @(
-    $env:METASPLOIT_FRAMEWORK_HOME,
-    $InstallLocation,
-    "C:\metasploit-framework",
-    "$env:ProgramFiles\Metasploit Framework",
-    "${env:ProgramFiles(x86)}\Metasploit Framework"
-)
+$installRoots = @($InstallLocation)
 
-$existingRpc = Find-MsfRpcd -Roots $commonRoots
+$existingRpc = Find-MsfRpcd -Roots $installRoots
 if ($existingRpc) {
     Write-Output "Metasploit msfrpcd is already available: $existingRpc"
     exit 0
@@ -56,12 +44,22 @@ if ($existingRpc) {
 New-Item -Path $DownloadLocation -ItemType Directory -Force | Out-Null
 New-Item -Path $InstallLocation -ItemType Directory -Force | Out-Null
 
-$installer = Join-Path $DownloadLocation "metasploit.msi"
-Write-Output "Downloading Metasploit Framework from $DownloadURL"
-Invoke-WebRequest -UseBasicParsing -Uri $DownloadURL -OutFile $installer
+if ($DownloadURL) {
+    Write-Output "DownloadURL is ignored. Place a Metasploit .msi in $DownloadLocation to install into the portable Tools folder."
+}
 
+$installer = Get-ChildItem -Path $DownloadLocation -File -Filter "*.msi" -ErrorAction SilentlyContinue |
+    Sort-Object LastWriteTime -Descending |
+    Select-Object -First 1
+
+if (-not $installer) {
+    throw "No Metasploit .msi was found in $DownloadLocation. Copy the installer there and rerun this script with -InstallLocation pointing at the portable Tools folder."
+}
+
+$installerPath = $installer.FullName
+Write-Output "Using bundled Metasploit installer: $installerPath"
 Write-Output "Installing Metasploit Framework to $InstallLocation"
-$process = Start-Process -FilePath $installer -ArgumentList @(
+$process = Start-Process -FilePath $installerPath -ArgumentList @(
     "/q",
     "/log",
     "`"$LogLocation`"",
@@ -72,7 +70,7 @@ if ($process.ExitCode -ne 0) {
     throw "Metasploit installer failed with exit code $($process.ExitCode). Log: $LogLocation"
 }
 
-$installedRpc = Find-MsfRpcd -Roots $commonRoots
+$installedRpc = Find-MsfRpcd -Roots $installRoots
 if (-not $installedRpc) {
     throw "Metasploit installer finished, but msfrpcd was not found under $InstallLocation. Log: $LogLocation"
 }

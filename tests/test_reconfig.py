@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from app_bootstrap.scanflow.remediation_logger import close_remediation_loggers
-from app_bootstrap.scanflow.reconfig import RemediationPipeline, generate_reconfig_script
+from vulnmngsys_app.services.scanflow.remediation_logger import close_remediation_loggers
+from vulnmngsys_app.services.scanflow.reconfig import RemediationPipeline, generate_reconfig_script
 
 
 class ReconfigTests(unittest.TestCase):
