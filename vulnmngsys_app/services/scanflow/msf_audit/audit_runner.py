@@ -10,7 +10,7 @@ from typing import Any, Iterable
 from .module_loader import load_cve_modules, load_profile_metadata
 from .msfrpc_runner import MsfRpcConnectionError, MsfRpcRunner
 from .result_analyzer import analyze
-from .score_calculator import calculate_score, score_color, score_label
+from .score_calculator import calculate_score, score_color, score_label, calculate_dread_details
 
 
 def run_iis_msf_audit(
@@ -253,19 +253,15 @@ def _build_result_entry(
 
 
 def _build_summary(results: list[dict[str, Any]]) -> dict[str, int]:
-    counts: dict[str, int] = {
-        "pass": 0,
-        "fail": 0,
-        "warning": 0,
-        "info": 0,
-        "skipped": 0,
-        "error": 0,
-    }
+    summary = {"high": 0, "medium": 0, "low": 0, "info": 0}
     for result in results:
-        key = str(result.get("status", "")).lower()
-        if key in counts:
-            counts[key] += 1
-    return counts
+        status = result.get("status", "PASS")
+        orig_sev = result.get("severity", "INFO")
+        dread = calculate_dread_details(status, orig_sev)
+        result["dread_details"] = dread
+        result["severity"] = dread["severity"].upper()
+        summary[dread["severity"]] += 1
+    return summary
 
 
 def _build_kb_patch_summary(results: list[dict[str, Any]]) -> list[dict[str, Any]]:

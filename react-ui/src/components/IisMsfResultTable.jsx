@@ -119,7 +119,14 @@ function CveList({ cves = [] }) {
 
 function SeverityTag({ severity }) {
   const value = String(severity || '').toUpperCase()
-  return <Tag color={value === 'CRITICAL' ? 'red' : 'orange'}>{value || '-'}</Tag>
+  const colorMap = {
+    HIGH: 'red',
+    MEDIUM: 'orange',
+    LOW: 'gold',
+    INFO: 'blue',
+  }
+  const tagColor = colorMap[value] || 'default'
+  return <Tag color={tagColor}>{value || '-'}</Tag>
 }
 
 function ModuleName({ value, module }) {

@@ -59,6 +59,8 @@ def analyze(
         msf = {"status": "INFO", "evidence": "No Metasploit module configured for this local-only CVE."}
     elif module_id == "cve_2025_59287_wsus_rce":
         msf = _analyze_wsus_rce(raw_output)
+    elif module_id == "smb_signing_not_required_detection":
+        msf = _analyze_smb_signing(raw_output)
     else:
         msf = _analyze_generic_cve(raw_output)
 
@@ -138,6 +140,28 @@ def _analyze_wsus_rce(raw_output: str) -> dict[str, str]:
     return {
         "status": "INFO",
         "evidence": _evidence_or_default(raw_output, "WSUS check mode completed without a direct vulnerable signal."),
+    }
+
+
+def _analyze_smb_signing(raw_output: str) -> dict[str, str]:
+    out = _output_lower(raw_output)
+    if not out:
+        return {"status": "INFO", "evidence": "MSF SMB version probe did not return output."}
+    if _has_error(out):
+        return {"status": "ERROR", "evidence": _evidence_or_default(raw_output, "MSF SMB version check failed.")}
+    if "signatures:optional" in out.replace(" ", "") or "signatures: optional" in out or "signing is not required" in out or "signing is optional" in out:
+        return {
+            "status": "FAIL",
+            "evidence": _evidence_or_default(raw_output, "SMB Signing is optional (not required) - potential SMB relay risk."),
+        }
+    if "signatures:required" in out.replace(" ", "") or "signatures: required" in out:
+        return {
+            "status": "PASS",
+            "evidence": _evidence_or_default(raw_output, "SMB Signing is required (enforced)."),
+        }
+    return {
+        "status": "INFO",
+        "evidence": _evidence_or_default(raw_output, "SMB version probe completed but signing status was not explicitly optional/required."),
     }
 
 

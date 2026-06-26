@@ -13,9 +13,9 @@ export default function IisMsfDetailModal({ row, onClose }) {
           <Descriptions.Item label="Category"><CategoryLabel category={row.category} /></Descriptions.Item>
           <Descriptions.Item label="Risk">{(row.risk || '').replace(/_/g, ' ') || '-'}</Descriptions.Item>
           <Descriptions.Item label="CVEs"><CveList cves={row.cve} /></Descriptions.Item>
-          <Descriptions.Item label="Port / SSL">{row.port} {row.ssl ? '(HTTPS)' : '(HTTP)'}</Descriptions.Item>
+          <Descriptions.Item label="Module Options"><ModuleOptions options={row.module_options} port={row.port} ssl={row.ssl} /></Descriptions.Item>
           <Descriptions.Item label="Local Check"><LocalCheck local={row.local_check_result} /></Descriptions.Item>
-          <Descriptions.Item label="MSF Checks"><MsfChecks items={row.msf_results} /></Descriptions.Item>
+          <Descriptions.Item label="MSF Checks"><MsfChecks row={row} /></Descriptions.Item>
           <Descriptions.Item label="Expected Signal">{row.expected_signal || '-'}</Descriptions.Item>
           <Descriptions.Item label="Evidence"><Paragraph value={row.evidence} warn /></Descriptions.Item>
           <Descriptions.Item label="Remediation"><Paragraph value={row.remediation} /></Descriptions.Item>
@@ -72,19 +72,39 @@ function LocalCheck({ local }) {
   )
 }
 
-function MsfChecks({ items = [] }) {
-  if (!items.length) return <Typography.Text type="secondary">No MSF module was executed.</Typography.Text>
+function MsfChecks({ row }) {
+  const items = row?.msf_results || []
+  if (!items.length) return <Typography.Text type="secondary">{msfCheckMessage(row)}</Typography.Text>
   return (
     <Space direction="vertical" size={4} style={{ width: '100%' }}>
       {items.map((item) => (
-        <Space key={`${item.port}-${item.ssl}`} wrap>
-          <Typography.Text code>{item.port}{item.ssl ? ' TLS' : ''}</Typography.Text>
+        <Space key={`${item.port}-${item.ssl}-${item.status}`} wrap>
+          <Typography.Text code>{formatOptions(item.datastore || { RPORT: item.port, SSL: item.ssl })}</Typography.Text>
           <StatusTag status={item.status || 'INFO'} />
           <Typography.Text type="secondary">{item.evidence || '-'}</Typography.Text>
         </Space>
       ))}
     </Space>
   )
+}
+
+function ModuleOptions({ options, port, ssl }) {
+  const values = options && Object.keys(options).length ? options : { RPORT: port, SSL: ssl }
+  return <Typography.Text code>{formatOptions(values)}</Typography.Text>
+}
+
+function formatOptions(options = {}) {
+  const entries = Object.entries(options).filter(([, value]) => value !== undefined && value !== null && value !== '')
+  if (!entries.length) return '-'
+  return entries.map(([key, value]) => `${key}=${String(value)}`).join(', ')
+}
+
+function msfCheckMessage(row) {
+  const state = row?.msf_check_state
+  if (state === 'CHECK_UNSUPPORTED') return 'Module does not expose an MSF check method.'
+  if (state === 'MSFRPC_UNAVAILABLE') return 'MSFRPC is unavailable; MSF check was not executed.'
+  if (state === 'CHECK_SKIPPED') return 'MSF check was skipped by scan options.'
+  return 'No MSF check output was recorded.'
 }
 
 function Paragraph({ value, warn = false }) {

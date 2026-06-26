@@ -36,7 +36,7 @@ function resolveBackendCommand() {
 
   return {
     command: resolvePythonExe(),
-    args: ['-m', 'vulnmngsys_app.backend_service'],
+    args: ['-m', 'vulnmngsys_app.startup.backend_service'],
   };
 }
 

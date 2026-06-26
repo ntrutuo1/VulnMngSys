@@ -1,0 +1,205 @@
+@startuml IIS_AUDIT_CLASS_DIAGRAM
+title Class Diagram - IIS Audit OOP Core
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+package "View" {
+  class ReactUI {
+    +startScan()
+    +showFindings()
+    +confirmReconfigure()
+    +downloadReport()
+  }
+}
+
+package "Controller" {
+  class ApiServer {
+    +do_GET()
+    +do_POST()
+  }
+
+  class IisRoutes {
+    +handle_iis_get(handler, path, query)
+    +handle_iis_post(handler, path)
+  }
+
+  class ConfigRoutes {
+    +handle_config_get(handler, path, query)
+    +handle_config_post(handler, path)
+  }
+
+  class MsfRoutes {
+    +handle_msf_get(handler, path, query)
+    +handle_msf_post(handler, path)
+  }
+}
+
+package "Service / Use Case" {
+  class IISAuditOrchestrator {
+    -os_collector: OSInfoCollector
+    -configuration_scan: ConfigurationScanService
+    -report_service: AuditReportService
+    -backup_rollback: BackupRollbackUseCase
+    -reconfigure_use_case: ReconfigureUseCase
+    -service_cve_scan: ServiceCveScanUseCase
+    -iis_cve_reconfigure: IISCveReconfigureUseCase
+    +getOSInfo()
+    +scanConfiguration(profile_key, mode, scan_id)
+    +backupandRollback(**kwargs)
+    +reconfigure(**kwargs)
+    +scanService(**kwargs)
+    +scanServiceCVE(**kwargs)
+    +generateIISReport(payload)
+    +generateConfigScanReport(report_file)
+  }
+
+  class OSInfoCollector {
+    +collect()
+  }
+
+  class ConfigurationScanService {
+    +scan(profile_key, mode, scan_id)
+  }
+
+  class BackupRollbackUseCase {
+    -backup: BackupManager
+    +run(action, backup_id, reason, selected_rules, registry_paths)
+  }
+
+  class ReconfigureUseCase {
+    +run(report, app_root, selected_rule_ids, apply, confirmed)
+  }
+
+  class ServiceCveScanUseCase {
+    -report_service: AuditReportService
+    +scan(target, active_test, ports, selected_cves)
+  }
+
+  class IISCveReconfigureUseCase {
+    +preview(report, app_root, selected_cves)
+    +apply(report, app_root, selected_cves, confirmed)
+  }
+
+  class AuditReportService {
+    +generate_config_report(report_file)
+    +generate_iis_report(payload)
+  }
+}
+
+package "Domain / Existing Pipeline" {
+  class RemediationPipeline {
+    +preview(report, app_root, selected_rule_ids)
+    +apply(report, app_root, selected_rule_ids)
+  }
+
+  class IisRemediationPipeline {
+    +preview(report, app_root, selected_cves)
+    +apply(report, app_root, selected_cves)
+  }
+
+  class MsfAuditRunner {
+    +run_iis_msf_audit()
+    +run_local_patch_check()
+  }
+
+  class ScanFacade {
+    +run_scan_and_save_report()
+    +load_report_file()
+  }
+}
+
+package "Adapter" {
+  class BackupManager {
+    +createBackup(reason, selectedRules, registryPaths)
+    +verifyBackup(backup_id)
+    +listBackups()
+    +rollback(backup_id)
+    +verifyRollback(backup_id)
+    +trigger_backup(selected_rule_ids, registry_paths)
+    +rollback_config(backup_id)
+  }
+
+  class MetasploitManager {
+    +wait_until_connected()
+    +status()
+  }
+
+  class ModuleLoader {
+    +load_cve_modules()
+    +load_profile_metadata()
+  }
+
+  class ReportWriter {
+    +write_json_report(payload)
+    +write_html_report(payload)
+  }
+
+  class WindowsInventoryScript {
+    +Get-WindowsServerInventory.ps1
+  }
+}
+
+package "External System" {
+  class LocalWindowsServer {
+    Registry
+    Services
+    PowerShell
+    IIS appcmd
+  }
+
+  class MetasploitRPC {
+    module metadata
+    safe check
+  }
+
+  class FileSystem {
+    rules
+    reports
+    backups
+    local CVE cache
+  }
+}
+
+ReactUI --> ApiServer
+ApiServer --> IisRoutes
+ApiServer --> ConfigRoutes
+ApiServer --> MsfRoutes
+
+IisRoutes --> IISAuditOrchestrator
+ConfigRoutes --> IISAuditOrchestrator
+MsfRoutes --> IISAuditOrchestrator
+
+IISAuditOrchestrator *-- OSInfoCollector
+IISAuditOrchestrator *-- ConfigurationScanService
+IISAuditOrchestrator *-- BackupRollbackUseCase
+IISAuditOrchestrator *-- ReconfigureUseCase
+IISAuditOrchestrator *-- ServiceCveScanUseCase
+IISAuditOrchestrator *-- IISCveReconfigureUseCase
+IISAuditOrchestrator *-- AuditReportService
+
+OSInfoCollector --> WindowsInventoryScript
+ConfigurationScanService --> ScanFacade
+BackupRollbackUseCase --> BackupManager
+ReconfigureUseCase --> RemediationPipeline
+ServiceCveScanUseCase --> MsfAuditRunner
+ServiceCveScanUseCase --> MetasploitManager
+ServiceCveScanUseCase --> ModuleLoader
+ServiceCveScanUseCase --> AuditReportService
+IISCveReconfigureUseCase --> IisRemediationPipeline
+AuditReportService --> ReportWriter
+
+BackupManager --> LocalWindowsServer
+MetasploitManager --> MetasploitRPC
+ModuleLoader --> FileSystem
+ReportWriter --> FileSystem
+WindowsInventoryScript --> LocalWindowsServer
+ScanFacade --> FileSystem
+ScanFacade --> LocalWindowsServer
+
+note right of IISAuditOrchestrator
+  Orchestrator nam giu 7 chuc nang chinh.
+  Controller chi validate request va goi use case.
+  Adapter moi cham Windows, file system, MSFRPC.
+end note
+
+@enduml

@@ -5,6 +5,7 @@ $RootDir = $PSScriptRoot
 $ElectronDist = Join-Path $RootDir 'electron-dist'
 $ProcessNames = @(
   'vulnmngsys-react-ui',
+  'VulnMngSys',
   'VulnMngSysBackend',
   'VulnMngSysDesktop',
   'VulnMngSysDesktop-CLI'

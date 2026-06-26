@@ -9,7 +9,8 @@
   h1 { color: #0f766e; margin: 0 0 4px; }
   h2 { color: #1f2937; margin: 28px 0 12px; font-size: 1.05rem; }
   .meta { color: #64748b; font-size: 0.875rem; margin-bottom: 24px; }
-  .score-badge { display: inline-block; padding: 8px 18px; border-radius: 8px; font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; }
+  .score-badge { display: inline-block; padding: 8px 18px; border-radius: 8px; font-size: 1.25rem;
+    font-weight: 700; margin-bottom: 16px; }
   .score-green { background: #dcfce7; color: #166534; }
   .score-orange { background: #ffedd5; color: #9a3412; }
   .score-red { background: #fee2e2; color: #991b1b; }
@@ -21,6 +22,9 @@
   .pill-INFO { background: #dbeafe; color: #1d4ed8; }
   .pill-SKIPPED { background: #e5e7eb; color: #374151; }
   .pill-ERROR { background: #fee2e2; color: #b91c1c; }
+  .pill-HIGH { background: #fee2e2; color: #991b1b; }
+  .pill-MEDIUM { background: #ffedd5; color: #9a3412; }
+  .pill-LOW { background: #fef9c3; color: #854d0e; }
   table { width: 100%; border-collapse: collapse; font-size: 0.875rem; background: #fff; border: 1px solid #e5e7eb; }
   th { background: #f8fafc; color: #475569; padding: 10px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
   td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
@@ -31,8 +35,14 @@
   .tag-INFO { background: #dbeafe; color: #1d4ed8; }
   .tag-SKIPPED { background: #e5e7eb; color: #374151; }
   .tag-ERROR { background: #fee2e2; color: #b91c1c; }
+  .tag-HIGH { background: #fee2e2; color: #991b1b; }
+  .tag-MEDIUM { background: #ffedd5; color: #9a3412; }
+  .tag-LOW { background: #fef9c3; color: #854d0e; }
   .severity-CRITICAL { background: #7f1d1d; color: #fff; }
-  .severity-HIGH { background: #c2410c; color: #fff; }
+  .severity-HIGH { background: #dc2626; color: #fff; }
+  .severity-MEDIUM { background: #f97316; color: #fff; }
+  .severity-LOW { background: #eab308; color: #000; }
+  .severity-INFO { background: #3b82f6; color: #fff; }
   .muted { color: #64748b; font-size: 0.8rem; }
   .evidence { color: #92400e; font-size: 0.82rem; }
   .remediation { color: #166534; font-size: 0.82rem; }
@@ -40,25 +50,53 @@
 </head>
 <body>
 <h1>IIS Critical CVE Audit Report</h1>
-<div class="meta">Target: 127.0.0.1 | Mode: focused_cve_local | 2026-06-16T20:12:28.359469</div>
-<div class="score-badge score-green">Score: 80/100 - Good</div>
-<div class="summary"><span class='pill pill-FAIL'>FAIL: 1</span></div>
+<div class="meta">Target: 127.0.0.1 | Mode: service_warehouse | </div>
+<div class="score-badge score-red">Score: 55/100 - Service scan</div>
+<div style="display: flex; align-items: center; gap: 24px; margin-top: 16px; margin-bottom: 24px; background: #ffffff; padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 400px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="position: relative; width: 100px; height: 100px; flex-shrink: 0;">
+    <svg width="100" height="100" viewBox="0 0 100 100" style="display: block;">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="14" />
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#dc2626" stroke-width="14" stroke-dasharray="83.776 251.327" stroke-dashoffset="251.327" transform="rotate(-90 50 50)" />
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#f97316" stroke-width="14" stroke-dasharray="83.776 251.327" stroke-dashoffset="167.552" transform="rotate(-90 50 50)" />
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" stroke-width="14" stroke-dasharray="83.776 251.327" stroke-dashoffset="83.776" transform="rotate(-90 50 50)" />
+    </svg>
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', Arial, sans-serif;">
+      <span style="font-size: 16px; font-weight: bold; color: #1e293b; line-height: 1;">3</span>
+      <span style="font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;">Total</span>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; justify-content: center; font-family: 'Segoe UI', Arial, sans-serif;">
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 4px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #dc2626;"></span><span style="font-weight: 600; color: #334155; margin-right: 4px;">High:</span><span style="color: #64748b;">1 (33%)</span></div>
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 4px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #f97316;"></span><span style="font-weight: 600; color: #334155; margin-right: 4px;">Medium:</span><span style="color: #64748b;">1 (33%)</span></div>
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 4px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #3b82f6;"></span><span style="font-weight: 600; color: #334155; margin-right: 4px;">Info:</span><span style="color: #64748b;">1 (33%)</span></div>
+  </div>
+</div>
+
+<div class="summary"><span class='pill pill-HIGH'>HIGH: 1</span><span class='pill pill-MEDIUM'>MEDIUM: 1</span><span class='pill pill-INFO'>INFO: 1</span></div>
 <h2>Findings</h2>
 <table>
 <thead>
-<tr><th>#</th><th>CVE</th><th>Severity</th><th>Module</th><th>Port</th><th>Status</th><th>Local Check</th><th>Evidence</th><th>Remediation</th></tr>
+<tr>
+  <th>#</th><th>CVE</th><th>Severity</th><th>Module</th><th>Port</th>
+  <th>Status</th><th>Local Check</th><th>Evidence</th><th>Remediation</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>IIS-CVE-003</td><td>CVE-2025-59282</td><td><span class='tag severity-HIGH'>HIGH</span></td><td><strong>CVE-2025-59282 Inbox COM Objects race condition check</strong><br><span class='muted'>local_only</span></td><td>N/A</td><td><span class='tag tag-FAIL'>FAIL</span></td><td><span class='tag tag-FAIL'>FAIL</span><br><span class='muted'>Inbox COM libraries checked locally. No installed hotfix was found on/after 2025-10-01.</span></td><td class='evidence'>Local: Inbox COM libraries checked locally. No installed hotfix was found on/after 2025-10-01. | MSF: No Metasploit module configured for this local-only CVE.</td><td class='remediation'>Install the October 2025 or later Windows Server cumulative update that remediates CVE-2025-59282. See: CVE-2025-59282.</td></tr>
+<tr><td>WIN-SVC-CVE-2000-0649</td><td>CVE-2000-0649</td><td><span class='tag severity-MEDIUM'>MEDIUM</span></td><td><strong>IIS Internal IP Disclosure</strong><br><span class='muted'>auxiliary/scanner/http/iis_internal_ip</span></td><td>80</td><td><span class='tag tag-FAIL'>FAIL</span></td><td><span class='tag tag-INFO'>INFO</span><br><span class='muted'>Check complete</span></td><td class='evidence'>Internal IP 10.0.0.5 leaked</td><td class='remediation'>Configure IIS custom headers or rewrite rules.</td></tr>
+<tr><td>WIN-SVC-CVE-2015-1635</td><td>CVE-2015-1635</td><td><span class='tag severity-HIGH'>HIGH</span></td><td><strong>HTTP.sys Remote Code Execution</strong><br><span class='muted'>exploit/windows/http/ms15_034_http_sys_memory_dump</span></td><td>443 TLS</td><td><span class='tag tag-FAIL'>FAIL</span></td><td><span class='tag tag-INFO'>INFO</span><br><span class='muted'>Check complete</span></td><td class='evidence'>Server headers leak memory dump</td><td class='remediation'>Install MS15-034 patch.</td></tr>
+<tr><td>WIN-SVC-CVE-2022-35748</td><td>CVE-2022-35748</td><td><span class='tag severity-INFO'>INFO</span></td><td><strong>IIS Server Denial of Service</strong><br><span class='muted'>auxiliary/dos/http/ms15_034_http_sys_dos</span></td><td>80</td><td><span class='tag tag-PASS'>PASS</span></td><td><span class='tag tag-INFO'>INFO</span><br><span class='muted'>Check complete</span></td><td class='evidence'>Not vulnerable</td><td class='remediation'>No action needed.</td></tr>
 </tbody>
 </table>
 <h2>Patch Summary</h2>
 <table>
 <thead>
-<tr><th>CVE</th><th>Severity</th><th>Local Status</th><th>Patch Baseline</th><th>Installed HotFixes</th><th>Required Patch</th></tr>
+<tr>
+  <th>CVE</th><th>Severity</th><th>Local Status</th><th>Patch Baseline</th>
+  <th>Installed HotFixes</th><th>Required Patch</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>CVE-2025-59282</td><td><span class='tag severity-HIGH'>HIGH</span></td><td><span class='tag tag-FAIL'>FAIL</span></td><td>2025-10-01</td><td>-</td><td>Install the October 2025 or later Windows Server cumulative update that remediates CVE-2025-59282.</td></tr>
+
 </tbody>
 </table>
 </body>

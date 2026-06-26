@@ -8,19 +8,22 @@
     "module_policy": "Only module checks mapped to CVE-2025-53772, CVE-2025-27473, CVE-2025-59282, and CVE-2025-59287 are loaded. Legacy IIS hardening modules are removed.",
     "default_targets": ["127.0.0.1", "localhost"],
     "default_ports": [80, 443, 8172, 8530, 8531],
-    "execution_mode": "local USB audit: msfrpc check/probe plus PowerShell patch/service checks",
+    "execution_mode": "local USB audit: msfrpc module probe/check plus PowerShell patch/service checks",
     "safe_default": true,
     "notes": [
-      "CVE-2025-53772 and CVE-2025-27473 use safe Metasploit HTTP fingerprint probes unless a custom scanner with the configured path is installed.",
+      "CVE-2025-53772 and CVE-2025-27473 use Metasploit HTTP fingerprint probes unless a custom CVE scanner with the configured path is installed.",
       "CVE-2025-59282 is local-only because no Metasploit module is configured.",
       "CVE-2025-59287 is an exploit module and must be executed with the Metasploit check command only."
     ]
   },
   "common_http_options": {
     "RHOSTS": "127.0.0.1",
+    "RHOST": "127.0.0.1",
+    "LHOST": "127.0.0.1",
     "RPORT": 80,
     "SSL": false,
     "VHOST": "",
+    "TARGETURI": "/",
     "THREADS": 1,
     "HttpClientTimeout": 20,
     "Proxies": "",
@@ -28,13 +31,42 @@
   },
   "common_https_options": {
     "RHOSTS": "127.0.0.1",
+    "RHOST": "127.0.0.1",
+    "LHOST": "127.0.0.1",
     "RPORT": 443,
     "SSL": true,
     "VHOST": "",
+    "TARGETURI": "/",
     "THREADS": 1,
     "HttpClientTimeout": 20,
     "Proxies": "",
     "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
+  },
+  "common_local_options": {
+    "powershell": "powershell",
+    "execution_policy": "Bypass",
+    "requires_local_admin": true,
+    "collect_services": true,
+    "collect_hotfixes": true,
+    "collect_file_versions": true,
+    "collect_windows_features": true,
+    "collect_registry": true,
+    "timeout_seconds": 90
+  },
+  "execution_defaults": {
+    "msfrpc_required_for_msf_modules": true,
+    "exploit_execution_allowed": false,
+    "default_command_for_auxiliary": "run",
+    "default_command_for_exploit": "check",
+    "stop_on_first_vulnerable_signal": false,
+    "write_partial_report": true,
+    "allow_cancel": true,
+    "timeout_seconds": 60,
+    "retry": {
+      "attempts": 1,
+      "backoff_seconds": 0
+    },
+    "status_priority": ["ERROR", "FAIL", "WARNING", "INFO", "SKIPPED", "PASS"]
   },
   "modules": [
     {
@@ -43,26 +75,84 @@
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/http_version",
       "preferred_module": "auxiliary/scanner/http/msdeploy_deserialization_check",
+      "preferred_module_required": false,
       "name": "CVE-2025-53772 Web Deploy RCE check",
       "category": "web_deploy_rce",
       "risk": "unsafe_deserialization",
+      "component": "WEBDEPLOY",
+      "aliases": ["Web Deploy", "MSDeploy", "WMSvc", "MsDepSvc", "msdeploy.axd"],
+      "cpe": ["cpe:2.3:a:microsoft:web_deploy:*:*:*:*:*:*:*:*"],
       "cve": ["CVE-2025-53772"],
+      "references": ["CVE-2025-53772"],
       "severity": "CRITICAL",
       "cvss": 8.8,
       "check_method": "msf_and_local",
       "safe_to_run": true,
       "server_2022_relevance": "Checks local Web Deploy / WMSvc exposure and patch posture on Windows Server 2022+.",
+      "execution": {
+        "engine": "msfrpc_and_powershell",
+        "msf_command": "run",
+        "exploit_execution_allowed": false,
+        "requires_module_check_method": false,
+        "requires_local_patch_check": true,
+        "timeout_seconds": 60,
+        "result_source": "MSF output plus local PowerShell evidence"
+      },
+      "metasploit": {
+        "module_type": "auxiliary",
+        "module": "auxiliary/scanner/http/http_version",
+        "preferred_module": "auxiliary/scanner/http/msdeploy_deserialization_check",
+        "fallback_reason": "Generic HTTP fingerprint is used when the local Metasploit tree has no dedicated CVE-2025-53772 module.",
+        "command": "run",
+        "required_options": ["RHOSTS", "RPORT", "SSL"],
+        "optional_options": ["RHOST", "LHOST", "VHOST", "TARGETURI", "THREADS", "HttpClientTimeout", "Proxies", "UserAgent"],
+        "default_datastore": {
+          "RHOSTS": "127.0.0.1",
+          "RHOST": "127.0.0.1",
+          "LHOST": "127.0.0.1",
+          "RPORT": 8172,
+          "SSL": true,
+          "VHOST": "",
+          "TARGETURI": "/msdeploy.axd",
+          "THREADS": 1,
+          "HttpClientTimeout": 20,
+          "Proxies": "",
+          "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
+        }
+      },
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
+        "RHOST": "127.0.0.1",
+        "LHOST": "127.0.0.1",
         "RPORT": 8172,
         "SSL": true,
         "VHOST": "",
         "TARGETURI": "/msdeploy.axd",
-        "THREADS": 1
+        "THREADS": 1,
+        "HttpClientTimeout": 20,
+        "Proxies": "",
+        "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
       },
       "local_variants": [
-        {"RPORT": 8172, "SSL": true, "TARGETURI": "/msdeploy.axd"}
+        {
+          "variant_id": "webdeploy_https_8172",
+          "description": "Default Web Management Service endpoint.",
+          "RPORT": 8172,
+          "SSL": true,
+          "TARGETURI": "/msdeploy.axd"
+        }
       ],
+      "applicability": {
+        "target_os": ["Windows Server 2022", "Windows Server 2025"],
+        "required_services_any": ["WMSvc", "MsDepSvc"],
+        "required_files_any": [
+          "%ProgramFiles%\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe",
+          "%ProgramFiles%\\IIS\\Microsoft Web Deploy V3\\msdepsvc.exe"
+        ],
+        "required_registry_any": ["HKLM:\\SOFTWARE\\Microsoft\\IIS Extensions\\MSDeploy\\3"],
+        "ports": [8172],
+        "not_applicable_when": "No Web Deploy service, file, or registry key is present."
+      },
       "local_check": {
         "cve_id": "CVE-2025-53772",
         "service_names": ["WMSvc", "MsDepSvc"],
@@ -73,11 +163,23 @@
           "$env:ProgramFiles\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe",
           "$env:ProgramFiles\\IIS\\Microsoft Web Deploy V3\\msdepsvc.exe"
         ],
-        "registry_paths": [
-          "HKLM:\\SOFTWARE\\Microsoft\\IIS Extensions\\MSDeploy\\3"
-        ]
+        "registry_paths": ["HKLM:\\SOFTWARE\\Microsoft\\IIS Extensions\\MSDeploy\\3"]
       },
-      "expected_signal": "Reports Web Deploy endpoint reachability, deserialization/BinaryFormatter findings, and local Web Deploy patch state."
+      "evidence_contract": {
+        "msf_positive_patterns": ["msdeploy.axd accessible", "BinaryFormatter", "deserialization", "vulnerable"],
+        "msf_negative_patterns": ["not vulnerable", "patched", "does not appear to be vulnerable"],
+        "local_positive_fields": ["services", "file_versions", "registry", "hotfixes"],
+        "final_decision": "FAIL when local patch is missing on applicable Web Deploy host or MSF returns a vulnerable signal; PASS when patch evidence is present or component is absent."
+      },
+      "decision_policy": {
+        "fail_on": ["LOCAL_PATCH_MISSING_APPLICABLE", "MSF_VULNERABLE_SIGNAL"],
+        "pass_on": ["LOCAL_PATCH_FOUND", "COMPONENT_NOT_APPLICABLE"],
+        "warning_on": ["LOCAL_INCONCLUSIVE", "MSF_ERROR_WITH_LOCAL_PASS"],
+        "error_on": ["MSF_EXECUTION_ERROR_WITHOUT_LOCAL_PASS", "POWERSHELL_ERROR"]
+      },
+      "expected_signal": "Reports Web Deploy endpoint reachability, deserialization/BinaryFormatter findings, and local Web Deploy patch state.",
+      "remediation": "Patch Web Deploy/IIS or disable WMSvc and MsDepSvc if Web Deploy is not required.",
+      "rollback_impact": "No configuration change is performed by scan; reconfigure must create IIS and service backup before disabling Web Deploy services."
     },
     {
       "id": "cve_2025_27473_httpsys_dos",
@@ -85,54 +187,163 @@
       "module_type": "auxiliary",
       "module": "auxiliary/scanner/http/http_version",
       "preferred_module": "auxiliary/dos/http/http_sys_resource_exhaustion",
+      "preferred_module_required": false,
       "name": "CVE-2025-27473 HTTP.sys DoS check",
       "category": "httpsys_resource_exhaustion",
       "risk": "resource_exhaustion",
+      "component": "HTTP_SYS",
+      "aliases": ["HTTP.sys", "IIS", "W3SVC", "kernel-mode HTTP driver"],
+      "cpe": ["cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*"],
       "cve": ["CVE-2025-27473"],
+      "references": ["CVE-2025-27473"],
       "severity": "HIGH",
       "cvss": 7.5,
       "check_method": "msf_and_local",
       "safe_to_run": true,
       "server_2022_relevance": "Checks local HTTP.sys/IIS listeners and April 2025 or later patch posture.",
+      "execution": {
+        "engine": "msfrpc_and_powershell",
+        "msf_command": "run",
+        "exploit_execution_allowed": false,
+        "requires_module_check_method": false,
+        "requires_local_patch_check": true,
+        "timeout_seconds": 60,
+        "result_source": "MSF HTTP fingerprint output plus local HTTP.sys file/hotfix evidence"
+      },
+      "metasploit": {
+        "module_type": "auxiliary",
+        "module": "auxiliary/scanner/http/http_version",
+        "preferred_module": "auxiliary/dos/http/http_sys_resource_exhaustion",
+        "fallback_reason": "Generic HTTP fingerprint is used when the local Metasploit tree has no dedicated CVE-2025-27473 checker.",
+        "command": "run",
+        "required_options": ["RHOSTS", "RPORT", "SSL"],
+        "optional_options": ["RHOST", "LHOST", "VHOST", "TARGETURI", "THREADS", "HttpClientTimeout", "Proxies", "UserAgent"],
+        "default_datastore": {
+          "RHOSTS": "127.0.0.1",
+          "RHOST": "127.0.0.1",
+          "LHOST": "127.0.0.1",
+          "RPORT": 80,
+          "SSL": false,
+          "VHOST": "",
+          "TARGETURI": "/",
+          "THREADS": 1,
+          "HttpClientTimeout": 20,
+          "Proxies": "",
+          "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
+        }
+      },
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
+        "RHOST": "127.0.0.1",
+        "LHOST": "127.0.0.1",
         "RPORT": 80,
         "SSL": false,
         "VHOST": "",
-        "THREADS": 1
+        "TARGETURI": "/",
+        "THREADS": 1,
+        "HttpClientTimeout": 20,
+        "Proxies": "",
+        "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
       },
       "local_variants": [
-        {"RPORT": 80, "SSL": false},
-        {"RPORT": 443, "SSL": true}
+        {
+          "variant_id": "httpsys_http_80",
+          "description": "Default IIS HTTP listener.",
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        },
+        {
+          "variant_id": "httpsys_https_443",
+          "description": "Default IIS HTTPS listener.",
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        }
       ],
+      "applicability": {
+        "target_os": ["Windows Server 2022", "Windows Server 2025"],
+        "required_services_any": ["HTTP", "W3SVC"],
+        "required_files_any": ["%windir%\\System32\\drivers\\http.sys"],
+        "ports": [80, 443],
+        "not_applicable_when": "HTTP.sys driver or IIS listener cannot be confirmed."
+      },
       "local_check": {
         "cve_id": "CVE-2025-27473",
         "service_names": ["HTTP", "W3SVC"],
         "service_required": true,
         "patch_after": "2025-04-01",
         "patch_guidance": "Install the April 2025 or later Windows Server cumulative update that remediates CVE-2025-27473.",
-        "file_paths": [
-          "$env:windir\\System32\\drivers\\http.sys"
-        ]
+        "file_paths": ["$env:windir\\System32\\drivers\\http.sys"],
+        "registry_paths": []
       },
-      "expected_signal": "Reports HTTP.sys/IIS fingerprinting, resource exhaustion indicators, and local HTTP.sys patch state."
+      "evidence_contract": {
+        "msf_positive_patterns": ["resource exhaustion", "CWE-400", "target is vulnerable", "vulnerable"],
+        "msf_negative_patterns": ["not vulnerable", "patched", "does not appear to be vulnerable"],
+        "local_positive_fields": ["services", "file_versions", "hotfixes"],
+        "final_decision": "FAIL when the HTTP.sys component is applicable and no required patch is found or MSF returns a vulnerable signal."
+      },
+      "decision_policy": {
+        "fail_on": ["LOCAL_PATCH_MISSING_APPLICABLE", "MSF_VULNERABLE_SIGNAL"],
+        "pass_on": ["LOCAL_PATCH_FOUND"],
+        "warning_on": ["COMPONENT_INCONCLUSIVE", "MSF_ERROR_WITH_LOCAL_PASS"],
+        "error_on": ["MSF_EXECUTION_ERROR_WITHOUT_LOCAL_PASS", "POWERSHELL_ERROR"]
+      },
+      "expected_signal": "Reports HTTP.sys/IIS fingerprinting, resource exhaustion indicators, and local HTTP.sys patch state.",
+      "remediation": "Patch Windows Server HTTP.sys and restrict exposed IIS listeners to required networks.",
+      "rollback_impact": "No configuration change is performed by scan; reconfigure must backup IIS bindings and HTTP service state before listener changes."
     },
     {
       "id": "cve_2025_59282_com_race",
       "display_id_prefix": "IIS-CVE",
       "module_type": "local",
       "module": null,
+      "preferred_module": null,
+      "preferred_module_required": false,
       "name": "CVE-2025-59282 Inbox COM Objects race condition check",
       "category": "inbox_com_race_condition",
       "risk": "race_condition_uaf",
+      "component": "WINDOWS_HOST",
+      "aliases": ["Inbox COM Objects", "COM", "OLE32", "COMBASE", "RPCRT4"],
+      "cpe": ["cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*"],
       "cve": ["CVE-2025-59282"],
+      "references": ["CVE-2025-59282"],
       "severity": "HIGH",
       "cvss": 7.0,
       "check_method": "local_only",
       "safe_to_run": true,
       "server_2022_relevance": "Checks October 2025 or later patch posture and selected COM library versions on the local host.",
+      "execution": {
+        "engine": "powershell",
+        "msf_command": "none",
+        "exploit_execution_allowed": false,
+        "requires_module_check_method": false,
+        "requires_local_patch_check": true,
+        "timeout_seconds": 90,
+        "result_source": "Local PowerShell hotfix and file version evidence"
+      },
+      "metasploit": {
+        "module_type": "none",
+        "module": null,
+        "preferred_module": null,
+        "fallback_reason": "No local Metasploit module is configured for this CVE.",
+        "command": "none",
+        "required_options": [],
+        "optional_options": [],
+        "default_datastore": {}
+      },
       "default_datastore": {},
       "local_variants": [],
+      "applicability": {
+        "target_os": ["Windows Server 2022", "Windows Server 2025"],
+        "required_files_any": [
+          "%windir%\\System32\\ole32.dll",
+          "%windir%\\System32\\combase.dll",
+          "%windir%\\System32\\rpcrt4.dll"
+        ],
+        "ports": [],
+        "not_applicable_when": "Target is not a local Windows Server host."
+      },
       "local_check": {
         "cve_id": "CVE-2025-59282",
         "service_names": [],
@@ -143,35 +354,118 @@
           "$env:windir\\System32\\ole32.dll",
           "$env:windir\\System32\\combase.dll",
           "$env:windir\\System32\\rpcrt4.dll"
-        ]
+        ],
+        "registry_paths": []
       },
-      "expected_signal": "Reports local patch and COM DLL version posture; no Metasploit module is required."
+      "evidence_contract": {
+        "msf_positive_patterns": [],
+        "msf_negative_patterns": [],
+        "local_positive_fields": ["file_versions", "hotfixes"],
+        "final_decision": "FAIL when no hotfix on or after 2025-10-01 is found on the local Windows Server host; PASS when patch evidence exists."
+      },
+      "decision_policy": {
+        "fail_on": ["LOCAL_PATCH_MISSING_APPLICABLE"],
+        "pass_on": ["LOCAL_PATCH_FOUND"],
+        "warning_on": ["LOCAL_INCONCLUSIVE"],
+        "error_on": ["POWERSHELL_ERROR"]
+      },
+      "expected_signal": "Reports local patch and COM DLL version posture; no Metasploit module is required.",
+      "remediation": "Install the October 2025 or later Windows Server cumulative update.",
+      "rollback_impact": "No configuration change is performed by scan; reconfigure must not attempt service rollback for this local-only patch CVE."
     },
     {
       "id": "cve_2025_59287_wsus_rce",
       "display_id_prefix": "IIS-CVE",
       "module_type": "exploit",
       "module": "exploit/windows/http/wsus_deserialization_rce",
+      "preferred_module": "exploit/windows/http/wsus_deserialization_rce",
+      "preferred_module_required": true,
       "name": "CVE-2025-59287 WSUS deserialization RCE check",
       "category": "wsus_deserialization_rce",
       "risk": "unsafe_deserialization",
+      "component": "WSUS",
+      "aliases": ["WSUS", "Update Services", "ClientWebService", "AuthorizationCookie", "GetCookie"],
+      "cpe": ["cpe:2.3:a:microsoft:windows_server_update_services:*:*:*:*:*:*:*:*"],
       "cve": ["CVE-2025-59287"],
+      "references": [
+        "CVE-2025-59287",
+        "URL-https://code-white.com/blog/wsus-cve-2025-59287-analysis/"
+      ],
       "severity": "CRITICAL",
       "cvss": 9.8,
       "check_method": "msf_check_and_local",
       "safe_to_run": true,
       "server_2022_relevance": "Checks local WSUS HTTP/HTTPS endpoints in Metasploit check mode and verifies local WSUS patch/service posture.",
+      "execution": {
+        "engine": "msfrpc_check_and_powershell",
+        "msf_command": "check",
+        "exploit_execution_allowed": false,
+        "payload_required": false,
+        "requires_module_check_method": true,
+        "requires_local_patch_check": true,
+        "timeout_seconds": 60,
+        "result_source": "Metasploit exploit check output plus local WSUS patch/service evidence"
+      },
+      "metasploit": {
+        "module_type": "exploit",
+        "module": "exploit/windows/http/wsus_deserialization_rce",
+        "preferred_module": "exploit/windows/http/wsus_deserialization_rce",
+        "fallback_reason": "",
+        "command": "check",
+        "required_options": ["RHOSTS", "RPORT", "SSL", "TARGETURI"],
+        "optional_options": ["RHOST", "LHOST", "VHOST", "HttpClientTimeout", "Proxies", "UserAgent"],
+        "default_datastore": {
+          "RHOSTS": "127.0.0.1",
+          "RHOST": "127.0.0.1",
+          "LHOST": "127.0.0.1",
+          "RPORT": 8530,
+          "SSL": false,
+          "TARGETURI": "/",
+          "VHOST": "",
+          "HttpClientTimeout": 20,
+          "Proxies": "",
+          "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
+        }
+      },
       "default_datastore": {
         "RHOSTS": "127.0.0.1",
+        "RHOST": "127.0.0.1",
+        "LHOST": "127.0.0.1",
         "RPORT": 8530,
         "SSL": false,
         "TARGETURI": "/",
-        "VHOST": ""
+        "VHOST": "",
+        "HttpClientTimeout": 20,
+        "Proxies": "",
+        "UserAgent": "Mozilla/5.0 VulnMngSys IIS authorized CVE scanner"
       },
       "local_variants": [
-        {"RPORT": 8530, "SSL": false, "TARGETURI": "/"},
-        {"RPORT": 8531, "SSL": true, "TARGETURI": "/"}
+        {
+          "variant_id": "wsus_http_8530",
+          "description": "Default WSUS HTTP endpoint.",
+          "RPORT": 8530,
+          "SSL": false,
+          "TARGETURI": "/"
+        },
+        {
+          "variant_id": "wsus_https_8531",
+          "description": "Default WSUS HTTPS endpoint.",
+          "RPORT": 8531,
+          "SSL": true,
+          "TARGETURI": "/"
+        }
       ],
+      "applicability": {
+        "target_os": ["Windows Server 2022", "Windows Server 2025"],
+        "required_services_any": ["WsusService", "W3SVC"],
+        "required_windows_features_any": ["UpdateServices", "UpdateServices-Services", "UpdateServices-WidDB"],
+        "required_files_any": [
+          "%ProgramFiles%\\Update Services\\Services\\WsusService.exe",
+          "%ProgramFiles%\\Update Services\\WebServices\\ClientWebService\\bin\\Microsoft.UpdateServices.WebServices.Client.dll"
+        ],
+        "ports": [8530, 8531],
+        "not_applicable_when": "WSUS service, feature, and files are absent."
+      },
       "local_check": {
         "cve_id": "CVE-2025-59287",
         "service_names": ["WsusService", "W3SVC"],
@@ -182,9 +476,26 @@
         "file_paths": [
           "$env:ProgramFiles\\Update Services\\Services\\WsusService.exe",
           "$env:ProgramFiles\\Update Services\\WebServices\\ClientWebService\\bin\\Microsoft.UpdateServices.WebServices.Client.dll"
+        ],
+        "registry_paths": [
+          "HKLM:\\SOFTWARE\\Microsoft\\Update Services\\Server\\Setup"
         ]
       },
-      "expected_signal": "Reports vulnerable/check output for GetCookie, AuthorizationCookie, BinaryFormatter, and local WSUS patch state."
+      "evidence_contract": {
+        "msf_positive_patterns": ["GetCookie", "AuthorizationCookie", "BinaryFormatter", "deserialization", "vulnerable"],
+        "msf_negative_patterns": ["not vulnerable", "patched", "does not appear to be vulnerable"],
+        "local_positive_fields": ["services", "windows_features", "file_versions", "registry", "hotfixes"],
+        "final_decision": "FAIL when WSUS is applicable and no required patch is found or Metasploit check returns a vulnerable WSUS deserialization signal."
+      },
+      "decision_policy": {
+        "fail_on": ["LOCAL_PATCH_MISSING_APPLICABLE", "MSF_VULNERABLE_SIGNAL"],
+        "pass_on": ["LOCAL_PATCH_FOUND", "COMPONENT_NOT_APPLICABLE"],
+        "warning_on": ["LOCAL_INCONCLUSIVE", "MSF_ERROR_WITH_LOCAL_PASS"],
+        "error_on": ["MSF_MODULE_MISSING", "MSF_EXECUTION_ERROR_WITHOUT_LOCAL_PASS", "POWERSHELL_ERROR"]
+      },
+      "expected_signal": "Reports vulnerable/check output for GetCookie, AuthorizationCookie, BinaryFormatter, and local WSUS patch state.",
+      "remediation": "Patch WSUS, verify Update Services role exposure, and restrict ports 8530/8531.",
+      "rollback_impact": "No configuration change is performed by scan; reconfigure must backup WSUS/IIS state before disabling WSUS endpoints."
     }
   ],
   "excluded_or_dangerous_modules": [
@@ -222,11 +533,13 @@
     }
   ],
   "pymetasploit3_runner_template": {
-    "description": "Load each module via msfrpc, override target/port options, run auxiliary modules with run and exploit modules with check.",
+    "description": "Load each configured module via msfrpc, override target/port options, run auxiliary probes with run and exploit modules with check.",
     "pseudo_code": [
       "mod = client.modules.use('<module_type>', '<module path without prefix/>')",
-      "for k, v in default_datastore.items(): mod[k] = v",
-      "console.write('use <module>\\nset ...\\nrun|check\\n')"
+      "for k, v in default_datastore.items(): console.write('set ' + k + ' ' + v)",
+      "console.write('run') for auxiliary modules",
+      "console.write('check') for exploit modules",
+      "never execute exploit/run against exploit modules in this profile"
     ]
   }
 }

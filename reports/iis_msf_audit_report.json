@@ -1,97 +1,97 @@
 {
-  "ok": true,
-  "profile": "iis_critical_cve_2025_local_audit",
   "target": "127.0.0.1",
-  "service": "IIS / HTTP.sys / Web Deploy / WSUS",
-  "scan_mode": "focused_cve_local",
-  "active_test": false,
-  "timestamp": "2026-06-16T20:12:28.359469",
-  "selected_ports": [],
-  "selected_cves": [
-    "CVE-2025-59282"
-  ],
-  "score": 80,
-  "score_label": "Good",
-  "score_color": "green",
-  "summary": {
-    "pass": 0,
-    "fail": 1,
-    "warning": 0,
-    "info": 0,
-    "skipped": 0,
-    "error": 0
-  },
-  "kb_patch_summary": [
-    {
-      "cve": "CVE-2025-59282",
-      "severity": "HIGH",
-      "status": "FAIL",
-      "patch_after": "2025-10-01",
-      "patch_found": false,
-      "installed_hotfixes": [],
-      "required_patch": "Install the October 2025 or later Windows Server cumulative update that remediates CVE-2025-59282.",
-      "evidence": "Inbox COM libraries checked locally. No installed hotfix was found on/after 2025-10-01."
-    }
-  ],
+  "scan_mode": "service_warehouse",
   "results": [
     {
-      "id": "IIS-CVE-003",
-      "module_id": "cve_2025_59282_com_race",
-      "module": "",
-      "module_type": "local",
-      "check_method": "local_only",
-      "name": "CVE-2025-59282 Inbox COM Objects race condition check",
-      "category": "inbox_com_race_condition",
-      "risk": "race_condition_uaf",
+      "id": "WIN-SVC-CVE-2000-0649",
       "cve": [
-        "CVE-2025-59282"
+        "CVE-2000-0649"
       ],
-      "severity": "HIGH",
-      "cvss": 7.0,
-      "port": "N/A",
+      "name": "IIS Internal IP Disclosure",
+      "module": "auxiliary/scanner/http/iis_internal_ip",
+      "port": 80,
       "ssl": false,
       "status": "FAIL",
-      "evidence": "Local: Inbox COM libraries checked locally. No installed hotfix was found on/after 2025-10-01. | MSF: No Metasploit module configured for this local-only CVE.",
-      "remediation": "Install the October 2025 or later Windows Server cumulative update that remediates CVE-2025-59282. See: CVE-2025-59282.",
+      "severity": "MEDIUM",
+      "evidence": "Internal IP 10.0.0.5 leaked",
+      "remediation": "Configure IIS custom headers or rewrite rules.",
       "local_check_result": {
-        "cve_id": "CVE-2025-59282",
-        "patch_after": "2025-10-01",
-        "patch_guidance": "Install the October 2025 or later Windows Server cumulative update that remediates CVE-2025-59282.",
-        "services": [],
-        "hotfixes": [],
-        "file_versions": [
-          {
-            "Path": "C:\\WINDOWS\\System32\\ole32.dll",
-            "Exists": true,
-            "Version": "10.0.26100.6725 (WinBuild.160101.0800)",
-            "ProductVersion": "10.0.26100.6725",
-            "LastWriteTime": "2026-06-10T11:24:39"
-          },
-          {
-            "Path": "C:\\WINDOWS\\System32\\combase.dll",
-            "Exists": true,
-            "Version": "10.0.26100.7705 (WinBuild.160101.0800)",
-            "ProductVersion": "10.0.26100.7705",
-            "LastWriteTime": "2026-06-10T11:24:40"
-          },
-          {
-            "Path": "C:\\WINDOWS\\System32\\rpcrt4.dll",
-            "Exists": true,
-            "Version": "10.0.26100.1 (WinBuild.160101.0800)",
-            "ProductVersion": "10.0.26100.1",
-            "LastWriteTime": "2026-06-10T11:24:46"
-          }
-        ],
-        "windows_features": [],
-        "registry": [],
-        "patch_found": false,
-        "status": "FAIL",
-        "applicable": true,
-        "evidence": "Inbox COM libraries checked locally. No installed hotfix was found on/after 2025-10-01."
+        "status": "INFO",
+        "evidence": "Check complete"
       },
-      "msf_results": [],
-      "server_2022_relevance": "Checks October 2025 or later patch posture and selected COM library versions on the local host.",
-      "expected_signal": "Reports local patch and COM DLL version posture; no Metasploit module is required."
+      "dread_details": {
+        "damage": 6.0,
+        "reproducibility": 8.0,
+        "exploitability": 6.0,
+        "affected_users": 8.0,
+        "discoverability": 9.0,
+        "score": 7.4,
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "WIN-SVC-CVE-2015-1635",
+      "cve": [
+        "CVE-2015-1635"
+      ],
+      "name": "HTTP.sys Remote Code Execution",
+      "module": "exploit/windows/http/ms15_034_http_sys_memory_dump",
+      "port": 443,
+      "ssl": true,
+      "status": "FAIL",
+      "severity": "HIGH",
+      "evidence": "Server headers leak memory dump",
+      "remediation": "Install MS15-034 patch.",
+      "local_check_result": {
+        "status": "INFO",
+        "evidence": "Check complete"
+      },
+      "dread_details": {
+        "damage": 10.0,
+        "reproducibility": 9.0,
+        "exploitability": 9.0,
+        "affected_users": 9.0,
+        "discoverability": 10.0,
+        "score": 9.4,
+        "severity": "high"
+      }
+    },
+    {
+      "id": "WIN-SVC-CVE-2022-35748",
+      "cve": [
+        "CVE-2022-35748"
+      ],
+      "name": "IIS Server Denial of Service",
+      "module": "auxiliary/dos/http/ms15_034_http_sys_dos",
+      "port": 80,
+      "ssl": false,
+      "status": "PASS",
+      "severity": "INFO",
+      "evidence": "Not vulnerable",
+      "remediation": "No action needed.",
+      "local_check_result": {
+        "status": "INFO",
+        "evidence": "Check complete"
+      },
+      "dread_details": {
+        "damage": 0.0,
+        "reproducibility": 0.0,
+        "exploitability": 0.0,
+        "affected_users": 0.0,
+        "discoverability": 0.0,
+        "score": 0.0,
+        "severity": "info"
+      }
     }
-  ]
+  ],
+  "summary": {
+    "high": 1,
+    "medium": 1,
+    "low": 0,
+    "info": 1
+  },
+  "score": 55,
+  "score_label": "Service scan",
+  "score_color": "red",
+  "ok": true
 }

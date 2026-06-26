@@ -1,0 +1,41 @@
+appId: com.vulnmngsys.desktop
+productName: VulnMngSys
+copyright: Copyright 2026 VulnMngSys
+
+directories:
+  output: electron-dist
+  buildResources: build
+
+files:
+  - package.json
+  - from: dist
+    to: dist
+    filter:
+      - "**/*"
+  - from: electron
+    to: electron
+    filter:
+      - "**/*"
+
+extraResources:
+  - from: ../dist/VulnMngSysBackend.exe
+    to: backend/VulnMngSysBackend.exe
+
+asar: true
+compression: maximum
+
+win:
+  signAndEditExecutable: false
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: VulnMngSys
+  artifactName: VulnMngSys-Setup-${version}.${ext}

@@ -17,7 +17,6 @@ from .models import ComparisonSummary, RuleComparisonResult
 from .rule_metadata import cis_reference, short_reason
 from .rule_catalog import get_full_rule_files, get_quick_rule_file
 from .security import validate_powershell_check, verify_rule_file_integrity
-from .paths import project_root
 
 
 def _rule_text(rule: dict[str, Any], *field_names: str) -> str:
@@ -67,7 +66,7 @@ SECURITY_POLICY_KEYS = {
 
 LOCAL_USER_RULES = {"2.3.1.1", "2.3.1.3", "2.3.1.4"}
 
-SERVICE_CATALOG_PATH = project_root() / "rules" / "service_catalog.json"
+SERVICE_CATALOG_PATH = Path(__file__).resolve().parents[2] / "rules" / "service_catalog.json"
 
 
 @dataclass(frozen=True, slots=True)
@@ -167,11 +166,7 @@ def _classify_rule_service(rule: dict[str, Any], service_catalog: list[dict[str,
                 return service_name
 
         match_any = entry.get("match_any")
-        if (
-            isinstance(match_any, list)
-            and match_any
-            and any(_matcher_matches(rule, matcher) for matcher in match_any if isinstance(matcher, dict))
-        ):
+        if isinstance(match_any, list) and match_any and any(_matcher_matches(rule, matcher) for matcher in match_any if isinstance(matcher, dict)):
             return service_name
 
         aliases = entry.get("aliases")
@@ -183,11 +178,7 @@ def _classify_rule_service(rule: dict[str, Any], service_catalog: list[dict[str,
                     return service_name
 
         match_all = entry.get("match_all")
-        if (
-            isinstance(match_all, list)
-            and match_all
-            and all(_matcher_matches(rule, matcher) for matcher in match_all if isinstance(matcher, dict))
-        ):
+        if isinstance(match_all, list) and match_all and all(_matcher_matches(rule, matcher) for matcher in match_all if isinstance(matcher, dict)):
             return service_name
 
     return ""
@@ -421,10 +412,7 @@ def _collect_auditpol_snapshot() -> dict[str, str]:
 
 
 def _collect_local_users() -> list[dict[str, Any]]:
-    command = (
-        "Get-LocalUser | Select-Object "
-        "@{Name='SID';Expression={$_.SID.Value}},Name,Enabled | ConvertTo-Json -Depth 3"
-    )
+    command = "Get-LocalUser | Select-Object @{Name='SID';Expression={$_.SID.Value}},Name,Enabled | ConvertTo-Json -Depth 3"
     raw = _run_powershell(command)
     if not raw:
         return []
@@ -630,14 +618,7 @@ def _compare_string(rule: dict[str, Any], actual: Any) -> tuple[bool, str]:
             if not expected_set:
                 return not actual_set, ", ".join(sorted(actual_set)) or "No One"
             return _is_allowed_principal_subset(expected, actual), ", ".join(sorted(actual_set)) or "No One"
-        if expected_text.lower() in {"enabled", "disabled"} and actual_text.strip() in {
-            "0",
-            "1",
-            "True",
-            "False",
-            "true",
-            "false",
-        }:
+        if expected_text.lower() in {"enabled", "disabled"} and actual_text.strip() in {"0", "1", "True", "False", "true", "false"}:
             target = "1" if expected_text.lower() == "enabled" else "0"
             if actual_text.strip().lower() in {"true", "false"}:
                 return actual_text.strip().lower() == (target == "1"), actual_text
@@ -647,251 +628,205 @@ def _compare_string(rule: dict[str, Any], actual: Any) -> tuple[bool, str]:
     return (actual_text.lower() == expected_text.lower()), actual_text
 
 
-NUMERIC_OPERATORS = {">=", "<=", "<=_not_0", "Between", "InList"}
-
-
-def _build_rule_result(
-    rule: dict[str, Any],
-    *,
-    passed: bool,
-    verdict: str,
-    actual: Any,
-    status: str,
-    check_type: str,
-    source: str,
-) -> RuleComparisonResult:
-    expected_display = _extract_expected_display(rule)
-    guidance = [] if verdict == "PASS" else build_guidance(rule, source=source, expected=expected_display)
-    return RuleComparisonResult(
-        rule_id=_normalize_text(rule.get("id")),
-        title=_normalize_text(rule.get("title")),
-        service_name=_normalize_text(rule.get("service") or rule.get("service_name")),
-        passed=passed,
-        verdict=verdict,
-        expected=expected_display,
-        actual=_display_value(actual),
-        status=status,
-        check_type=check_type,
-        source=source,
-        guidance=guidance,
-    )
-
-
-def _compare_actual(rule: dict[str, Any], actual_value: Any) -> tuple[bool, str]:
-    operator = _normalize_text(rule.get("operator"))
-    if operator in NUMERIC_OPERATORS:
-        return _compare_numeric(rule, actual_value)
-    return _compare_string(rule, actual_value)
-
-
-def _collected_result(
-    rule: dict[str, Any],
-    actual_value: Any,
-    *,
-    check_type: str,
-    source: str,
-) -> RuleComparisonResult:
-    passed, actual_text = _compare_actual(rule, actual_value)
-    return _build_rule_result(
-        rule,
-        passed=passed,
-        verdict="PASS" if passed else "FAIL",
-        actual=actual_text,
-        status="Collected",
-        check_type=check_type,
-        source=source,
-    )
-
-
-def _manual_result(rule: dict[str, Any], actual: Any, *, check_type: str, source: str) -> RuleComparisonResult:
-    return _build_rule_result(
-        rule,
-        passed=False,
-        verdict="MANUAL",
-        actual=actual,
-        status="NoDirectProbe",
-        check_type=check_type,
-        source=source,
-    )
-
-
-def _compare_registry_rule(rule: dict[str, Any], registry_spec: str) -> RuleComparisonResult:
-    if "[USER SID]" not in registry_spec:
-        actual_value, _ = _read_registry_value(registry_spec)
-        return _collected_result(rule, actual_value, check_type="registry", source=registry_spec)
-
-    actual_value, _, missing = _read_user_registry_value(registry_spec)
-    if missing:
-        return _build_rule_result(
-            rule,
-            passed=False,
-            verdict="FAIL",
-            actual=f"Missing on SID(s): {', '.join(missing)}",
-            status="Collected",
-            check_type="user_registry",
-            source=registry_spec,
-        )
-    return _collected_result(rule, actual_value, check_type="user_registry", source=registry_spec)
-
-
-def _compare_security_policy_rule(
-    rule: dict[str, Any],
-    snapshots: ScanSnapshots,
-    powershell_check: str,
-) -> RuleComparisonResult:
-    rule_id = _normalize_text(rule.get("id"))
-    if powershell_check:
-        actual_text = _run_powershell(powershell_check)
-        return _collected_result(rule, actual_text, check_type="powershell", source=powershell_check)
-
-    actual_value = snapshots.security_policy.get(SECURITY_POLICY_KEYS[rule_id])
-    if actual_value is None:
-        return _manual_result(
-            rule,
-            "Not Defined / Empty",
-            check_type="secedit",
-            source="secedit /export SECURITYPOLICY",
-        )
-    return _collected_result(
-        rule,
-        actual_value,
-        check_type="secedit",
-        source="secedit /export SECURITYPOLICY",
-    )
-
-
-def _compare_local_user_rule(rule: dict[str, Any], snapshots: ScanSnapshots) -> RuleComparisonResult:
-    rule_id = _normalize_text(rule.get("id"))
-    sid_suffix = "500" if rule_id == "2.3.1.3" else "501"
-    users = [
-        user
-        for user in snapshots.local_users
-        if _normalize_text(user.get("SID")).endswith(f"-{sid_suffix}")
-    ]
-    if not users:
-        return _manual_result(
-            rule,
-            "No local user with expected SID was found",
-            check_type="local_account",
-            source="Get-LocalUser",
-        )
-
-    user = users[0]
-    if rule_id == "2.3.1.1":
-        actual_text = str(bool(user.get("Enabled")))
-        expected_value = str(rule.get("expected")).strip().lower()
-        passed = actual_text.lower() == expected_value
-        return _build_rule_result(
-            rule,
-            passed=passed,
-            verdict="PASS" if passed else "FAIL",
-            actual=actual_text,
-            status="Collected",
-            check_type="local_account",
-            source="Get-LocalUser",
-        )
-    return _collected_result(rule, user.get("Name"), check_type="local_account", source="Get-LocalUser")
-
-
-def _compare_auditpol_rule(
-    rule: dict[str, Any],
-    snapshots: ScanSnapshots,
-    powershell_check: str,
-) -> RuleComparisonResult:
-    guid_match = re.search(r"\{[0-9a-fA-F\-]+\}", powershell_check)
-    guid = guid_match.group(0).upper() if guid_match else ""
-    actual_value = snapshots.audit_policy.get(guid)
-    if actual_value is None:
-        return _manual_result(
-            rule,
-            "Not Defined / No Auditing",
-            check_type="auditpol",
-            source=powershell_check,
-        )
-    return _collected_result(rule, actual_value, check_type="auditpol", source=powershell_check)
-
-
-def _compare_secedit_check_rule(
-    rule: dict[str, Any],
-    snapshots: ScanSnapshots,
-    powershell_check: str,
-) -> RuleComparisonResult:
-    rule_check_type = _normalize_text(rule.get("check_type")).casefold()
-    is_security_options = rule_check_type in {"securityoptions", "security_option", "security option"}
-    area = "SECURITYPOLICY" if is_security_options else "USER_RIGHTS"
-    check_type = "security_option" if is_security_options else "user_right"
-    key_match = re.search(r"\^([A-Za-z0-9_]+)", powershell_check)
-    key_name = key_match.group(1) if key_match else ""
-    secedit_values = snapshots.security_policy if is_security_options else snapshots.user_rights
-    actual_value = secedit_values.get(key_name, [] if not is_security_options else "")
-    return _collected_result(rule, actual_value, check_type=check_type, source=f"secedit /export {area}")
-
-
-def _compare_powershell_rule(
-    rule: dict[str, Any],
-    snapshots: ScanSnapshots,
-    powershell_check: str,
-) -> RuleComparisonResult:
-    check_text = powershell_check.lower()
-    if "auditpol /get" in check_text:
-        return _compare_auditpol_rule(rule, snapshots, powershell_check)
-    if "secpol.inf" in check_text:
-        return _compare_secedit_check_rule(rule, snapshots, powershell_check)
-    return _collected_result(
-        rule,
-        _run_powershell(powershell_check),
-        check_type="powershell",
-        source=powershell_check,
-    )
-
-
 def _compare_rule(rule: dict[str, Any], snapshots: ScanSnapshots) -> RuleComparisonResult:
     rule_id = _normalize_text(rule.get("id"))
+    title = _normalize_text(rule.get("title"))
+    operator = _normalize_text(rule.get("operator"))
+    service_name = _normalize_text(rule.get("service") or rule.get("service_name"))
+    source = ""
+    check_type = "manual"
+    actual_value: Any = None
+    passed = False
+    verdict = "MANUAL"
+    status = "NoDirectProbe"
+
     powershell_check = _normalize_text(rule.get("powershell_check"))
     registry_spec = _normalize_text(rule.get("registry_path") or rule.get("registry") or rule.get("gp_path"))
 
     try:
         if registry_spec:
-            return _compare_registry_rule(rule, registry_spec)
-        if rule_id in SECURITY_POLICY_KEYS:
-            return _compare_security_policy_rule(rule, snapshots, powershell_check)
-        if rule_id in LOCAL_USER_RULES:
-            return _compare_local_user_rule(rule, snapshots)
-        if powershell_check:
-            return _compare_powershell_rule(rule, snapshots, powershell_check)
-        return _manual_result(rule, "N/A (manual check)", check_type="manual", source=registry_spec)
+            source = registry_spec
+            if "[USER SID]" in registry_spec:
+                check_type = "user_registry"
+                actual_value, actual_text, missing = _read_user_registry_value(registry_spec)
+                if missing:
+                    passed = False
+                    status = "Collected"
+                    verdict = "FAIL"
+                    actual_text = f"Missing on SID(s): {', '.join(missing)}"
+                    expected_display = _extract_expected_display(rule)
+                    guidance = build_guidance(rule, source=registry_spec, expected=expected_display)
+                    return RuleComparisonResult(
+                        rule_id=rule_id,
+                        title=title,
+                        service_name=service_name,
+                        passed=passed,
+                        verdict=verdict,
+                        expected=expected_display,
+                        actual=actual_text,
+                        status=status,
+                        check_type=check_type,
+                        source=source,
+                        guidance=guidance,
+                    )
+                if operator in {">=", "<=", "<=_not_0", "Between", "InList"}:
+                    passed, actual_text = _compare_numeric(rule, actual_value)
+                else:
+                    passed, actual_text = _compare_string(rule, actual_value)
+                status = "Collected"
+                verdict = "PASS" if passed else "FAIL"
+                return RuleComparisonResult(
+                    rule_id=rule_id,
+                    title=title,
+                    service_name=service_name,
+                    passed=passed,
+                    verdict=verdict,
+                    expected=_extract_expected_display(rule),
+                    actual=actual_text,
+                    status=status,
+                    check_type=check_type,
+                    source=source,
+                    guidance=[] if passed else build_guidance(rule, source=source, expected=_extract_expected_display(rule)),
+                )
+
+            check_type = "registry"
+            actual_value, actual_text = _read_registry_value(registry_spec)
+            if operator in {">=", "<=", "<=_not_0", "Between", "InList"}:
+                passed, actual_text = _compare_numeric(rule, actual_value)
+            else:
+                passed, actual_text = _compare_string(rule, actual_value)
+            status = "Collected"
+            verdict = "PASS" if passed else "FAIL"
+        elif rule_id in SECURITY_POLICY_KEYS:
+            check_type = "secedit"
+            source = "secedit /export SECURITYPOLICY"
+            if powershell_check:
+                check_type = "powershell"
+                source = powershell_check
+                actual_text = _run_powershell(powershell_check)
+                if operator in {">=", "<=", "<=_not_0", "Between", "InList"}:
+                    passed, actual_text = _compare_numeric(rule, actual_text)
+                else:
+                    passed, actual_text = _compare_string(rule, actual_text)
+                status = "Collected"
+                verdict = "PASS" if passed else "FAIL"
+            else:
+                actual_value = snapshots.security_policy.get(SECURITY_POLICY_KEYS[rule_id])
+                if actual_value is None:
+                    status = "NoDirectProbe"
+                    verdict = "MANUAL"
+                    actual_text = "Not Defined / Empty"
+                else:
+                    if operator in {">=", "<=", "<=_not_0", "Between", "InList"}:
+                        passed, actual_text = _compare_numeric(rule, actual_value)
+                    else:
+                        passed, actual_text = _compare_string(rule, actual_value)
+                    status = "Collected"
+                    verdict = "PASS" if passed else "FAIL"
+        elif rule_id in LOCAL_USER_RULES:
+            check_type = "local_account"
+            source = "Get-LocalUser"
+            users = snapshots.local_users
+            sid_suffix = "500" if rule_id == "2.3.1.3" else "501"
+            matching = [user for user in users if _normalize_text(user.get("SID")).endswith(f"-{sid_suffix}")]
+            if not matching:
+                status = "NoDirectProbe"
+                verdict = "MANUAL"
+                actual_text = "No local user with expected SID was found"
+            else:
+                user = matching[0]
+                if rule_id == "2.3.1.1":
+                    actual_value = user.get("Enabled")
+                    expected_value = str(rule.get("expected")).strip().lower()
+                    actual_text = str(bool(actual_value))
+                    passed = actual_text.lower() == expected_value
+                else:
+                    actual_value = user.get("Name")
+                    actual_text = _normalize_text(actual_value)
+                    passed, actual_text = _compare_string(rule, actual_value)
+                status = "Collected"
+                verdict = "PASS" if passed else "FAIL"
+        elif powershell_check:
+            if "auditpol /get" in powershell_check.lower():
+                check_type = "auditpol"
+                source = powershell_check
+                guid_match = re.search(r"\{[0-9a-fA-F\-]+\}", powershell_check)
+                guid = guid_match.group(0).upper() if guid_match else ""
+                actual_value = snapshots.audit_policy.get(guid)
+                if actual_value is None:
+                    status = "NoDirectProbe"
+                    verdict = "MANUAL"
+                    actual_text = "Not Defined / No Auditing"
+                else:
+                    passed, actual_text = _compare_string(rule, actual_value)
+                    status = "Collected"
+                    verdict = "PASS" if passed else "FAIL"
+            elif "secpol.inf" in powershell_check.lower():
+                rule_check_type = _normalize_text(rule.get("check_type")).casefold()
+                is_security_options = rule_check_type in {"securityoptions", "security_option", "security option"}
+                area = "SECURITYPOLICY" if is_security_options else "USER_RIGHTS"
+                source = f"secedit /export {area}"
+                check_type = "security_option" if is_security_options else "user_right"
+                key_match = re.search(r"\^([A-Za-z0-9_]+)", powershell_check)
+                key_name = key_match.group(1) if key_match else ""
+                try:
+                    secedit_values = snapshots.security_policy if is_security_options else snapshots.user_rights
+                    actual_value = secedit_values.get(key_name, [] if not is_security_options else "")
+                    passed, actual_text = _compare_string(rule, actual_value)
+                    status = "Collected"
+                    verdict = "PASS" if passed else "FAIL"
+                except Exception as exc:
+                    status = "MANUAL"
+                    verdict = "MANUAL"
+                    actual_text = str(exc)
+            else:
+                check_type = "powershell"
+                source = powershell_check
+                actual_text = _run_powershell(powershell_check)
+                if operator in {">=", "<=", "<=_not_0", "Between", "InList"}:
+                    passed, actual_text = _compare_numeric(rule, actual_text)
+                else:
+                    passed, actual_text = _compare_string(rule, actual_text)
+                status = "Collected"
+                verdict = "PASS" if passed else "FAIL"
+        else:
+            status = "NoDirectProbe"
+            verdict = "MANUAL"
+            actual_text = "N/A (manual check)"
+            source = registry_spec
     except LookupError as exc:
-        return _build_rule_result(
-            rule,
-            passed=False,
-            verdict="MANUAL",
-            actual=str(exc),
-            status="MANUAL",
-            check_type="manual",
-            source=registry_spec or powershell_check,
-        )
+        status = "MANUAL"
+        verdict = "MANUAL"
+        actual_text = str(exc)
+        source = registry_spec or powershell_check or source
     except OSError as exc:
         status = "Collected" if getattr(exc, "winerror", None) == 2 else "MANUAL"
         passed = status == "Collected" and _missing_value_passes(rule)
-        return _build_rule_result(
-            rule,
-            passed=passed,
-            verdict="PASS" if passed else "FAIL" if status == "Collected" else "MANUAL",
-            actual="Not Defined / Empty" if status == "Collected" else str(exc),
-            status=status,
-            check_type="manual",
-            source=registry_spec or powershell_check,
-        )
+        verdict = "PASS" if passed else "FAIL" if status == "Collected" else "MANUAL"
+        actual_text = "Not Defined / Empty" if status == "Collected" else str(exc)
+        source = registry_spec or powershell_check or source
     except Exception as exc:
-        return _build_rule_result(
-            rule,
-            passed=False,
-            verdict="MANUAL",
-            actual=str(exc),
-            status="ProbeError",
-            check_type="manual",
-            source=registry_spec or powershell_check,
-        )
+        status = "ProbeError"
+        verdict = "MANUAL"
+        actual_text = str(exc)
+        source = registry_spec or powershell_check or source
+
+    expected_display = _extract_expected_display(rule)
+    guidance = [] if verdict == "PASS" else build_guidance(rule, source=source, expected=expected_display)
+
+    return RuleComparisonResult(
+        rule_id=rule_id,
+        title=title,
+        service_name=service_name,
+        passed=passed,
+        verdict=verdict,
+        expected=expected_display,
+        actual=_display_value(actual_text),
+        status=status,
+        check_type=check_type,
+        source=source,
+        guidance=guidance,
+    )
 
 
 def scan_profile(
@@ -945,7 +880,6 @@ def write_merged_scan_from_files(
             {
                 "hash_id": str(rule.get("hash_id") or ""),
                 "service": str(rule.get("service") or item.service_name),
-                "service_id": rule.get("service_id"),
                 "id": str(rule.get("id") or item.rule_id),
                 "title": str(rule.get("title") or item.title),
                 "check_type": str(rule.get("check_type") or item.check_type),

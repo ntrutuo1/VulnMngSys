@@ -7,14 +7,13 @@ from ipaddress import ip_address
 from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 
-from vulnmngsys_app.services.scanflow.msf_audit.audit_runner import run_iis_msf_audit
+from vulnmngsys_app.services.iis_audit import apply_iis_reconfigure, cancelServiceScan, preview_iis_reconfigure, sanitizeServiceReport, scanServiceCVE
 from vulnmngsys_app.services.scanflow.msf_audit.metasploit_manager import get_msf_manager
 from vulnmngsys_app.services.scanflow.msf_audit.module_loader import (
     load_excluded_modules,
     load_profile_metadata,
     load_safe_modules,
 )
-from vulnmngsys_app.services.scanflow.msf_audit.report_writer import write_html_report, write_json_report
 from vulnmngsys_app.services.scanflow.paths import writable_reports_dir
 from vulnmngsys_app.adapters.logging.system_logger import logger
 
@@ -40,6 +39,11 @@ def handle_msf_get(handler: BaseHTTPRequestHandler, path: str, query: str) -> bo
 
 
 def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
+    if path == "/api/msf/reconfig":
+        return _reconfig(handler)
+    if path == "/api/msf/audit/cancel":
+        json_response(handler, 200, cancelServiceScan())
+        return True
     if path != "/api/msf/audit":
         return False
     try:
@@ -55,18 +59,6 @@ def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
         if target_error:
             error_response(handler, 400, "INVALID_TARGET", target_error)
             return True
-        requested_modules = load_safe_modules(
-            active_test=active_test,
-            selected_cves=selected_cves,
-            ports=ports,
-        )
-        requires_msf = any(module.get("check_method") != "local_only" for module in requested_modules)
-        manager = get_msf_manager()
-        if requires_msf:
-            connected, message = manager.wait_until_connected()
-            if not connected:
-                error_response(handler, 503, "MSF_RPC_UNAVAILABLE", message)
-                return True
         logger.info(
             "Starting focused IIS CVE audit. target=%s active_test=%s ports=%s cves=%s",
             target,
@@ -74,18 +66,12 @@ def handle_msf_post(handler: BaseHTTPRequestHandler, path: str) -> bool:
             ports,
             selected_cves,
         )
-        payload = run_iis_msf_audit(
+        payload = scanServiceCVE(
             target=target,
-            msfrpc_host=manager.config.host,
-            msfrpc_port=manager.config.port,
-            msfrpc_password=manager.config.password,
-            msfrpc_ssl=manager.config.ssl,
             active_test=active_test,
             ports=ports,
             selected_cves=selected_cves,
         )
-        payload["reportFile"] = str(write_json_report(payload))
-        payload["htmlReportFile"] = str(write_html_report(payload))
         json_response(handler, 200, payload)
     except Exception as exc:
         logger.exception("MSF audit API failed: %s", exc)
@@ -174,9 +160,34 @@ def _report(handler: BaseHTTPRequestHandler) -> bool:
             json_response(handler, 404, {"ok": False, "error": "No MSF audit report found. Run an audit first."})
             return True
         payload = json.loads(_MSF_REPORT_PATH.read_text(encoding="utf-8"))
-        payload.setdefault("ok", True)
+        payload = sanitizeServiceReport(payload)
         json_response(handler, 200, payload)
     except Exception as exc:
         logger.exception("MSF report API failed: %s", exc)
         server_error_response(handler, "MSF_REPORT_FAILED", "Unable to load MSF report.")
+    return True
+
+
+def _reconfig(handler: BaseHTTPRequestHandler) -> bool:
+    try:
+        body = read_json_body(handler)
+        selected_cves = _parse_cves(body.get("selectedCves") or body.get("cves"))
+        report = json.loads(_MSF_REPORT_PATH.read_text(encoding="utf-8"))
+        app_root = Path(__file__).resolve().parents[2]
+        if body.get("apply") is True:
+            if not is_action_allowed(handler, "apply_reconfig"):
+                error_response(handler, 403, "ACTION_NOT_ALLOWED", "Apply reconfig action is not allowed.")
+                return True
+            payload = apply_iis_reconfigure(report, app_root, selected_cves, confirmed=True)
+        else:
+            if not is_action_allowed(handler, "preview_reconfig"):
+                error_response(handler, 403, "ACTION_NOT_ALLOWED", "Preview reconfig action is not allowed.")
+                return True
+            payload = preview_iis_reconfigure(report, app_root, selected_cves)
+        json_response(handler, 200 if payload.get("ok") else 500, payload)
+    except FileNotFoundError:
+        error_response(handler, 404, "MSF_REPORT_UNAVAILABLE", "Run an IIS CVE audit before remediation.")
+    except Exception as exc:
+        logger.exception("IIS reconfig API failed: %s", exc)
+        server_error_response(handler, "IIS_RECONFIG_FAILED", str(exc) or "IIS remediation failed.")
     return True

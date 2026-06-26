@@ -28,7 +28,7 @@ function Invoke-Checked {
 function Invoke-ElectronBuilder {
   $process = Start-Process `
     -FilePath 'npx.cmd' `
-    -ArgumentList @('electron-builder', '--win') `
+    -ArgumentList @('electron-builder', '--win', '--config', 'electron-builder.yml') `
     -WorkingDirectory $RootDir `
     -NoNewWindow `
     -Wait `

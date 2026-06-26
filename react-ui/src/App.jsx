@@ -98,7 +98,12 @@ export default function App() {
       if (preview?.ok) {
         Modal.confirm({
           title: t('messages.reconfigReviewTitle'),
-          content: t('messages.reconfigReviewBody', { applied: preview.applied, skipped: preview.skipped, selected: preview.selected, backupDir: preview.backupDir }),
+          content: t('messages.reconfigReviewBody', {
+            applied: preview.applied,
+            skipped: preview.skipped,
+            selected: preview.selected,
+            scriptPath: preview.scriptPath,
+          }),
           okText: t('messages.reconfigApply'),
           cancelText: t('messages.reconfigCancel'),
           onOk: async () => {

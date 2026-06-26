@@ -319,10 +319,11 @@ class RemediationPipeline:
         before_status = self.verifier.get_services_status()
         result = self.executor.run(plan.script_path)
         is_stable = self.verifier.verify_after_fix(before_status)
+        should_rollback = result.returncode != 0 or not is_stable
         auto_rolled_back = False
 
-        if not is_stable:
-            logger.error("System health check failed after reconfig. Starting rollback.")
+        if should_rollback:
+            logger.error("Reconfig failed or service health check failed. Starting rollback.")
             rollback_success = self.backup.rollback_config(backup_id)
             auto_rolled_back = True
             logger.getChild("remediation").warning(

@@ -91,6 +91,14 @@ export function fetchMsfReport() {
   return getJson('/api/msf/report')
 }
 
-export function startMsfAudit({ target = '127.0.0.1', activeTest = false, ports, selectedCves } = {}) {
-  return postJson('/api/msf/audit', { target, activeTest, ports, selectedCves })
+export function startMsfAudit({ target = '127.0.0.1', activeTest = false, ports, services = ['iis'], selectedCves } = {}) {
+  return postJson('/api/iis/scan/service', { services, target, activeTest, ports, selectedCves })
+}
+
+export function cancelMsfAudit() {
+  return postJson('/api/iis/scan/service/cancel', {})
+}
+
+export function runMsfReconfig({ apply = false, selectedCves = [] } = {}) {
+  return postJson('/api/msf/reconfig', { apply, selectedCves })
 }

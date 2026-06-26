@@ -1,38 +1,31 @@
-import { Alert, Button, Checkbox, Col, Divider, Input, Row, Space, Tag, Typography } from 'antd'
-import { BugOutlined, CloseCircleFilled, PlayCircleOutlined, ReloadOutlined, SafetyCertificateOutlined } from '@ant-design/icons'
+import { Alert, Button, Checkbox, Col, Divider, Input, Row, Space, Typography } from 'antd'
+import { BugOutlined, CloseCircleFilled, PlayCircleOutlined, SafetyCertificateOutlined, StopOutlined } from '@ant-design/icons'
 
 const { Text } = Typography
 
-const PORT_OPTIONS = [
-  { value: 80, label: 'HTTP', detail: '80', cve: 'CVE-2025-27473' },
-  { value: 443, label: 'HTTPS', detail: '443', cve: 'CVE-2025-27473' },
-  { value: 8172, label: 'Web Deploy', detail: '8172', cve: 'CVE-2025-53772' },
-  { value: 8530, label: 'WSUS HTTP', detail: '8530', cve: 'CVE-2025-59287' },
-  { value: 8531, label: 'WSUS HTTPS', detail: '8531', cve: 'CVE-2025-59287' },
+const SERVICE_OPTIONS = [
+  { value: 'iis', title: 'IIS', detail: 'IIS / HTTP.sys / WebDAV / Web Deploy / WSUS' },
+  { value: 'smb', title: 'SMB', detail: 'SMB, EternalBlue, Windows file sharing' },
+  { value: 'rdp', title: 'RDP', detail: 'Remote Desktop / Terminal Services' },
+  { value: 'winrm', title: 'WinRM', detail: 'Windows Remote Management / WSMan' },
+  { value: 'active_directory', title: 'Active Directory', detail: 'AD, Kerberos, Netlogon, AD CS' },
+  { value: 'exchange', title: 'Exchange', detail: 'Exchange Server, OWA, ECP' },
+  { value: 'mssql', title: 'MSSQL', detail: 'Microsoft SQL Server' },
+  { value: 'windows', title: 'Windows Host', detail: 'Windows Server host-level CVEs' },
+  { value: 'all', title: 'All Services', detail: 'All Windows Server CVE modules in local warehouse' },
 ]
-
-const CVE_OPTIONS = [
-  { value: 'CVE-2025-53772', title: 'Web Deploy RCE', severity: 'CRITICAL', port: '8172' },
-  { value: 'CVE-2025-27473', title: 'HTTP.sys DoS', severity: 'HIGH', port: '80/443' },
-  { value: 'CVE-2025-59282', title: 'Inbox COM Race', severity: 'HIGH', port: 'Local' },
-  { value: 'CVE-2025-59287', title: 'WSUS RCE', severity: 'CRITICAL', port: '8530/8531' },
-]
-
-const LOCAL_ONLY_CVES = new Set(['CVE-2025-59282'])
 
 export default function IisMsfControls({
   connected,
   target,
-  selectedPorts,
-  selectedCves,
+  selectedServices,
   loading,
   onTargetChange,
-  onSelectedPortsChange,
-  onSelectedCvesChange,
+  onSelectedServicesChange,
   onRun,
+  onStop,
 }) {
-  const requiresMsf = selectedCves.some((cve) => !LOCAL_ONLY_CVES.has(cve))
-  const canRun = connected || !requiresMsf
+  const canRun = selectedServices.length > 0
 
   return (
     <div className="glass-card ant-card ant-card-small iis-msf-controls-card">
@@ -42,13 +35,13 @@ export default function IisMsfControls({
         </div>
       </div>
       <div className="ant-card-body">
-        {!connected && requiresMsf ? (
+        {!connected ? (
           <Alert
             type="warning"
             showIcon
             icon={<CloseCircleFilled />}
             message="Metasploit RPC is not ready"
-            description="MSF-backed CVE probes will be enabled after the backend starts local msfrpcd. Local-only CVE checks can run without RPC."
+            description="Service Scan requires Metasploit RPC to execute module checks."
             style={{ marginBottom: 16 }}
           />
         ) : null}
@@ -61,41 +54,25 @@ export default function IisMsfControls({
           </Col>
           <Col>
             <Button
-              type="primary"
-              icon={loading ? <ReloadOutlined spin /> : <PlayCircleOutlined />}
-              loading={loading}
+              type={loading ? 'default' : 'primary'}
+              danger={loading}
+              icon={loading ? <StopOutlined /> : <PlayCircleOutlined />}
               disabled={!canRun}
-              onClick={onRun}
+              onClick={loading ? onStop : onRun}
             >
-              Run IIS CVE Audit
+              {loading ? 'Stop Scan' : 'Run Service Scan'}
             </Button>
           </Col>
         </Row>
 
         <Divider style={{ margin: '14px 0' }} />
-        <SectionTitle>Port Configuration</SectionTitle>
-        <Checkbox.Group value={selectedPorts} onChange={onSelectedPortsChange} disabled={loading} className="iis-msf-option-grid">
-          {PORT_OPTIONS.map((option) => (
+        <SectionTitle>Service Selection</SectionTitle>
+        <Checkbox.Group value={selectedServices} onChange={onSelectedServicesChange} disabled={loading} className="iis-msf-option-grid">
+          {SERVICE_OPTIONS.map((option) => (
             <Checkbox key={option.value} value={option.value} className="iis-msf-option">
               <Space direction="vertical" size={0}>
-                <Text strong>{option.label} ({option.detail})</Text>
-                <Text type="secondary">{option.cve}</Text>
-              </Space>
-            </Checkbox>
-          ))}
-        </Checkbox.Group>
-
-        <Divider style={{ margin: '14px 0' }} />
-        <SectionTitle>CVE Selection</SectionTitle>
-        <Checkbox.Group value={selectedCves} onChange={onSelectedCvesChange} disabled={loading} className="iis-msf-option-grid cve-option-grid">
-          {CVE_OPTIONS.map((option) => (
-            <Checkbox key={option.value} value={option.value} className="iis-msf-option">
-              <Space direction="vertical" size={2}>
-                <Space size={6} wrap>
-                  <Text strong>{option.value}</Text>
-                  <SeverityTag severity={option.severity} />
-                </Space>
-                <Text type="secondary">{option.title} | {option.port}</Text>
+                <Text strong>{option.title}</Text>
+                <Text type="secondary">{option.detail}</Text>
               </Space>
             </Checkbox>
           ))}
@@ -104,7 +81,7 @@ export default function IisMsfControls({
         <Divider style={{ margin: '14px 0 10px' }} />
         <Space size={6} className="msf-footnote" wrap>
           <SafetyCertificateOutlined />
-          <span>Focused scan for 4 critical CVEs on IIS/HTTP.sys/Web Deploy/WSUS</span>
+          <span>Ports and datastore values are module options; this screen selects service/module scope.</span>
         </Space>
       </div>
     </div>
@@ -115,15 +92,11 @@ function PanelTitle() {
   return (
     <Space size={8}>
       <BugOutlined style={{ color: '#0f766e' }} />
-      <Text strong>IIS Critical CVE Audit Controls</Text>
+      <Text strong>Service Scan Controls</Text>
     </Space>
   )
 }
 
 function SectionTitle({ children }) {
   return <Text strong className="iis-msf-section-title">{children}</Text>
-}
-
-function SeverityTag({ severity }) {
-  return <Tag color={severity === 'CRITICAL' ? 'red' : 'orange'}>{severity}</Tag>
 }

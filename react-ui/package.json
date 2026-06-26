@@ -1,6 +1,8 @@
 {
   "name": "vulnmngsys-react-ui",
   "version": "1.0.0",
+  "description": "Vulnerability Management System desktop application",
+  "author": "VulnMngSys",
   "private": true,
   "type": "module",
   "main": "electron/main.cjs",
@@ -25,27 +27,5 @@
     "electron": "^26.2.0",
     "electron-builder": "^24.6.0",
     "vite": "^5.4.2"
-  },
-  "build": {
-    "appId": "com.vulnmngsys.desktop",
-    "directories": {
-      "output": "electron-dist"
-    },
-    "files": [
-      "dist/**",
-      "electron/**"
-    ],
-    "extraResources": [
-      {
-        "from": "../dist/VulnMngSysBackend.exe",
-        "to": "backend/VulnMngSysBackend.exe"
-      }
-    ],
-    "win": {
-      "signAndEditExecutable": false,
-      "target": [
-        "nsis"
-      ]
-    }
   }
 }

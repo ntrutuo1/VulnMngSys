@@ -1,0 +1,324 @@
+@startuml getOSInfo
+title getOSInfo - Thu thập fingerprint Windows Server và IIS
+skinparam shadowing false
+
+|Người dùng|
+start
+:Mở ứng dụng;
+
+|Frontend|
+:Gửi GET /api/iis/os-info;
+
+|Backend|
+:Kiểm tra token;
+if (Token hợp lệ?) then (Có)
+  :Gọi getOSInfo;
+else (Không)
+  :Trả lỗi 401;
+  |Frontend|
+  :Hiển thị lỗi xác thực;
+  stop
+endif
+
+:Kiểm tra quyền quản trị;
+:Yêu cầu thu thập OS, KB, IIS, service, port;
+
+|Server|
+:Chạy PowerShell inventory cục bộ;
+if (PowerShell thành công?) then (Có)
+  :Chuẩn hóa OS name, edition, build, UBR, KB;
+else (Không)
+  :Gán trường lỗi là UNKNOWN;
+  :Thêm lỗi POWERSHELL_FAILED;
+endif
+
+:Kiểm tra IIS, appcmd, Web-* features;
+:Kiểm tra W3SVC, WAS, WMSVC, MsDepSvc;
+
+|Backend|
+:Tạo payload fingerprint có errors[];
+
+|Frontend|
+:Hiển thị thông tin máy chủ;
+stop
+@enduml
+
+@startuml scanConfiguration
+title scanConfiguration - Rà quét cấu hình IIS/Windows Server
+skinparam shadowing false
+
+|Người dùng|
+start
+:Chọn quick hoặc full scan;
+
+|Frontend|
+:Gửi POST /api/iis/scan/configuration;
+
+|Backend|
+:Kiểm tra token và quyền scan;
+if (Được phép scan?) then (Có)
+  :Gọi scanConfiguration;
+else (Không)
+  :Trả ACTION_NOT_ALLOWED;
+  stop
+endif
+
+:Nạp profile rule phù hợp OS;
+
+|Server|
+:Đọc manifest và rule JSON;
+
+|Backend|
+if (Rule hợp lệ?) then (Có)
+  :Tạo scan job;
+else (Không)
+  :Trả SCAN_FAILED;
+  stop
+endif
+
+|Server|
+:Đọc registry, secedit, auditpol, appcmd, PowerShell;
+if (appcmd không có?) then (Có)
+  :Ghi rule IIS là UNKNOWN hoặc NOT_APPLICABLE;
+else (Không)
+  :Đánh giá từng rule IIS;
+endif
+
+|Backend|
+:Map kết quả PASS/FAIL/UNKNOWN/NOT_APPLICABLE;
+:Không đánh FAIL nếu thiếu evidence;
+:Gọi generateConfigScanReport;
+
+|Frontend|
+:Hiển thị findings và evidence;
+stop
+@enduml
+
+@startuml backupandRollback
+title backupandRollback - Sao lưu, xác minh và rollback
+skinparam shadowing false
+
+|Backend|
+start
+:Nhận reason và selectedRules;
+:Tạo backupId;
+:Tạo thư mục reports/backups;
+
+|Server|
+:Export secedit;
+:Backup auditpol;
+:Export registry liên quan;
+:Backup IIS bằng appcmd nếu có;
+:Lưu snapshot scan và remediation plan;
+
+|Backend|
+:Tính hash file backup nếu có thể;
+:verifyBackup;
+if (Backup hợp lệ?) then (Có)
+  :Trả backupId và backupPath;
+else (Không)
+  :Trả BACKUP_FAILED;
+  stop
+endif
+
+if (Cần rollback?) then (Có)
+  :rollback(backupId);
+  
+  |Server|
+  :Restore registry, secedit, auditpol, IIS backup;
+  
+  |Backend|
+  :verifyRollback;
+  if (Rollback thành công?) then (Có)
+    :Trả ROLLED_BACK;
+  else (Không)
+    :Trả MANUAL_RECOVERY_REQUIRED;
+  endif
+else (Không)
+  :Kết thúc backup;
+endif
+stop
+@enduml
+
+@startuml reconfigure
+title reconfigure - Preview, apply, verify và rollback cấu hình
+skinparam shadowing false
+
+|Người dùng|
+start
+:Chọn rule/finding cần sửa;
+
+|Frontend|
+:Gửi yêu cầu preview;
+
+|Backend|
+:Kiểm tra token và quyền preview_reconfig;
+:Gọi reconfigure preview;
+:Kiểm tra scan result tồn tại;
+:Build remediation plan từ rule đã chọn;
+if (Danh sách chọn rỗng?) then (Có)
+  :Trả RECONFIGURE_PLAN_UNSAFE;
+  stop
+endif
+if (Có hành động không an toàn?) then (Có)
+  :Trả cảnh báo unsafe;
+  stop
+else (Không)
+  :Ghi script preview;
+endif
+
+|Frontend|
+:Hiển thị plan, script, tác động;
+
+|Người dùng|
+if (Xác nhận apply?) then (Có)
+else (Không)
+  |Frontend|
+  :Hủy thao tác;
+  stop
+endif
+
+|Backend|
+:Kiểm tra quyền apply_reconfig và confirmed=true;
+:Chạy backupandRollback.createBackup;
+if (Backup thành công?) then (Có)
+else (Không)
+  |Frontend|
+  :Hiển thị BACKUP_FAILED;
+  stop
+endif
+
+|Server|
+:Apply chỉ các safe action đã chọn;
+if (PowerShell/appcmd lỗi?) then (Có)
+  |Backend|
+  :Rollback từ backup;
+else (Không)
+  |Server|
+  :Verify IIS service, site, app pool;
+  if (Verify thành công?) then (Có)
+    |Backend|
+    :Trả APPLIED;
+  else (Không)
+    |Backend|
+    :Rollback từ backup;
+  endif
+endif
+
+|Backend|
+if (Rollback đã chạy?) then (Có)
+  if (Rollback thành công?) then (Có)
+    :Trả ROLLED_BACK;
+  else (Không)
+    :Trả MANUAL_RECOVERY_REQUIRED;
+  endif
+endif
+if (Cần reboot?) then (Có)
+  :Ghi pendingReboot=true;
+  :Không tự reboot;
+endif
+:Sinh post-remediation report nếu có dữ liệu;
+
+|Frontend|
+:Hiển thị trạng thái cuối;
+stop
+@enduml
+
+@startuml scanService
+title scanService - Quét service được chọn và lọc CVE/Metasploit module phù hợp
+skinparam shadowing false
+
+|Người dùng|
+start
+:Tick một hoặc nhiều nhóm service;
+:Có thể tick All Services để quét toàn bộ warehouse;
+
+|Frontend|
+:Gửi POST /api/iis/scan/service;
+
+|Backend|
+:Kiểm tra token và quyền msf_audit;
+:Validate target chỉ local/private theo chính sách;
+:Gọi getOSInfo nếu chưa có fingerprint;
+:Xác định service được chọn là IIS;
+:Đọc MSF warehouse để lấy danh sách module cần check;
+:Chuẩn hóa product, component, CPE, alias;
+:Lọc mọi module theo component của service được tick;
+:Nếu All Services thì lấy toàn bộ module trong warehouse;
+:Giữ port/datastore trong options của từng module;
+
+|Server|
+if (MSFRPC sẵn sàng?) then (Có)
+  :Chạy lệnh check cho từng module;
+else (Không)
+  |Backend|
+  :Trả MSFRPC_UNAVAILABLE, không tạo kết quả từ cache;
+  stop
+endif
+
+|Backend|
+:Match theo CVE exact, reference, component, endpoint, fuzzy metadata;
+:PATCHED nếu có fixed KB/build;
+:NOT_APPLICABLE nếu thiếu component;
+:LIKELY/POSSIBLE/UNKNOWN theo evidence;
+:Không chạy exploit, payload hoặc session;
+:Module không hỗ trợ check được gán CHECK_UNSUPPORTED;
+:Tính confidence và risk score;
+:Gọi generateIISReport;
+
+|Frontend|
+:Hiển thị CVE, module, evidence, trạng thái;
+stop
+@enduml
+
+@startuml generateIISReport
+title generateIISReport - Sinh báo cáo tổng hợp IIS audit
+skinparam shadowing false
+
+|Backend|
+start
+:Nhận OS info, config findings, CVE findings, remediation status;
+:Chuẩn hóa UNKNOWN kèm lý do;
+:Tổng hợp machine, OS/build/KB, IIS features, service/port;
+:Tổng hợp config findings và CVE findings;
+:Tổng hợp backup, rollback, pending reboot;
+:Tính final risk score;
+
+|Server|
+:Ghi JSON report;
+:Ghi HTML report nếu renderer sẵn sàng;
+
+|Backend|
+if (Ghi report thành công?) then (Có)
+  :Trả reportFile và htmlReportFile;
+else (Không)
+  :Trả REPORT_GENERATION_FAILED;
+endif
+stop
+@enduml
+
+@startuml generateConfigScanReport
+title generateConfigScanReport - Sinh báo cáo cấu hình
+skinparam shadowing false
+
+|Backend|
+start
+:Nhận kết quả scanConfiguration;
+:Chuẩn hóa ruleId, title, component, severity;
+:Ghi PASS/FAIL/UNKNOWN/NOT_APPLICABLE;
+:Ghi evidence, recommendation, safeAutoFix, reconfigureAction;
+if (Có before/after remediation?) then (Có)
+  :Thêm beforeValue và afterValue;
+endif
+
+|Server|
+:Ghi reports/scan_compare_report.json;
+
+|Backend|
+if (Ghi report thành công?) then (Có)
+  :Trả payload report;
+else (Không)
+  :Trả REPORT_GENERATION_FAILED;
+endif
+stop
+@enduml

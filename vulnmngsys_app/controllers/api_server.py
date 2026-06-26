@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from .api_helpers import InvalidJsonBody, RequestBodyTooLarge, is_authorized, json_response
 from .config_routes import handle_config_get, handle_config_post
+from .iis_routes import handle_iis_get, handle_iis_post
 from .msf_routes import handle_msf_get, handle_msf_post, start_msf_runtime
 
 
@@ -52,6 +53,8 @@ def create_api_server(
             parsed = urlparse(self.path)
             if handle_config_get(self, parsed.path, parsed.query):
                 return
+            if handle_iis_get(self, parsed.path, parsed.query):
+                return
             if handle_msf_get(self, parsed.path, parsed.query):
                 return
             json_response(self, 404, {"ok": False, "error": "Not found"})
@@ -63,6 +66,8 @@ def create_api_server(
             parsed = urlparse(self.path)
             try:
                 if handle_config_post(self, parsed.path):
+                    return
+                if handle_iis_post(self, parsed.path):
                     return
                 if handle_msf_post(self, parsed.path):
                     return

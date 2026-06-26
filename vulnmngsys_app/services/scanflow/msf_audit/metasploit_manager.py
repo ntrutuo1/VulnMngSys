@@ -248,6 +248,8 @@ def _portable_msfrpcd_paths() -> list[Path]:
         roots.append(usb_tools)
     names = ("msfrpcd.bat", "msfrpcd.cmd", "msfrpcd.exe", "msfrpcd")
     candidates: list[Path] = []
+    
+    # 1. Fast path: check known direct locations
     for root_value in roots:
         if not root_value:
             continue
@@ -263,8 +265,18 @@ def _portable_msfrpcd_paths() -> list[Path]:
             candidate = bin_dir / name
             if candidate.exists():
                 candidates.append(candidate)
-        for name in names:
-            candidates.extend(root.rglob(name))
+                
+    # 2. Slow path fallback: only rglob if no candidates were found at all
+    if not candidates:
+        for root_value in roots:
+            if not root_value:
+                continue
+            root = Path(root_value)
+            if not root.exists():
+                continue
+            for name in names:
+                candidates.extend(root.rglob(name))
+                
     seen = set()
     unique_candidates = []
     for path in candidates:

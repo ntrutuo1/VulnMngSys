@@ -251,7 +251,7 @@ Exceptions:
 | FR-09 | System shall rollback when service health check fails | UC-08 |
 | FR-10 | System shall restrict local API with token authorization | UC-01 |
 | FR-11 | System shall validate MSF audit target and active-test scope | UC-10 |
-| FR-12 | System shall list safe MSF modules and excluded modules | UC-10 |
+| FR-12 | System shall list MSF check modules and excluded modules | UC-10 |
 
 ## 10. Non-Functional Requirements
 

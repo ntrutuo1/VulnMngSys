@@ -1,0 +1,252 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+
+\setmainlanguage{vietnamese}
+\setmainfont{Times New Roman}
+\captionsetup[table]{name=Bảng, labelsep=colon, justification=centering}
+\renewcommand{\arraystretch}{1.18}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\funcrow}[2]{\textbf{#1} & \begin{minipage}[t]{\linewidth}#2\end{minipage} \\ \hline}
+\newcommand{\flowtable}[3]{%
+\begin{tabularx}{\linewidth}{|>{\centering\arraybackslash}p{0.12\linewidth}|p{0.28\linewidth}|Y|}
+\hline
+\textbf{STT} & \textbf{Thực hiện} & \textbf{Hành động} \\ \hline
+#1 & #2 & #3 \\ \hline
+\end{tabularx}}
+
+\begin{document}
+
+\chapter{Phân tích bài toán}
+
+\begin{longtable}{|>{\centering\arraybackslash}p{0.08\textwidth}|p{0.25\textwidth}|p{0.47\textwidth}|p{0.14\textwidth}|}
+\hline
+\textbf{STT} & \textbf{Chức năng} & \textbf{Mô tả} & \textbf{Dữ liệu đầu vào} \\ \hline
+\endfirsthead
+\hline
+\textbf{STT} & \textbf{Chức năng} & \textbf{Mô tả} & \textbf{Dữ liệu đầu vào} \\ \hline
+\endhead
+1 & Nhận diện máy chủ & Thu thập thông tin Windows Server, phiên bản hệ điều hành và profile rule phù hợp. & front-end \\ \hline
+2 & Chọn chiến lược rà quét & Cho phép người dùng chọn rà quét cấu hình CIS hoặc rà quét IIS CVE. & front-end \\ \hline
+3 & Rà quét cấu hình & Rà quét cấu hình Windows Server theo bộ rule quick/full, đối chiếu expected/actual và sinh kết quả. & front-end \\ \hline
+4 & Theo dõi tiến trình rà quét & Hiển thị trạng thái, phần trăm hoàn thành và rule đang được xử lý trong quá trình scan. & front-end \\ \hline
+5 & Xem báo cáo & Hiển thị tổng quan pass/fail/manual, danh sách rule, nhóm dịch vụ và bằng chứng kiểm tra. & front-end \\ \hline
+6 & Xuất báo cáo & Xuất hoặc tải báo cáo rà quét cấu hình từ dữ liệu report đã sinh. & front-end \\ \hline
+7 & Xem trước khắc phục & Tạo script PowerShell khắc phục cho các rule lỗi được chọn nhưng chưa thay đổi hệ thống. & front-end \\ \hline
+8 & Áp dụng khắc phục và rollback & Sao lưu, chạy script khắc phục, kiểm tra dịch vụ và rollback nếu trạng thái hệ thống không ổn định. & front-end \\ \hline
+9 & Rà quét IIS CVE & Chạy audit IIS/Windows Server bằng local check và Metasploit RPC tùy chọn, sau đó sinh report JSON/HTML. & front-end \\ \hline
+\caption{Danh sách chức năng chính}
+\end{longtable}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN01}
+\funcrow{Tên chức năng}{Nhận diện máy chủ}
+\funcrow{Mục đích sử dụng}{Thu thập thông tin Windows Server để chọn profile rule phù hợp trước khi rà quét.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{api\_token: mã xác thực API cục bộ (string)}
+\funcrow{Đầu ra (output)}{computerName: tên máy (string)\\
+osCaption: tên hệ điều hành (string)\\
+osVersion: phiên bản hệ điều hành (string)\\
+buildNumber: số build (string)\\
+isServer: máy có phải Windows Server hay không (boolean)\\
+profileKey: profile rule được chọn (string)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gọi API /api/inventory}
+\\[2mm]\flowtable{2}{Hệ thống}{Đọc thông tin hệ điều hành và build}
+\\[2mm]\flowtable{3}{front-end}{Hiển thị inventory và profile}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{đưa ra thông báo lỗi tải inventory}
+\end{tabularx}
+\caption{Chức năng 01: Nhận diện máy chủ}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN02}
+\funcrow{Tên chức năng}{Chọn chiến lược rà quét}
+\funcrow{Mục đích sử dụng}{Cho phép người dùng chọn hướng xử lý chính: rà quét cấu hình Windows Server hoặc audit IIS CVE.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{scanType: loại rà quét, gồm config hoặc iis\_msf (string)}
+\funcrow{Đầu ra (output)}{selected\_workflow: workflow được chọn (string)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Hiển thị hai lựa chọn rà quét}
+\\[2mm]\flowtable{2}{front-end}{Người dùng chọn loại rà quét}
+\\[2mm]\flowtable{3}{front-end}{Chuyển sang bước cấu hình tương ứng}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{giữ lựa chọn mặc định là rà quét cấu hình}
+\end{tabularx}
+\caption{Chức năng 02: Chọn chiến lược rà quét}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN03}
+\funcrow{Tên chức năng}{Rà quét cấu hình}
+\funcrow{Mục đích sử dụng}{Rà quét cấu hình Windows Server theo rule CIS, so sánh giá trị thực tế với giá trị mong muốn và sinh báo cáo.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{profileKey: profile rule Windows Server (string)\\
+mode: quick hoặc full (string)\\
+scanId: mã phiên rà quét (string)}
+\funcrow{Đầu ra (output)}{total: tổng số rule (integer)\\
+passed: số rule đạt (integer)\\
+failed: số rule lỗi (integer)\\
+manual: số rule cần kiểm tra thủ công (integer)\\
+items: danh sách kết quả rule (array)\\
+reportFile: đường dẫn report JSON (string)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gửi POST /api/scan}
+\\[2mm]\flowtable{2}{Hệ thống}{Tải rule theo profile và chế độ scan}
+\\[2mm]\flowtable{3}{Hệ thống}{Thu thập registry, secedit, auditpol, local user và PowerShell}
+\\[2mm]\flowtable{4}{Hệ thống}{Đối chiếu expected/actual và ghi report}
+\\[2mm]\flowtable{5}{front-end}{Nhận kết quả và chuyển sang màn hình báo cáo}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{đưa ra thông báo SCAN\_FAILED}
+\end{tabularx}
+\caption{Chức năng 03: Rà quét cấu hình}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN04}
+\funcrow{Tên chức năng}{Theo dõi tiến trình rà quét}
+\funcrow{Mục đích sử dụng}{Cập nhật tiến trình để người dùng biết rule hiện tại, số lượng đã xử lý và phần trăm hoàn thành.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{scanId: mã phiên rà quét (string)}
+\funcrow{Đầu ra (output)}{status: trạng thái scan (string)\\
+total: tổng số rule (integer)\\
+completed: số rule đã xử lý (integer)\\
+percent: phần trăm hoàn thành (number)\\
+currentRule: rule đang chạy (object)\\
+recentRules: rule vừa hoàn thành (array)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gọi /api/scan/progress theo scanId}
+\\[2mm]\flowtable{2}{Hệ thống}{Đọc trạng thái tiến trình trong bộ nhớ}
+\\[2mm]\flowtable{3}{front-end}{Cập nhật thanh tiến trình và rule đang chạy}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{giữ trạng thái hiện tại và tiếp tục polling}
+\end{tabularx}
+\caption{Chức năng 04: Theo dõi tiến trình rà quét}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN05}
+\funcrow{Tên chức năng}{Xem báo cáo}
+\funcrow{Mục đích sử dụng}{Hiển thị kết quả rà quét theo tổng quan, nhóm dịch vụ và chi tiết từng rule để phục vụ đánh giá bảo mật.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{reportFile: file báo cáo đã sinh (string)\\
+profileKey: profile rule (string)}
+\funcrow{Đầu ra (output)}{summary: thống kê pass/fail/manual (json)\\
+serviceTree: cây nhóm dịch vụ/rule (json)\\
+ruleDetails: chi tiết từng rule và bằng chứng (array)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gọi /api/report và /api/service-tree}
+\\[2mm]\flowtable{2}{Hệ thống}{Tải report mới nhất và dựng cây dịch vụ}
+\\[2mm]\flowtable{3}{front-end}{Hiển thị dashboard, nhóm dịch vụ và chi tiết rule}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{đưa ra thông báo REPORT\_UNAVAILABLE hoặc SERVICE\_TREE\_FAILED}
+\end{tabularx}
+\caption{Chức năng 05: Xem báo cáo}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN06}
+\funcrow{Tên chức năng}{Xuất báo cáo}
+\funcrow{Mục đích sử dụng}{Cung cấp báo cáo đã sinh để người quản trị hoặc kiểm toán viên lưu trữ và đối chiếu.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{format: định dạng xuất báo cáo, ví dụ html (string)}
+\funcrow{Đầu ra (output)}{report: nội dung báo cáo hoặc đường dẫn file (json/string)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gọi /api/report/export}
+\\[2mm]\flowtable{2}{Hệ thống}{Đọc báo cáo mới nhất}
+\\[2mm]\flowtable{3}{front-end}{Nhận dữ liệu báo cáo để lưu hoặc hiển thị}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{đưa ra thông báo REPORT\_UNAVAILABLE}
+\end{tabularx}
+\caption{Chức năng 06: Xuất báo cáo}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN07}
+\funcrow{Tên chức năng}{Xem trước khắc phục}
+\funcrow{Mục đích sử dụng}{Sinh script PowerShell cho các rule lỗi được chọn để người dùng xem xét trước khi áp dụng.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{apply: false (boolean)\\
+selectedRuleIds: danh sách rule lỗi được chọn (array)}
+\funcrow{Đầu ra (output)}{scriptPath: đường dẫn script preview (string)\\
+applied: số rule có thể tự động khắc phục (integer)\\
+skipped: số rule bị bỏ qua (integer)\\
+requiresReview: yêu cầu người dùng xác nhận (boolean)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gửi POST /api/reconfig với apply=false}
+\\[2mm]\flowtable{2}{Hệ thống}{Tải report và lọc các rule FAIL được chọn}
+\\[2mm]\flowtable{3}{Hệ thống}{Sinh script PowerShell an toàn để review}
+\\[2mm]\flowtable{4}{front-end}{Hiển thị hộp xác nhận trước khi áp dụng}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{đưa ra thông báo RECONFIG\_FAILED}
+\end{tabularx}
+\caption{Chức năng 07: Xem trước khắc phục}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN08}
+\funcrow{Tên chức năng}{Áp dụng khắc phục và rollback}
+\funcrow{Mục đích sử dụng}{Thực thi script khắc phục sau khi người dùng xác nhận, có sao lưu và rollback khi kiểm tra dịch vụ thất bại.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{apply: true (boolean)\\
+selectedRuleIds: danh sách rule lỗi được chọn (array)}
+\funcrow{Đầu ra (output)}{ok: kết quả áp dụng (boolean)\\
+backupId: mã bản sao lưu (string)\\
+backupPath: đường dẫn sao lưu (string)\\
+autoRolledBack: có rollback tự động hay không (boolean)\\
+stdout, stderr: log thực thi (string)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gửi POST /api/reconfig với apply=true}
+\\[2mm]\flowtable{2}{Hệ thống}{Tạo backup registry/cấu hình liên quan}
+\\[2mm]\flowtable{3}{Hệ thống}{Chạy script PowerShell khắc phục}
+\\[2mm]\flowtable{4}{Hệ thống}{Kiểm tra trạng thái dịch vụ sau khắc phục}
+\\[2mm]\flowtable{5}{front-end}{Hiển thị kết quả áp dụng}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{rollback từ backup và đưa ra thông báo lỗi}
+\end{tabularx}
+\caption{Chức năng 08: Áp dụng khắc phục và rollback}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|Y|}
+\hline
+\funcrow{Mã chức năng}{CN09}
+\funcrow{Tên chức năng}{Rà quét IIS CVE}
+\funcrow{Mục đích sử dụng}{Rà quét các vấn đề IIS/Windows Server bằng local check và Metasploit RPC tùy chọn, có giới hạn an toàn cho active test.}
+\funcrow{Dữ liệu đầu vào}{front-end}
+\funcrow{Đầu vào (input)}{target: IP hoặc hostname mục tiêu (string)\\
+activeTest: bật/tắt kiểm thử chủ động (boolean)\\
+ports: danh sách cổng kiểm tra (array)\\
+selectedCves: danh sách CVE được chọn (array)}
+\funcrow{Đầu ra (output)}{results: danh sách kết quả audit (array)\\
+reportFile: report JSON IIS CVE (string)\\
+htmlReportFile: report HTML IIS CVE (string)}
+\funcrow{Luồng sự kiện chính (thành công)}{\flowtable{1}{front-end}{Gọi /api/msf/modules và /api/msf/status}
+\\[2mm]\flowtable{2}{front-end}{Gửi POST /api/msf/audit}
+\\[2mm]\flowtable{3}{Hệ thống}{Validate target, port và CVE}
+\\[2mm]\flowtable{4}{Hệ thống}{Chạy local check hoặc Metasploit RPC khi cần}
+\\[2mm]\flowtable{5}{Hệ thống}{Ghi report JSON/HTML}
+\\[2mm]\flowtable{6}{front-end}{Hiển thị kết quả IIS CVE}}
+\funcrow{Luồng sự kiện phụ (thất bại)}{đưa ra thông báo INVALID\_TARGET, MSF\_RPC\_UNAVAILABLE hoặc MSF\_AUDIT\_FAILED}
+\end{tabularx}
+\caption{Chức năng 09: Rà quét IIS CVE}
+\end{table}
+
+\end{document}

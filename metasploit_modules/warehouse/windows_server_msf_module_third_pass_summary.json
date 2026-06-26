@@ -1,0 +1,14 @@
+{
+  "framework_root": "E:\\VulnMngApp\\Tools\\metasploit-framework\\embedded\\framework",
+  "source_files_read": 4075,
+  "catalog_all_modules": 4075,
+  "candidate_rows_with_description_report": 1129,
+  "missing_from_catalog": 0,
+  "read_errors": 0,
+  "candidate_without_source_description": 2,
+  "report_path": "metasploit_modules\\warehouse\\windows_server_msf_module_third_pass_audit.json",
+  "sample_candidate_without_source_description": [
+    "auxiliary/scanner/smb/psexec_loggedin_users.rb",
+    "auxiliary/scanner/smb/smb_enum_gpp.rb"
+  ]
+}

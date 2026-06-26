@@ -29,7 +29,7 @@ export function StrategyStage({ scanType, onChoose, onNext }) {
     <Card className="glass-card" title={t('stage.strategyTitle')}>
       <Radio.Group value={scanType} onChange={(e) => onChoose(e.target.value)} className="strategy-grid">
         <StrategyOption value="config" icon={<SafetyOutlined />} title={t('scanType.config')} text={t('scanType.configDesc')} />
-        <StrategyOption value="iis_msf" icon={<BugOutlined />} title={t('scanType.iisMsf')} text={t('scanType.iisMsfDesc')} />
+        <StrategyOption value="service" icon={<BugOutlined />} title={t('scanType.service')} text={t('scanType.serviceDesc')} />
       </Radio.Group>
       <Button type="primary" className="stage-primary" onClick={onNext}>{t('stage.continue')}</Button>
     </Card>
@@ -50,7 +50,7 @@ function StrategyOption({ value, icon, title, text }) {
 
 export function ConfigureStage(props) {
   const { t } = useTranslation()
-  if (props.scanType === 'iis_msf') {
+  if (props.scanType === 'service') {
     return <IisMsfAudit showResults={false} onReport={props.onMsfReport} onBack={props.onBack} />
   }
   if (props.scanLoading) {
@@ -94,7 +94,7 @@ export function ResultsStage({
   const groups = useMemo(() => normalizeGroups({ report, serviceTree, scanItems }), [report, serviceTree, scanItems])
   const selectedGroup = useMemo(() => findGroup(groups, selectedService), [groups, selectedService])
   const groupSummary = useMemo(() => summarizeGroups(groups), [groups])
-  if (scanType === 'iis_msf') return <IisMsfResults loading={false} report={report} onBack={onBack} />
+  if (scanType === 'service') return <IisMsfResults loading={false} report={report} onBack={onBack} />
   const actions = (
     <Space>
       <Button icon={<LeftOutlined />} onClick={onBack}>{t('stage.back')}</Button>

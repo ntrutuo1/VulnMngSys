@@ -114,15 +114,26 @@ def load_profile_metadata() -> dict[str, Any]:
                 "severity": mod.get("severity", ""),
                 "cvss": mod.get("cvss"),
                 "module_id": mod.get("id", ""),
+                "module": mod.get("module", ""),
+                "module_type": mod.get("module_type", ""),
                 "check_method": mod.get("check_method", ""),
+                "component": mod.get("component", ""),
+                "aliases": mod.get("aliases", []),
+                "cpe": mod.get("cpe", []),
                 "ports": _module_ports(mod),
+                "execution": mod.get("execution", {}),
+                "applicability": mod.get("applicability", {}),
+                "evidence_contract": mod.get("evidence_contract", {}),
             }
         )
     return {
         "profile_name": profile.get("profile_name", ""),
+        "schema_version": profile.get("schema_version", ""),
         "scope": profile.get("scope", {}),
         "common_http_options": profile.get("common_http_options", {}),
         "common_https_options": profile.get("common_https_options", {}),
+        "common_local_options": profile.get("common_local_options", {}),
+        "execution_defaults": profile.get("execution_defaults", {}),
         "cves": cves,
     }
 

@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import subprocess
@@ -31,9 +32,51 @@ class BackupManager:
         self._backup_secedit(current_backup_dir)
         self._backup_auditpol(current_backup_dir)
         self._backup_registry(current_backup_dir, registry_paths or [])
+        self._backup_iis(current_backup_dir, backup_id)
 
         logger.info("Backup completed. Path=%s", current_backup_dir)
         return backup_id
+
+    def createBackup(
+        self,
+        *,
+        reason: str = "",
+        selectedRules: Sequence[str] | None = None,
+        registryPaths: Sequence[str] | None = None,
+    ) -> str:
+        backup_id = self.trigger_backup(selectedRules, registry_paths=registryPaths)
+        metadata = {
+            "backupId": backup_id,
+            "reason": reason,
+            "selectedRules": list(selectedRules or []),
+            "createdAt": datetime.now().isoformat(),
+        }
+        (self.backup_path(backup_id) / "backup_metadata.json").write_text(
+            json.dumps(metadata, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return backup_id
+
+    def verifyBackup(self, backup_id: str) -> bool:
+        path = self.backup_path(backup_id)
+        if not path.exists() or not path.is_dir():
+            return False
+        return any(item.is_file() for item in path.rglob("*"))
+
+    def listBackups(self) -> list[dict[str, str]]:
+        backups: list[dict[str, str]] = []
+        if not BACKUP_DIR.exists():
+            return backups
+        for path in sorted(BACKUP_DIR.iterdir(), reverse=True):
+            if path.is_dir():
+                backups.append({"backupId": path.name, "backupPath": str(path)})
+        return backups
+
+    def rollback(self, backup_id: str) -> bool:
+        return self.rollback_config(backup_id)
+
+    def verifyRollback(self, backup_id: str) -> bool:
+        return self.backup_path(backup_id).exists()
 
     def backup_path(self, backup_id: str) -> Path:
         return BACKUP_DIR / backup_id
@@ -90,6 +133,27 @@ class BackupManager:
                     logger.error("Registry backup failed for %s: %s", registry_path, result.stderr)
             except Exception as exc:
                 logger.error("Registry backup exception for %s: %s", registry_path, exc)
+
+    def _backup_iis(self, backup_dir: Path, backup_id: str) -> None:
+        appcmd = _appcmd_path()
+        if appcmd is None:
+            return
+        marker = backup_dir / "iis_backup_name.txt"
+        backup_name = f"VulnMngSys_{backup_id}"
+        try:
+            result = subprocess.run(
+                [str(appcmd), "add", "backup", backup_name],
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+            if result.returncode == 0:
+                marker.write_text(backup_name, encoding="utf-8")
+            else:
+                logger.error("IIS backup failed: %s", result.stderr)
+        except Exception as exc:
+            logger.error("IIS backup exception: %s", exc)
 
     def rollback_config(self, backup_id: str) -> bool:
         target_backup_dir = self.backup_path(backup_id)
@@ -159,6 +223,24 @@ class BackupManager:
                 logger.error("Auditpol rollback exception: %s", exc)
                 success = False
 
+        iis_backup_name = target_backup_dir / "iis_backup_name.txt"
+        appcmd = _appcmd_path()
+        if iis_backup_name.exists() and appcmd is not None:
+            try:
+                result = subprocess.run(
+                    [str(appcmd), "restore", "backup", iis_backup_name.read_text(encoding="utf-8").strip()],
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                    check=False,
+                )
+                if result.returncode != 0:
+                    logger.error("IIS rollback failed: %s", result.stderr)
+                    success = False
+            except Exception as exc:
+                logger.error("IIS rollback exception: %s", exc)
+                success = False
+
         logger.info("Rollback completed. success=%s", success)
         return success
 
@@ -187,6 +269,12 @@ def _normalize_reg_path(path: str) -> str:
 def _safe_filename(value: str) -> str:
     filename = re.sub(r"[^A-Za-z0-9_.-]+", "_", value).strip("_")
     return filename[:120] or "registry"
+
+
+def _appcmd_path() -> Path | None:
+    windir = os.getenv("windir") or os.getenv("SystemRoot") or r"C:\Windows"
+    candidate = Path(windir) / "System32" / "inetsrv" / "appcmd.exe"
+    return candidate if candidate.exists() else None
 
 
 backup_manager = BackupManager()

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +34,9 @@ _HTML_TEMPLATE = """\
   .pill-INFO {{ background: #dbeafe; color: #1d4ed8; }}
   .pill-SKIPPED {{ background: #e5e7eb; color: #374151; }}
   .pill-ERROR {{ background: #fee2e2; color: #b91c1c; }}
+  .pill-HIGH {{ background: #fee2e2; color: #991b1b; }}
+  .pill-MEDIUM {{ background: #ffedd5; color: #9a3412; }}
+  .pill-LOW {{ background: #fef9c3; color: #854d0e; }}
   table {{ width: 100%; border-collapse: collapse; font-size: 0.875rem; background: #fff; border: 1px solid #e5e7eb; }}
   th {{ background: #f8fafc; color: #475569; padding: 10px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }}
   td {{ padding: 10px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }}
@@ -43,8 +47,14 @@ _HTML_TEMPLATE = """\
   .tag-INFO {{ background: #dbeafe; color: #1d4ed8; }}
   .tag-SKIPPED {{ background: #e5e7eb; color: #374151; }}
   .tag-ERROR {{ background: #fee2e2; color: #b91c1c; }}
+  .tag-HIGH {{ background: #fee2e2; color: #991b1b; }}
+  .tag-MEDIUM {{ background: #ffedd5; color: #9a3412; }}
+  .tag-LOW {{ background: #fef9c3; color: #854d0e; }}
   .severity-CRITICAL {{ background: #7f1d1d; color: #fff; }}
-  .severity-HIGH {{ background: #c2410c; color: #fff; }}
+  .severity-HIGH {{ background: #dc2626; color: #fff; }}
+  .severity-MEDIUM {{ background: #f97316; color: #fff; }}
+  .severity-LOW {{ background: #eab308; color: #000; }}
+  .severity-INFO {{ background: #3b82f6; color: #fff; }}
   .muted {{ color: #64748b; font-size: 0.8rem; }}
   .evidence {{ color: #92400e; font-size: 0.82rem; }}
   .remediation {{ color: #166534; font-size: 0.82rem; }}
@@ -54,6 +64,7 @@ _HTML_TEMPLATE = """\
 <h1>IIS Critical CVE Audit Report</h1>
 <div class="meta">Target: {target} | Mode: {scan_mode} | {timestamp}</div>
 <div class="score-badge {score_class}">Score: {score}/100 - {score_label}</div>
+{pie_chart}
 <div class="summary">{summary_pills}</div>
 <h2>Findings</h2>
 <table>
@@ -120,6 +131,84 @@ def write_json_report(payload: dict[str, Any]) -> Path:
     return report_path
 
 
+def generate_svg_donut_chart(summary: dict[str, int]) -> str:
+    """Generate self-contained SVG donut chart HTML string."""
+    high = summary.get("high", 0)
+    medium = summary.get("medium", 0)
+    low = summary.get("low", 0)
+    info = summary.get("info", 0)
+    total = high + medium + low + info
+    
+    if total == 0:
+        return "<div style='color: #64748b; font-style: italic; margin-bottom: 24px;'>No findings to display.</div>"
+        
+    r = 40
+    stroke_width = 14
+    c = 2 * math.pi * r
+    
+    colors = {
+        "high": "#dc2626",
+        "medium": "#f97316",
+        "low": "#eab308",
+        "info": "#3b82f6"
+    }
+    
+    items = [
+        {"key": "high", "value": high, "color": colors["high"], "label": "High"},
+        {"key": "medium", "value": medium, "color": colors["medium"], "label": "Medium"},
+        {"key": "low", "value": low, "color": colors["low"], "label": "Low"},
+        {"key": "info", "value": info, "color": colors["info"], "label": "Info"},
+    ]
+    items = [item for item in items if item["value"] > 0]
+    
+    svg_circles = []
+    accumulated_percent = 0.0
+    
+    for item in items:
+        percent = (item["value"] / total) * 100.0
+        stroke_length = (percent / 100.0) * c
+        stroke_offset = c - (accumulated_percent / 100.0) * c
+        accumulated_percent += percent
+        
+        svg_circles.append(
+            f'<circle cx="50" cy="50" r="{r}" fill="none" stroke="{item["color"]}" '
+            f'stroke-width="{stroke_width}" stroke-dasharray="{stroke_length:.3f} {c:.3f}" '
+            f'stroke-dashoffset="{stroke_offset:.3f}" transform="rotate(-90 50 50)" />'
+        )
+        
+    circle_elements = "\n      ".join(svg_circles)
+    
+    legend_items = []
+    for item in items:
+        pct = round((item["value"] / total) * 100)
+        legend_items.append(
+            f'<div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 4px;">'
+            f'<span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: {item["color"]};"></span>'
+            f'<span style="font-weight: 600; color: #334155; margin-right: 4px;">{item["label"]}:</span>'
+            f'<span style="color: #64748b;">{item["value"]} ({pct}%)</span>'
+            f'</div>'
+        )
+    legend_html = "\n    ".join(legend_items)
+    
+    return f"""\
+<div style="display: flex; align-items: center; gap: 24px; margin-top: 16px; margin-bottom: 24px; background: #ffffff; padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 400px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="position: relative; width: 100px; height: 100px; flex-shrink: 0;">
+    <svg width="100" height="100" viewBox="0 0 100 100" style="display: block;">
+      <circle cx="50" cy="50" r="{r}" fill="none" stroke="#e2e8f0" stroke-width="{stroke_width}" />
+      {circle_elements}
+    </svg>
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', Arial, sans-serif;">
+      <span style="font-size: 16px; font-weight: bold; color: #1e293b; line-height: 1;">{total}</span>
+      <span style="font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;">Total</span>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; justify-content: center; font-family: 'Segoe UI', Arial, sans-serif;">
+    {legend_html}
+  </div>
+</div>
+"""
+
+
 def write_html_report(payload: dict[str, Any]) -> Path:
     """Write audit payload to HTML file and return path."""
     reports_dir = writable_reports_dir()
@@ -143,6 +232,8 @@ def write_html_report(payload: dict[str, Any]) -> Path:
     rows = "\n".join(_render_result_row(row) for row in payload.get("results", []))
     patch_rows = "\n".join(_render_patch_row(row) for row in payload.get("kb_patch_summary", []))
 
+    pie_chart_html = generate_svg_donut_chart(summary)
+
     rendered = _HTML_TEMPLATE.format(
         target=_esc(payload.get("target", "")),
         scan_mode=_esc(payload.get("scan_mode", "focused_cve_local")),
@@ -150,6 +241,7 @@ def write_html_report(payload: dict[str, Any]) -> Path:
         score=score,
         score_label=_esc(payload.get("score_label", "")),
         score_class=score_class,
+        pie_chart=pie_chart_html,
         summary_pills=pills,
         rows=rows,
         patch_rows=patch_rows,

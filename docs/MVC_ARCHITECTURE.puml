@@ -1,0 +1,70 @@
+@startuml MVC_ARCHITECTURE
+title Clean MVC Architecture - VulnMngSys
+skinparam style strictuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Helvetica
+skinparam ArrowColor #333333
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #1A1A1A
+
+package "View" {
+  class ReactUI {
+    + startScan()
+    + showFindings()
+    + confirmReconfigure()
+    + downloadReport()
+  }
+}
+
+package "Controller" {
+  class ApiControllers {
+    + handle_iis_requests()
+    + handle_msf_requests()
+    + handle_config_requests()
+  }
+}
+
+package "Service (Model / Orchestrator)" {
+  class IISAuditOrchestrator {
+    + getOSInfo()
+    + scanConfiguration()
+    + backupandRollback()
+    + reconfigure()
+    + scanService()
+    + scanServiceCVE()
+    + generateIISReport()
+  }
+}
+
+package "Domain / Core Logic" {
+  class DomainServices {
+    + run_remediation_pipeline()
+    + run_msf_audit_runner()
+    + evaluate_json_rules()
+  }
+}
+
+package "Adapters (System Interfaces)" {
+  class SystemAdapters {
+    + BackupManager
+    + MetasploitManager
+    + ReportWriter
+  }
+}
+
+package "External Systems" {
+  class ExternalServices {
+    + Local Windows Server
+    + Metasploit RPC Server
+    + File System Database
+  }
+}
+
+' Clean top-to-bottom layout
+ReactUI -down-> ApiControllers : HTTP Requests
+ApiControllers -down-> IISAuditOrchestrator : Routes requests
+IISAuditOrchestrator -down-> DomainServices : Coordinates logic
+DomainServices -down-> SystemAdapters : Executes tasks
+SystemAdapters -down-> ExternalServices : Interfaces with OS/MSF
+@enduml

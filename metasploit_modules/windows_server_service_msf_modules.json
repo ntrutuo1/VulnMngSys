@@ -1,0 +1,1783 @@
+{
+  "profile_name": "windows_server_service_cve_msf_filtered",
+  "schema_version": "2026-06-13",
+  "scope": {
+    "authorization": "local/authorized scanning only",
+    "target_os": "Windows Server 2012 R2/2016/2019/2022/2025; legacy modules are retained only when they map to service fingerprints or patch checks.",
+    "target_service": "Windows Server network services: IIS/HTTP.sys/WebDAV/WSUS/Web Deploy, SMB, RDP, MSMQ, RPC/Print Spooler, Netlogon/AD CS, Exchange, SharePoint, SSRS, database, SSH, TLS, and selected third-party Windows server services.",
+    "module_policy": "Load only service-facing Metasploit modules found in the uploaded CVE inventory. DoS, local privilege escalation, client-side/fileformat, non-Windows, network appliance, and unrelated web-app modules are excluded. Exploit modules must be invoked with check only; if check is unavailable, fall back to local service/patch validation and skip execution.",
+    "default_targets": [
+      "127.0.0.1",
+      "localhost"
+    ],
+    "default_ports": [
+      21,
+      22,
+      25,
+      80,
+      110,
+      135,
+      139,
+      143,
+      389,
+      443,
+      445,
+      465,
+      587,
+      636,
+      993,
+      995,
+      1433,
+      1801,
+      3306,
+      3389,
+      5432,
+      5985,
+      5986,
+      8172,
+      8530,
+      8531,
+      27017
+    ],
+    "execution_mode": "local USB audit: MSFRPC safe scanner/check plus PowerShell service, feature, registry, file-version, and patch checks",
+    "safe_default": true,
+    "notes": [
+      "Input CVE inventory contained 1643 entries; only runnable module-like, service-facing Windows Server candidates are retained.",
+      "The previous IIS-only scope was widened to Windows Server service scan; IIS remains one service family, not the whole profile.",
+      "Auxiliary scanner/gather modules may run with low thread count. Exploit modules are never executed with run/exploit in default mode; use check only when available.",
+      "DoS modules such as HTTP.sys crash/resource-exhaustion checks are represented as local-only patch checks.",
+      "Third-party products are marked service_required=false and should run only when the local service/fingerprint/port indicates the product exists."
+    ]
+  },
+  "common_http_options": {
+    "RHOSTS": "127.0.0.1",
+    "RPORT": 80,
+    "SSL": false,
+    "VHOST": "",
+    "THREADS": 1,
+    "HttpClientTimeout": 20,
+    "Proxies": "",
+    "UserAgent": "Mozilla/5.0 VulnMngSys Windows Server authorized service CVE scanner"
+  },
+  "common_https_options": {
+    "RHOSTS": "127.0.0.1",
+    "RPORT": 443,
+    "SSL": true,
+    "VHOST": "",
+    "THREADS": 1,
+    "HttpClientTimeout": 20,
+    "Proxies": "",
+    "UserAgent": "Mozilla/5.0 VulnMngSys Windows Server authorized service CVE scanner"
+  },
+  "modules": [
+    {
+      "id": "cve_2000_0649_iis_internal_ip_disclosure",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/http/iis_internal_ip",
+      "preferred_module": "auxiliary/scanner/http/iis_internal_ip",
+      "name": "Microsoft IIS HTTP Internal IP Disclosure",
+      "category": "iis_http_information_disclosure",
+      "risk": "information_disclosure",
+      "cve": [
+        "CVE-2000-0649"
+      ],
+      "severity": "MEDIUM",
+      "cvss": 5.0,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Safe low-impact IIS HTTP fingerprint/misconfiguration check; mark not_applicable if W3SVC/HTTP is absent.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 80,
+        "SSL": false,
+        "VHOST": "",
+        "TARGETURI": "/",
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2000-0649",
+        "service_names": [
+          "W3SVC",
+          "HTTP"
+        ],
+        "service_required": true,
+        "patch_after": null,
+        "patch_guidance": "Verify IIS redirect/alternateHostName configuration and keep Windows Server cumulative updates current.",
+        "file_paths": [
+          "$env:windir\\System32\\inetsrv\\config\\applicationHost.config",
+          "$env:windir\\System32\\inetsrv\\w3wp.exe"
+        ],
+        "registry_paths": [
+          "HKLM:\\SOFTWARE\\Microsoft\\InetStp"
+        ]
+      },
+      "expected_signal": "Reports whether IIS redirects or HTTP responses disclose an internal IP address."
+    },
+    {
+      "id": "cve_2015_1635_httpsys_range_dos_local_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "local",
+      "module": null,
+      "preferred_module": null,
+      "name": "CVE-2015-1635 HTTP.sys Range header vulnerability safe local check",
+      "category": "httpsys_dos_patch_posture",
+      "risk": "remote_dos",
+      "cve": [
+        "CVE-2015-1635"
+      ],
+      "severity": "HIGH",
+      "cvss": 7.8,
+      "check_method": "local_only",
+      "safe_to_run": true,
+      "server_2022_relevance": "HTTP.sys is a Windows Server kernel HTTP listener used by IIS and other HTTP services. The Metasploit DoS module is intentionally not executed.",
+      "default_datastore": {},
+      "local_variants": [],
+      "local_check": {
+        "cve_id": "CVE-2015-1635",
+        "service_names": [
+          "HTTP",
+          "W3SVC"
+        ],
+        "service_required": true,
+        "patch_after": "2015-04-14",
+        "patch_guidance": "Install MS15-034 / the relevant Windows Server cumulative update; never run active DoS probes in default audit mode.",
+        "file_paths": [
+          "$env:windir\\System32\\drivers\\http.sys"
+        ]
+      },
+      "expected_signal": "Reports HTTP.sys file version, Windows hotfix/cumulative update posture, and whether HTTP/W3SVC is running."
+    },
+    {
+      "id": "cve_2021_31166_httpsys_accept_encoding_local_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "local",
+      "module": null,
+      "preferred_module": null,
+      "name": "CVE-2021-31166 HTTP.sys Accept-Encoding RCE/DoS safe local check",
+      "category": "httpsys_rce_dos_patch_posture",
+      "risk": "remote_kernel_rce_or_dos",
+      "cve": [
+        "CVE-2021-31166"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "local_only",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant when HTTP.sys/IIS is listening on Windows Server. The available Metasploit module is DoS-oriented, so the profile keeps only patch/service validation.",
+      "default_datastore": {},
+      "local_variants": [],
+      "local_check": {
+        "cve_id": "CVE-2021-31166",
+        "service_names": [
+          "HTTP",
+          "W3SVC"
+        ],
+        "service_required": true,
+        "patch_after": "2021-05-11",
+        "patch_guidance": "Install the May 2021 or later Windows Server cumulative update; do not execute crash-oriented HTTP.sys tests.",
+        "file_paths": [
+          "$env:windir\\System32\\drivers\\http.sys"
+        ]
+      },
+      "expected_signal": "Reports HTTP.sys version/patch posture without sending crash payloads."
+    },
+    {
+      "id": "cve_2025_59287_wsus_deserialization_rce_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/wsus_deserialization_rce",
+      "preferred_module": "exploits/windows/http/wsus_deserialization_rce",
+      "name": "Windows Server Update Service Deserialization Remote Code Execution",
+      "category": "wsus_deserialization_rce",
+      "risk": "unsafe_deserialization",
+      "cve": [
+        "CVE-2025-59287"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant when WSUS is installed on Windows Server and ports 8530/8531 are exposed. Execute only Metasploit check; never run exploit in default scan.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 8530,
+        "SSL": false,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 8530,
+          "SSL": false,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 8531,
+          "SSL": true,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2025-59287",
+        "service_names": [
+          "WsusService",
+          "W3SVC"
+        ],
+        "service_required": true,
+        "windows_features": [
+          "UpdateServices",
+          "UpdateServices-Services",
+          "UpdateServices-WidDB"
+        ],
+        "patch_after": "2025-10-01",
+        "patch_guidance": "Install the Windows Server/WSUS update that remediates CVE-2025-59287.",
+        "file_paths": [
+          "$env:ProgramFiles\\Update Services\\Services\\WsusService.exe",
+          "$env:ProgramFiles\\Update Services\\WebServices\\ClientWebService\\bin\\Microsoft.UpdateServices.WebServices.Client.dll"
+        ]
+      },
+      "expected_signal": "Reports WSUS endpoint reachability, Metasploit check output, and local WSUS patch/service posture."
+    },
+    {
+      "id": "cve_2020_0796_smbghost_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/smb/cve_2020_0796_smbghost",
+      "preferred_module": "exploits/windows/smb/cve_2020_0796_smbghost",
+      "name": "SMBv3 Compression Buffer Overflow",
+      "category": "smbv3_compression_rce",
+      "risk": "remote_kernel_rce",
+      "cve": [
+        "CVE-2020-0796"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 10.0,
+      "check_method": "msf_check_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to Windows Server SMBv3 exposure on TCP/445. Use check mode/local patch validation only.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 445,
+        "SMBDirect": false
+      },
+      "local_variants": [
+        {
+          "RPORT": 445
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2020-0796",
+        "service_names": [
+          "LanmanServer"
+        ],
+        "service_required": true,
+        "patch_after": "2020-03-12",
+        "patch_guidance": "Install the March 2020 SMBv3 update and ensure SMB compression mitigation is applied where applicable.",
+        "file_paths": [
+          "$env:windir\\System32\\drivers\\srv2.sys"
+        ],
+        "registry_paths": [
+          "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters"
+        ]
+      },
+      "expected_signal": "Reports SMB port reachability, SMBv3/compression exposure when check is supported, and local srv2.sys patch posture."
+    },
+    {
+      "id": "cve_2008_4250_ms08_067_server_service_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/smb/ms08_067_netapi",
+      "preferred_module": "exploits/windows/smb/ms08_067_netapi",
+      "name": "MS08-067 Microsoft Server Service Relative Path Stack Corruption",
+      "category": "smb_server_service_rce_legacy",
+      "risk": "remote_rce",
+      "cve": [
+        "CVE-2008-4250"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 10.0,
+      "check_method": "msf_check_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Legacy Windows Server service CVE retained for fingerprint matching on old hosts; should be not_applicable on Windows Server 2022+.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 445,
+        "SMBUser": "",
+        "SMBPass": "",
+        "VerifyArch": true,
+        "VerifyTarget": true
+      },
+      "local_variants": [
+        {
+          "RPORT": 445
+        },
+        {
+          "RPORT": 139
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2008-4250",
+        "service_names": [
+          "LanmanServer"
+        ],
+        "service_required": true,
+        "patch_after": "2008-10-23",
+        "patch_guidance": "Install MS08-067 / cumulative updates; modern Windows Server should report not_applicable.",
+        "file_paths": [
+          "$env:windir\\System32\\netapi32.dll"
+        ]
+      },
+      "expected_signal": "Reports only legacy SMB Server Service exposure/check result; no exploit run."
+    },
+    {
+      "id": "cve_2019_0708_bluekeep_rdp_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/rdp/cve_2019_0708_bluekeep",
+      "preferred_module": "auxiliary/scanner/rdp/cve_2019_0708_bluekeep",
+      "name": "CVE-2019-0708 BlueKeep Microsoft Remote Desktop RCE Check",
+      "category": "rdp_bluekeep_rce",
+      "risk": "remote_rce",
+      "cve": [
+        "CVE-2019-0708"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Safe RDP BlueKeep scanner for TCP/3389; exploit module is excluded from default service scan.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 3389,
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 3389
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2019-0708",
+        "service_names": [
+          "TermService"
+        ],
+        "service_required": true,
+        "patch_after": "2019-05-14",
+        "patch_guidance": "Install the May 2019 BlueKeep security update; enable NLA and restrict RDP exposure.",
+        "file_paths": [
+          "$env:windir\\System32\\termsrv.dll"
+        ]
+      },
+      "expected_signal": "Reports whether RDP appears vulnerable to BlueKeep and local TermService patch posture."
+    },
+    {
+      "id": "cve_2023_21554_msmq_queuejumper_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/msmq/cve_2023_21554_queuejumper",
+      "preferred_module": "auxiliary/scanner/msmq/cve_2023_21554_queuejumper",
+      "name": "CVE-2023-21554 - QueueJumper - MSMQ RCE Check",
+      "category": "msmq_queuejumper_rce",
+      "risk": "remote_rce",
+      "cve": [
+        "CVE-2023-21554"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant when Microsoft Message Queuing is installed and TCP/1801 is reachable.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 1801,
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 1801
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2023-21554",
+        "service_names": [
+          "MSMQ"
+        ],
+        "service_required": true,
+        "windows_features": [
+          "MSMQ-Server"
+        ],
+        "patch_after": "2023-04-11",
+        "patch_guidance": "Install the April 2023 Windows Server cumulative update or remove/disable MSMQ when unused.",
+        "file_paths": [
+          "$env:windir\\System32\\mqsvc.exe"
+        ]
+      },
+      "expected_signal": "Reports MSMQ endpoint reachability/check result and local MSMQ service/feature/patch posture."
+    },
+    {
+      "id": "cve_2021_34527_printnightmare_local_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "local",
+      "module": null,
+      "preferred_module": null,
+      "name": "CVE-2021-1675/CVE-2021-34527 Print Spooler safe local check",
+      "category": "print_spooler_rce_patch_posture",
+      "risk": "remote_code_execution_or_privilege_escalation",
+      "cve": [
+        "CVE-2021-1675",
+        "CVE-2021-34527"
+      ],
+      "severity": "HIGH",
+      "cvss": 8.8,
+      "check_method": "local_only",
+      "safe_to_run": true,
+      "server_2022_relevance": "The source file contains a Print Spooler exploit module, but remote DLL injection is not safe for service audit; local service/policy/patch checks are used instead.",
+      "default_datastore": {},
+      "local_variants": [],
+      "local_check": {
+        "cve_id": "CVE-2021-34527",
+        "service_names": [
+          "Spooler"
+        ],
+        "service_required": true,
+        "patch_after": "2021-07-06",
+        "patch_guidance": "Install PrintNightmare updates; disable Print Spooler on servers that do not require printing; restrict PointAndPrint policy.",
+        "file_paths": [
+          "$env:windir\\System32\\spoolsv.exe",
+          "$env:windir\\System32\\win32spl.dll"
+        ],
+        "registry_paths": [
+          "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint"
+        ]
+      },
+      "expected_signal": "Reports Spooler service state, PointAndPrint policy posture, and patch indicators without loading a DLL."
+    },
+    {
+      "id": "cve_2020_1472_zerologon_local_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "local",
+      "module": null,
+      "preferred_module": null,
+      "name": "CVE-2020-1472 Netlogon Zerologon safe local check",
+      "category": "netlogon_authentication_bypass",
+      "risk": "domain_controller_takeover",
+      "cve": [
+        "CVE-2020-1472"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 10.0,
+      "check_method": "local_only",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only on Domain Controllers. The Metasploit admin module can reset machine account secrets, so this profile uses local patch/role checks only.",
+      "default_datastore": {},
+      "local_variants": [],
+      "local_check": {
+        "cve_id": "CVE-2020-1472",
+        "service_names": [
+          "Netlogon"
+        ],
+        "service_required": true,
+        "patch_after": "2020-08-11",
+        "patch_guidance": "Install Zerologon updates and enforce secure RPC on domain controllers.",
+        "file_paths": [
+          "$env:windir\\System32\\netlogon.dll"
+        ],
+        "registry_paths": [
+          "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters"
+        ]
+      },
+      "expected_signal": "Reports whether host is a DC/Netlogon server and whether the secure RPC patch/policy posture is present."
+    },
+    {
+      "id": "cve_2022_26923_adcs_certifried_local_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "local",
+      "module": null,
+      "preferred_module": null,
+      "name": "CVE-2022-26923 AD CS Certifried safe local check",
+      "category": "adcs_certificate_services_privilege_escalation",
+      "risk": "privilege_escalation",
+      "cve": [
+        "CVE-2022-26923"
+      ],
+      "severity": "HIGH",
+      "cvss": 8.8,
+      "check_method": "local_only",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant when Active Directory Certificate Services is installed. The Metasploit module performs certificate abuse, so default scan only checks service/patch posture.",
+      "default_datastore": {},
+      "local_variants": [],
+      "local_check": {
+        "cve_id": "CVE-2022-26923",
+        "service_names": [
+          "CertSvc"
+        ],
+        "service_required": true,
+        "windows_features": [
+          "ADCS-Cert-Authority"
+        ],
+        "patch_after": "2022-05-10",
+        "patch_guidance": "Install the May 2022 security update and review AD CS template/domain controller certificate mapping settings.",
+        "file_paths": [
+          "$env:windir\\System32\\certsrv.exe"
+        ],
+        "registry_paths": [
+          "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\CertSvc\\Configuration"
+        ]
+      },
+      "expected_signal": "Reports AD CS service/role presence and patch/policy indicators."
+    },
+    {
+      "id": "exchange_proxylogon_cve_2021_26855_27065_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/exchange_proxylogon_rce",
+      "preferred_module": "exploits/windows/http/exchange_proxylogon_rce",
+      "name": "Microsoft Exchange ProxyLogon RCE",
+      "category": "exchange_proxylogon_rce",
+      "risk": "ssrf_filewrite_rce",
+      "cve": [
+        "CVE-2021-26855",
+        "CVE-2021-27065"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant when Microsoft Exchange Server OWA/ECP is exposed over HTTP/HTTPS.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2021-26855",
+        "service_names": [
+          "W3SVC",
+          "MSExchangeServiceHost",
+          "MSExchangeFrontEndTransport"
+        ],
+        "service_required": true,
+        "patch_after": "2021-03-02",
+        "patch_guidance": "Install March 2021 or later Exchange security updates and verify OWA/ECP exposure.",
+        "file_paths": [
+          "$env:ExchangeInstallPath\\bin\\Microsoft.Exchange.Clients.Owa2.Server.dll",
+          "$env:ExchangeInstallPath\\FrontEnd\\HttpProxy\\owa\\auth\\Current\\themes\\resources"
+        ]
+      },
+      "expected_signal": "Reports Exchange HTTP endpoint fingerprint/check result when supported and local Exchange service/patch posture."
+    },
+    {
+      "id": "exchange_proxyshell_cve_2021_31207_34473_34523_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/exchange_proxyshell_rce",
+      "preferred_module": "exploits/windows/http/exchange_proxyshell_rce",
+      "name": "Microsoft Exchange ProxyShell RCE",
+      "category": "exchange_proxyshell_rce",
+      "risk": "auth_bypass_rce",
+      "cve": [
+        "CVE-2021-31207",
+        "CVE-2021-34473",
+        "CVE-2021-34523"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to Exchange Client Access services exposed over HTTP/HTTPS.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2021-34473",
+        "service_names": [
+          "W3SVC",
+          "MSExchangeServiceHost",
+          "MSExchangeFrontEndTransport"
+        ],
+        "service_required": true,
+        "patch_after": "2021-07-13",
+        "patch_guidance": "Install July/August 2021 or later Exchange security updates.",
+        "file_paths": [
+          "$env:ExchangeInstallPath\\bin\\Microsoft.Exchange.Clients.Owa2.Server.dll",
+          "$env:ExchangeInstallPath\\bin\\Microsoft.Exchange.HttpProxy.dll"
+        ]
+      },
+      "expected_signal": "Reports Exchange ProxyShell check/fingerprint output and local Exchange patch indicators."
+    },
+    {
+      "id": "exchange_proxynotshell_cve_2022_41040_41082_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/exchange_proxynotshell_rce",
+      "preferred_module": "exploits/windows/http/exchange_proxynotshell_rce",
+      "name": "Microsoft Exchange ProxyNotShell RCE",
+      "category": "exchange_proxynotshell_rce",
+      "risk": "ssrf_to_rce",
+      "cve": [
+        "CVE-2022-41040",
+        "CVE-2022-41082"
+      ],
+      "severity": "HIGH",
+      "cvss": 8.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to Exchange OWA/ECP/PowerShell HTTP endpoints.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2022-41040",
+        "service_names": [
+          "W3SVC",
+          "MSExchangeServiceHost",
+          "MSExchangeFrontEndTransport"
+        ],
+        "service_required": true,
+        "patch_after": "2022-11-08",
+        "patch_guidance": "Install November 2022 or later Exchange security updates and restrict remote PowerShell exposure.",
+        "file_paths": [
+          "$env:ExchangeInstallPath\\bin\\Microsoft.Exchange.HttpProxy.dll",
+          "$env:ExchangeInstallPath\\bin\\Microsoft.Exchange.PowerShell.Configuration.dll"
+        ]
+      },
+      "expected_signal": "Reports ProxyNotShell endpoint/check output and local Exchange patch posture."
+    },
+    {
+      "id": "exchange_ecp_viewstate_cve_2020_0688_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/exchange_ecp_viewstate",
+      "preferred_module": "exploits/windows/http/exchange_ecp_viewstate",
+      "name": "Exchange Control Panel ViewState Deserialization",
+      "category": "exchange_ecp_viewstate_deserialization",
+      "risk": "viewstate_deserialization_rce",
+      "cve": [
+        "CVE-2020-0688"
+      ],
+      "severity": "HIGH",
+      "cvss": 8.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to Exchange ECP endpoints over HTTP/HTTPS.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/ecp/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/ecp/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2020-0688",
+        "service_names": [
+          "W3SVC",
+          "MSExchangeServiceHost"
+        ],
+        "service_required": true,
+        "patch_after": "2020-02-11",
+        "patch_guidance": "Install February 2020 or later Exchange security updates and rotate Exchange validation keys if needed.",
+        "file_paths": [
+          "$env:ExchangeInstallPath\\ClientAccess\\ecp\\web.config",
+          "$env:ExchangeInstallPath\\bin\\Microsoft.Exchange.Clients.Common.dll"
+        ]
+      },
+      "expected_signal": "Reports ECP reachability/check output and Exchange patch/config posture."
+    },
+    {
+      "id": "sharepoint_toolshell_cve_2025_53770_53771_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/sharepoint_toolpane_rce",
+      "preferred_module": "exploits/windows/http/sharepoint_toolpane_rce",
+      "name": "Microsoft SharePoint Server ToolPane Unauthenticated Remote Code Execution (aka ToolShell)",
+      "category": "sharepoint_toolshell_rce",
+      "risk": "unauthenticated_rce",
+      "cve": [
+        "CVE-2025-49704",
+        "CVE-2025-49706",
+        "CVE-2025-53770",
+        "CVE-2025-53771"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to Microsoft SharePoint Server web front-end services.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2025-53770",
+        "service_names": [
+          "W3SVC",
+          "SPTimerV4"
+        ],
+        "service_required": true,
+        "patch_after": "2025-07-01",
+        "patch_guidance": "Install the SharePoint security update that remediates the ToolShell chain and verify web front-end patch level.",
+        "file_paths": [
+          "$env:CommonProgramFiles\\Microsoft Shared\\Web Server Extensions\\16\\ISAPI\\Microsoft.SharePoint.dll"
+        ],
+        "registry_paths": [
+          "HKLM:\\SOFTWARE\\Microsoft\\Shared Tools\\Web Server Extensions\\16.0\\WSS"
+        ]
+      },
+      "expected_signal": "Reports SharePoint endpoint/check output when supported and local SharePoint service/patch posture."
+    },
+    {
+      "id": "sharepoint_dynamic_proxy_cve_2023_24955_29357_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/sharepoint_dynamic_proxy_generator_auth_bypass_rce",
+      "preferred_module": "exploits/windows/http/sharepoint_dynamic_proxy_generator_auth_bypass_rce",
+      "name": "Sharepoint Dynamic Proxy Generator Unauth RCE",
+      "category": "sharepoint_dynamic_proxy_auth_bypass_rce",
+      "risk": "auth_bypass_rce",
+      "cve": [
+        "CVE-2023-24955",
+        "CVE-2023-29357"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to Microsoft SharePoint Server web applications exposed over HTTP/HTTPS.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2023-29357",
+        "service_names": [
+          "W3SVC",
+          "SPTimerV4"
+        ],
+        "service_required": true,
+        "patch_after": "2023-06-13",
+        "patch_guidance": "Install June 2023 or later SharePoint security updates.",
+        "file_paths": [
+          "$env:CommonProgramFiles\\Microsoft Shared\\Web Server Extensions\\16\\ISAPI\\Microsoft.SharePoint.dll"
+        ],
+        "registry_paths": [
+          "HKLM:\\SOFTWARE\\Microsoft\\Shared Tools\\Web Server Extensions\\16.0\\WSS"
+        ]
+      },
+      "expected_signal": "Reports SharePoint dynamic proxy check output when supported and local patch/service posture."
+    },
+    {
+      "id": "ssrs_viewstate_cve_2020_0618_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/ssrs_navcorrector_viewstate",
+      "preferred_module": "exploits/windows/http/ssrs_navcorrector_viewstate",
+      "name": "SQL Server Reporting Services (SSRS) ViewState Deserialization",
+      "category": "ssrs_viewstate_deserialization_rce",
+      "risk": "viewstate_deserialization_rce",
+      "cve": [
+        "CVE-2020-0618"
+      ],
+      "severity": "HIGH",
+      "cvss": 8.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant to SQL Server Reporting Services web portals exposed over HTTP/HTTPS.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 80,
+        "SSL": false,
+        "TARGETURI": "/Reports/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/Reports/"
+        },
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/Reports/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2020-0618",
+        "service_names": [
+          "SQLServerReportingServices",
+          "ReportServer",
+          "W3SVC"
+        ],
+        "service_required": true,
+        "patch_after": "2020-02-11",
+        "patch_guidance": "Install the February 2020 SQL Server Reporting Services security update or later.",
+        "file_paths": [
+          "$env:ProgramFiles\\Microsoft SQL Server Reporting Services\\SSRS\\ReportServer\\bin\\ReportingServicesService.exe",
+          "$env:ProgramFiles\\Microsoft SQL Server\\MSRS*\\Reporting Services\\ReportServer\\bin\\ReportingServicesService.exe"
+        ]
+      },
+      "expected_signal": "Reports SSRS endpoint/check output and local SSRS service/patch posture."
+    },
+    {
+      "id": "cve_2012_2122_mysql_auth_bypass_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/mysql/mysql_authbypass_hashdump",
+      "preferred_module": "auxiliary/scanner/mysql/mysql_authbypass_hashdump",
+      "name": "MySQL Authentication Bypass Password Dump",
+      "category": "mysql_authentication_bypass",
+      "risk": "auth_bypass_hash_disclosure",
+      "cve": [
+        "CVE-2012-2122"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if MySQL/MariaDB is installed on the Windows Server; skip when port 3306 is closed.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 3306,
+        "USERNAME": "root",
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 3306
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2012-2122",
+        "service_names": [
+          "MySQL",
+          "MariaDB"
+        ],
+        "service_required": false,
+        "patch_after": "2012-06-09",
+        "patch_guidance": "Upgrade MySQL/MariaDB to a fixed version and restrict database exposure.",
+        "file_paths": [
+          "$env:ProgramFiles\\MySQL\\MySQL Server*\\bin\\mysqld.exe",
+          "$env:ProgramFiles\\MariaDB*\\bin\\mysqld.exe"
+        ]
+      },
+      "expected_signal": "Reports MySQL service reachability/auth-bypass check result and local version/service posture when installed."
+    },
+    {
+      "id": "cve_2013_1899_postgresql_flag_injection_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/postgres/postgres_dbname_flag_injection",
+      "preferred_module": "auxiliary/scanner/postgres/postgres_dbname_flag_injection",
+      "name": "PostgreSQL Database Name Command Line Flag Injection",
+      "category": "postgresql_flag_injection",
+      "risk": "command_line_flag_injection",
+      "cve": [
+        "CVE-2013-1899"
+      ],
+      "severity": "HIGH",
+      "cvss": 7.5,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if PostgreSQL is installed on the Windows Server; skip when port 5432 is closed.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 5432,
+        "USERNAME": "postgres",
+        "DATABASE": "postgres",
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 5432
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2013-1899",
+        "service_names": [
+          "postgresql-x64-16",
+          "postgresql-x64-15",
+          "postgresql"
+        ],
+        "service_required": false,
+        "patch_after": "2013-04-04",
+        "patch_guidance": "Upgrade PostgreSQL to a fixed version and restrict database exposure.",
+        "file_paths": [
+          "$env:ProgramFiles\\PostgreSQL\\*\\bin\\postgres.exe"
+        ]
+      },
+      "expected_signal": "Reports PostgreSQL reachability/check result and local PostgreSQL version posture when installed."
+    },
+    {
+      "id": "cve_2025_14847_mongodb_mongobleed_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/mongodb/cve_2025_14847_mongobleed",
+      "preferred_module": "auxiliary/scanner/mongodb/cve_2025_14847_mongobleed",
+      "name": "MongoDB Memory Disclosure (CVE-2025-14847) - Mongobleed",
+      "category": "mongodb_memory_disclosure",
+      "risk": "information_disclosure",
+      "cve": [
+        "CVE-2025-14847"
+      ],
+      "severity": "HIGH",
+      "cvss": 7.5,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if MongoDB is installed on the Windows Server; skip when port 27017 is closed.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 27017,
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 27017
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2025-14847",
+        "service_names": [
+          "MongoDB",
+          "MongoDB Server"
+        ],
+        "service_required": false,
+        "patch_after": "2025-01-01",
+        "patch_guidance": "Upgrade MongoDB to a version fixed for CVE-2025-14847 and restrict database exposure.",
+        "file_paths": [
+          "$env:ProgramFiles\\MongoDB\\Server\\*\\bin\\mongod.exe"
+        ]
+      },
+      "expected_signal": "Reports MongoDB reachability/check output and local version posture when installed."
+    },
+    {
+      "id": "cve_2018_10933_libssh_auth_bypass_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/ssh/libssh_auth_bypass",
+      "preferred_module": "auxiliary/scanner/ssh/libssh_auth_bypass",
+      "name": "libssh Authentication Bypass Scanner",
+      "category": "ssh_authentication_bypass",
+      "risk": "auth_bypass",
+      "cve": [
+        "CVE-2018-10933"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if an SSH service using libssh is present. Windows OpenSSH normally should not match, but this keeps service scan coverage broad.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 22,
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 22
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2018-10933",
+        "service_names": [
+          "sshd",
+          "OpenSSH SSH Server"
+        ],
+        "service_required": false,
+        "patch_after": "2018-10-17",
+        "patch_guidance": "Upgrade libssh/OpenSSH components; skip if Windows OpenSSH does not use vulnerable libssh.",
+        "file_paths": [
+          "$env:windir\\System32\\OpenSSH\\sshd.exe",
+          "$env:ProgramFiles\\OpenSSH\\sshd.exe"
+        ]
+      },
+      "expected_signal": "Reports SSH fingerprint/auth-bypass scanner output and local SSH service/version posture."
+    },
+    {
+      "id": "cve_2018_15473_ssh_user_enum_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/ssh/ssh_enumusers",
+      "preferred_module": "auxiliary/scanner/ssh/ssh_enumusers",
+      "name": "SSH Username Enumeration",
+      "category": "ssh_user_enumeration",
+      "risk": "user_enumeration",
+      "cve": [
+        "CVE-2018-15473"
+      ],
+      "severity": "MEDIUM",
+      "cvss": 5.3,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant if SSH is enabled on the Windows Server. Use low thread count and local authorization only.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 22,
+        "USER_FILE": "",
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 22
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2018-15473",
+        "service_names": [
+          "sshd",
+          "OpenSSH SSH Server"
+        ],
+        "service_required": false,
+        "patch_after": "2018-08-24",
+        "patch_guidance": "Patch OpenSSH and restrict SSH exposure.",
+        "file_paths": [
+          "$env:windir\\System32\\OpenSSH\\sshd.exe",
+          "$env:ProgramFiles\\OpenSSH\\sshd.exe"
+        ]
+      },
+      "expected_signal": "Reports SSH enumeration/fingerprint posture only when SSH is present."
+    },
+    {
+      "id": "ssl_tls_version_cve_scanner",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/ssl/ssl_version",
+      "preferred_module": "auxiliary/scanner/ssl/ssl_version",
+      "name": "SSL/TLS Version Detection",
+      "category": "ssl_tls_protocol_posture",
+      "risk": "weak_tls_protocol_or_cipher",
+      "cve": [
+        "CVE-2011-3389",
+        "CVE-2013-2566",
+        "CVE-2014-3566",
+        "CVE-2015-4000",
+        "CVE-2016-0800",
+        "CVE-2022-3358"
+      ],
+      "severity": "HIGH",
+      "cvss": 7.5,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Generic TLS service posture check for HTTPS/LDAPS/RDP gateway/SMTP TLS services hosted on Windows Server.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 443
+        },
+        {
+          "RPORT": 636
+        },
+        {
+          "RPORT": 8531
+        },
+        {
+          "RPORT": 5986
+        },
+        {
+          "RPORT": 3389
+        }
+      ],
+      "local_check": {
+        "cve_id": "TLS_PROTOCOL_POSTURE",
+        "service_names": [
+          "HTTP",
+          "W3SVC",
+          "TermService",
+          "WinRM"
+        ],
+        "service_required": false,
+        "patch_after": null,
+        "patch_guidance": "Disable SSLv2/SSLv3/TLS 1.0/TLS 1.1 where policy requires; prefer TLS 1.2/1.3 and strong cipher suites.",
+        "registry_paths": [
+          "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols"
+        ]
+      },
+      "expected_signal": "Reports SSL/TLS protocol/cipher posture and maps findings to known weak-protocol CVEs carried by the Metasploit module."
+    },
+    {
+      "id": "cve_2023_40044_wsftp_rce_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/ws_ftp_rce_cve_2023_40044",
+      "preferred_module": "exploits/windows/http/ws_ftp_rce_cve_2023_40044",
+      "name": "Progress Software WS_FTP Unauthenticated Remote Code Execution",
+      "category": "ws_ftp_server_rce",
+      "risk": "unauthenticated_rce",
+      "cve": [
+        "CVE-2023-40044"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 10.0,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if Progress WS_FTP Server is installed on the Windows Server.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2023-40044",
+        "service_names": [
+          "Ipswitch WS_FTP Server",
+          "WS_FTP Server"
+        ],
+        "service_required": false,
+        "patch_after": "2023-09-27",
+        "patch_guidance": "Upgrade WS_FTP Server to a fixed version; restrict admin/web interface exposure.",
+        "file_paths": [
+          "$env:ProgramFiles\\Progress\\WS_FTP Server\\*.exe",
+          "$env:ProgramFiles(x86)\\Progress\\WS_FTP Server\\*.exe"
+        ]
+      },
+      "expected_signal": "Reports WS_FTP HTTP endpoint/check output and local service/version posture when installed."
+    },
+    {
+      "id": "cve_2023_34362_moveit_sqli_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/moveit_cve_2023_34362",
+      "preferred_module": "exploits/windows/http/moveit_cve_2023_34362",
+      "name": "MOVEit SQL Injection vulnerability",
+      "category": "moveit_transfer_sqli_rce",
+      "risk": "sql_injection_to_rce_or_data_exposure",
+      "cve": [
+        "CVE-2023-34362"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if MOVEit Transfer is installed on the Windows Server.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2023-34362",
+        "service_names": [
+          "MOVEit Transfer",
+          "MOVEit DMZ SSH"
+        ],
+        "service_required": false,
+        "patch_after": "2023-05-31",
+        "patch_guidance": "Upgrade MOVEit Transfer to a fixed version and check for compromise indicators.",
+        "file_paths": [
+          "$env:ProgramFiles\\MOVEit\\Transfer\\*.exe",
+          "$env:ProgramFiles(x86)\\MOVEit\\Transfer\\*.exe"
+        ]
+      },
+      "expected_signal": "Reports MOVEit endpoint/check output and local service/version posture when installed."
+    },
+    {
+      "id": "cve_2024_28995_solarwinds_servu_fileread_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/gather/solarwinds_servu_fileread_cve_2024_28995",
+      "preferred_module": "auxiliary/gather/solarwinds_servu_fileread_cve_2024_28995",
+      "name": "SolarWinds Serv-U Unauthenticated Arbitrary File Read",
+      "category": "servu_ftp_file_read",
+      "risk": "arbitrary_file_read",
+      "cve": [
+        "CVE-2024-28995"
+      ],
+      "severity": "HIGH",
+      "cvss": 8.6,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if SolarWinds Serv-U FTP/MFT Server is installed on the Windows Server. Read-only gather module; keep target file/path constrained by policy.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "FILEPATH": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2024-28995",
+        "service_names": [
+          "Serv-U"
+        ],
+        "service_required": false,
+        "patch_after": "2024-06-05",
+        "patch_guidance": "Upgrade SolarWinds Serv-U to a fixed version and restrict web interface exposure.",
+        "file_paths": [
+          "$env:ProgramFiles\\RhinoSoft\\Serv-U\\Serv-U.exe",
+          "$env:ProgramFiles(x86)\\RhinoSoft\\Serv-U\\Serv-U.exe"
+        ]
+      },
+      "expected_signal": "Reports Serv-U endpoint reachability/file-read check posture and local service/version presence."
+    },
+    {
+      "id": "cve_2023_43177_crushftp_rce_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/multi/http/crushftp_rce_cve_2023_43177",
+      "preferred_module": "exploits/multi/http/crushftp_rce_cve_2023_43177",
+      "name": "CrushFTP Unauthenticated RCE",
+      "category": "crushftp_rce",
+      "risk": "unauthenticated_rce",
+      "cve": [
+        "CVE-2023-43177"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if CrushFTP is installed on the Windows Server.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 8080,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2023-43177",
+        "service_names": [
+          "CrushFTP Server"
+        ],
+        "service_required": false,
+        "patch_after": "2023-11-16",
+        "patch_guidance": "Upgrade CrushFTP to a fixed version and restrict admin/web interface exposure.",
+        "file_paths": [
+          "$env:ProgramFiles\\CrushFTP*\\CrushFTP.exe",
+          "$env:ProgramFiles\\CrushFTP*\\plugins\\*.jar"
+        ]
+      },
+      "expected_signal": "Reports CrushFTP endpoint/check output and local service/version posture when installed."
+    },
+    {
+      "id": "cve_2019_7214_smartermail_rce_check",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "exploits",
+      "module": "exploits/windows/http/smartermail_rce",
+      "preferred_module": "exploits/windows/http/smartermail_rce",
+      "name": "SmarterTools SmarterMail less than build 6985 - .NET Deserialization Remote Code Execution",
+      "category": "smartermail_deserialization_rce",
+      "risk": "deserialization_rce",
+      "cve": [
+        "CVE-2019-7214"
+      ],
+      "severity": "CRITICAL",
+      "cvss": 9.8,
+      "check_method": "msf_check_if_supported_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Relevant only if SmarterTools SmarterMail is installed on the Windows Server.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 443,
+        "SSL": true,
+        "TARGETURI": "/",
+        "VHOST": ""
+      },
+      "local_variants": [
+        {
+          "RPORT": 443,
+          "SSL": true,
+          "TARGETURI": "/"
+        },
+        {
+          "RPORT": 80,
+          "SSL": false,
+          "TARGETURI": "/"
+        }
+      ],
+      "local_check": {
+        "cve_id": "CVE-2019-7214",
+        "service_names": [
+          "SmarterMail Service",
+          "MAPISvc"
+        ],
+        "service_required": false,
+        "patch_after": "2019-02-01",
+        "patch_guidance": "Upgrade SmarterMail to a fixed build and restrict webmail/admin exposure.",
+        "file_paths": [
+          "$env:ProgramFiles(x86)\\SmarterTools\\SmarterMail\\Service\\MailService.exe",
+          "$env:ProgramFiles\\SmarterTools\\SmarterMail\\Service\\MailService.exe"
+        ]
+      },
+      "expected_signal": "Reports SmarterMail endpoint/check output and local service/version posture when installed."
+    },
+    {
+      "id": "smb_signing_not_required_detection",
+      "display_id_prefix": "WIN-SVC-CVE",
+      "module_type": "auxiliary",
+      "module": "auxiliary/scanner/smb/smb_version",
+      "preferred_module": "auxiliary/scanner/smb/smb_version",
+      "name": "SMB Signing Is Not Required Detection",
+      "category": "smb_signing",
+      "risk": "smb_signing_not_required",
+      "cve": [],
+      "severity": "MEDIUM",
+      "cvss": 5.0,
+      "check_method": "msf_and_local",
+      "safe_to_run": true,
+      "server_2022_relevance": "Checks if the remote SMB server requires packet signing, which prevents SMB relay attacks.",
+      "default_datastore": {
+        "RHOSTS": "127.0.0.1",
+        "RPORT": 445,
+        "THREADS": 1
+      },
+      "local_variants": [
+        {
+          "RPORT": 445
+        }
+      ],
+      "local_check": {
+        "cve_id": "SMB_SIGNING_NOT_REQUIRED",
+        "service_names": [
+          "LanmanServer"
+        ],
+        "service_required": true,
+        "patch_after": null,
+        "patch_guidance": "Enforce SMB signing in Windows group policy (Microsoft network server: Digitally sign communications (always) = Enabled).",
+        "file_paths": [],
+        "registry_paths": [
+          "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters"
+        ]
+      },
+      "expected_signal": "Reports signatures:optional or SMB Signing Is Not Required in Metasploit output or registry check."
+    }
+  ],
+  "excluded_or_dangerous_modules": [
+    {
+      "module": "auxiliary/dos/http/ms15_034_ulonglongadd",
+      "cve": [
+        "CVE-2015-1635"
+      ],
+      "reason": "DoS-oriented HTTP.sys probe; replaced by local-only CVE-2015-1635 patch/service check."
+    },
+    {
+      "module": "auxiliary/dos/windows/http/http_sys_accept_encoding_dos_cve_2021_31166",
+      "cve": [
+        "CVE-2021-31166"
+      ],
+      "reason": "DoS/crash-oriented HTTP.sys probe; replaced by local-only CVE-2021-31166 patch/service check."
+    },
+    {
+      "module": "exploits/windows/rdp/cve_2019_0708_bluekeep_rce",
+      "cve": [
+        "CVE-2019-0708"
+      ],
+      "reason": "Exploit module is not safe for audit; replaced by auxiliary/scanner/rdp/cve_2019_0708_bluekeep."
+    },
+    {
+      "module": "exploits/windows/dcerpc/cve_2021_1675_printnightmare",
+      "cve": [
+        "CVE-2021-1675",
+        "CVE-2021-34527"
+      ],
+      "reason": "Remote DLL injection is unsafe for service scan; replaced by local-only Spooler policy/patch check."
+    },
+    {
+      "module": "auxiliary/admin/dcerpc/cve_2020_1472_zerologon",
+      "cve": [
+        "CVE-2020-1472"
+      ],
+      "reason": "Can reset a domain controller machine account password; replaced by local-only Netlogon/DC patch check."
+    },
+    {
+      "module": "auxiliary/admin/dcerpc/cve_2022_26923_certifried",
+      "cve": [
+        "CVE-2022-26923"
+      ],
+      "reason": "Performs AD CS certificate abuse; replaced by local-only AD CS service/patch check."
+    },
+    {
+      "module": "exploits/windows/iis/iis_webdav_scstoragepathfromurl",
+      "cve": [
+        "CVE-2017-7269"
+      ],
+      "reason": "Legacy IIS 6 WebDAV overflow exploit; not applicable to Windows Server 2022+ default scope and unsafe to run."
+    },
+    {
+      "module": "exploits/windows/local/cve_2020_0796_smbghost",
+      "cve": [
+        "CVE-2020-0796"
+      ],
+      "reason": "Local privilege path is not a remote service scan; remote SMB check entry is used instead."
+    },
+    {
+      "module": "exploits/windows/local/ms16_016_webdav",
+      "cve": [
+        "CVE-2016-0051"
+      ],
+      "reason": "Local privilege escalation; not a service-facing scan module."
+    },
+    {
+      "module": "exploits/windows/fileformat/unc_url_cve_2025_33053",
+      "cve": [
+        "CVE-2025-33053"
+      ],
+      "reason": "Client-side fileformat/WebDAV coercion scenario; not a server service scan."
+    },
+    {
+      "module": "exploits/windows/fileformat/ms14_060_sandworm",
+      "cve": [
+        "CVE-2014-4114"
+      ],
+      "reason": "Client-side fileformat exploit; not a server service scan."
+    },
+    {
+      "module": "auxiliary/scanner/smb/smb_uninit_cred",
+      "cve": [
+        "CVE-2015-0240"
+      ],
+      "reason": "Samba-specific Netlogon issue; excluded for Windows Server service profile."
+    },
+    {
+      "module": "exploits/multi/samba/usermap_script",
+      "cve": [
+        "CVE-2007-2447"
+      ],
+      "reason": "Samba/Linux service exploit; excluded unless a separate Samba/Linux profile is created."
+    },
+    {
+      "module": "exploits/linux/samba/is_known_pipename",
+      "cve": [
+        "CVE-2017-7494"
+      ],
+      "reason": "Linux Samba module; not Windows Server service profile."
+    },
+    {
+      "module": "exploits/linux/smtp/exim_gethostbyname_bof",
+      "cve": [
+        "CVE-2015-0235"
+      ],
+      "reason": "Linux/Exim SMTP module; not Windows Server service profile."
+    },
+    {
+      "module": "exploits/unix/smtp/exim4_string_format",
+      "cve": [
+        "CVE-2010-4345"
+      ],
+      "reason": "Unix/Exim SMTP module; not Windows Server service profile."
+    },
+    {
+      "module": "exploits/linux/telnet/gnu_inetutils_auth_bypass",
+      "cve": [
+        "CVE-2026-24061"
+      ],
+      "reason": "Linux/Telnet module; not Windows Server service profile."
+    },
+    {
+      "module": "exploits/unix/dhcp/rhel_dhcp_client_command_injection",
+      "cve": [
+        "CVE-2018-1111"
+      ],
+      "reason": "DHCP client-side Unix/Linux issue; not Windows Server server-service scan."
+    },
+    {
+      "module": "auxiliary/dos/dns/bind_tkey",
+      "cve": [
+        "CVE-2015-5477"
+      ],
+      "reason": "BIND DNS DoS module; not Windows DNS Server and unsafe default."
+    },
+    {
+      "module": "auxiliary/dos/dns/bind_tsig",
+      "cve": [
+        "CVE-2016-2776"
+      ],
+      "reason": "BIND DNS DoS module; not Windows DNS Server and unsafe default."
+    },
+    {
+      "module": "auxiliary/scanner/http/wordpress_ghost_scanner",
+      "cve": [
+        "CVE-2015-0235"
+      ],
+      "reason": "WordPress/plugin application scan; not a Windows Server service baseline."
+    },
+    {
+      "module": "exploits/multi/http/wp_file_manager_rce",
+      "cve": [
+        "CVE-2020-25213"
+      ],
+      "reason": "WordPress plugin exploit; not a Windows Server service baseline."
+    },
+    {
+      "module": "exploits/multi/http/drupal_drupageddon",
+      "cve": [
+        "CVE-2014-3704"
+      ],
+      "reason": "Drupal application exploit; not a Windows Server service baseline."
+    },
+    {
+      "module": "exploits/multi/http/joomla_http_header_rce",
+      "cve": [
+        "CVE-2015-6835"
+      ],
+      "reason": "Joomla application exploit; not a Windows Server service baseline."
+    },
+    {
+      "module": "exploits/multi/http/atlassian_confluence_rce_cve_2023_22527",
+      "cve": [
+        "CVE-2023-22527"
+      ],
+      "reason": "Third-party collaboration app; excluded from base Windows Server service profile unless product is fingerprinted."
+    },
+    {
+      "module": "exploits/multi/http/jetbrains_teamcity_rce_cve_2023_42793",
+      "cve": [
+        "CVE-2023-42793"
+      ],
+      "reason": "Third-party CI/CD app; excluded from base profile unless product is fingerprinted."
+    },
+    {
+      "module": "exploits/multi/http/jenkins_metaprogramming",
+      "cve": [
+        "CVE-2018-1000408",
+        "CVE-2019-1003000"
+      ],
+      "reason": "Third-party CI/CD app; excluded from base profile unless product is fingerprinted."
+    },
+    {
+      "module": "auxiliary/admin/http/cisco_ios_xe_cli_exec_cve_2023_20198",
+      "cve": [
+        "CVE-2023-20198"
+      ],
+      "reason": "Network appliance module; not Windows Server service profile."
+    },
+    {
+      "module": "auxiliary/admin/http/cisco_ios_xe_os_exec_cve_2023_20273",
+      "cve": [
+        "CVE-2023-20198",
+        "CVE-2023-20273"
+      ],
+      "reason": "Network appliance module; not Windows Server service profile."
+    },
+    {
+      "module": "auxiliary/scanner/http/citrix_dir_traversal",
+      "cve": [
+        "CVE-2019-19781"
+      ],
+      "reason": "Network appliance/ADC module; not Windows Server service baseline."
+    },
+    {
+      "module": "auxiliary/scanner/http/citrix_bleed_cve_2023_4966",
+      "cve": [
+        "CVE-2023-4966"
+      ],
+      "reason": "Network appliance/ADC module; not Windows Server service baseline."
+    },
+    {
+      "module": "auxiliary/scanner/ike/cisco_ike_benigncertain",
+      "cve": [
+        "CVE-2016-6415"
+      ],
+      "reason": "Cisco IKE appliance issue; not Windows Server service profile."
+    },
+    {
+      "module": "auxiliary/scanner/ntp/ntp_monlist",
+      "cve": [
+        "CVE-2013-5211"
+      ],
+      "reason": "Generic NTP amplification check; excluded from CVE-focused Windows Server baseline."
+    },
+    {
+      "module": "auxiliary/scanner/upnp/ssdp_msearch",
+      "cve": [
+        "CVE-2012-5958",
+        "CVE-2012-5959",
+        "CVE-2013-0229",
+        "CVE-2013-0230"
+      ],
+      "reason": "UPnP consumer-device discovery; not Windows Server service baseline."
+    },
+    {
+      "module": "outside_modules/*",
+      "cve": [],
+      "reason": "Documentation, data files, db metadata, specs, scripts, and compiled PoCs are not directly runnable Metasploit service modules."
+    },
+    {
+      "module": "modules/exploits/*/local/*",
+      "cve": [],
+      "reason": "Local privilege escalation modules are excluded from remote/service scan; use PowerShell patch checks instead."
+    },
+    {
+      "module": "modules/exploits/*/fileformat/*",
+      "cve": [],
+      "reason": "Client-side fileformat exploits are not server service scans."
+    },
+    {
+      "module": "modules/exploits/*/browser/*",
+      "cve": [],
+      "reason": "Browser/client-side exploits are not Windows Server service checks."
+    },
+    {
+      "module": "modules/exploits/linux/*, modules/exploits/unix/*, modules/exploits/osx/*, modules/auxiliary/admin/android/*",
+      "cve": [],
+      "reason": "Non-Windows platform modules are excluded from this Windows Server profile."
+    }
+  ],
+  "pymetasploit3_runner_template": {
+    "description": "Load each module via MSFRPC, override target/port options, run auxiliary scanner/gather modules with run, and run exploit modules with check only. If an exploit module does not implement check, skip it and use the local_check block.",
+    "pseudo_code": [
+      "mod = client.modules.use('<module_type>', '<module path without prefix/>')",
+      "for k, v in default_datastore.items(): mod[k] = v",
+      "if module_type == 'exploit': console.write('use <module>\\nset ...\\ncheck\\n')",
+      "elif module_type == 'auxiliary': console.write('use <module>\\nset ...\\nrun\\n')",
+      "elif module_type == 'local': run PowerShell local_check only",
+      "if check is not supported or target service is absent: mark skipped/not_applicable; do not exploit"
+    ]
+  }
+}

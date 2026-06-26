@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from vulnmngsys_app.services.scan_result_mapper import LegacyScanPayloadMapper
 from vulnmngsys_app.services.scanflow.reconfig import RemediationPipeline
+from vulnmngsys_app.services.scanflow.msf_audit.reconfig import IisRemediationPipeline
 from vulnmngsys_app.models.protocols import RuleChecker, SystemCollector
 from vulnmngsys_app.adapters.backup_manager import backup_manager
 from vulnmngsys_app.adapters.checkers.checker_registry import default_checker_registry
@@ -23,3 +24,7 @@ def scan_dependencies(
 
 def remediation_pipeline() -> RemediationPipeline:
     return RemediationPipeline(backup=backup_manager, verifier=service_verifier)
+
+
+def iis_remediation_pipeline() -> IisRemediationPipeline:
+    return IisRemediationPipeline(backup=backup_manager, verifier=service_verifier)

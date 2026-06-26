@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from vulnmngsys_app.adapters.logging.system_logger import logger
 
-CRITICAL_SERVICES = ["W3SVC", "MSSQLSERVER"]
+CRITICAL_SERVICES = ["W3SVC", "IISADMIN", "MSSQLSERVER", "WMSvc", "MsDepSvc", "WsusService", "HTTP"]
 
 
 class ServiceVerifier:
