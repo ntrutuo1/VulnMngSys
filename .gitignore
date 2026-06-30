@@ -1,0 +1,91 @@
+# Python environment and cache
+.venv/
+venv/
+env/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node dependencies and frontend cache
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build and distribution outputs
+build_*
+build-*
+build/
+build-*/
+build_*/
+**/build/
+**/build-*/
+**/build_*/
+dist*
+dist/
+dist-*/
+dist_*/
+**/dist/
+**/dist-*/
+**/dist_*/
+out/
+release/
+releases/
+
+# Electron outputs and cache
+electron-dist/
+electron-dist.*/
+**/electron-dist/
+**/electron-dist.*/
+.electron-cache/
+.electron-builder-cache/
+**/.electron-cache/
+**/.electron-builder-cache/
+
+# Packaged executables and installer artifacts
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.pkg
+*.dll
+*.so
+*.dylib
+
+# PyInstaller artifacts
+*.spec
+
+# Generated reports, logs, and temporary files
+reports/
+**/reports/
+*.log
+*.tmp
+*.temp
+*.bak
+
+# Zip/package artifacts
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+
+# IDE/editor local files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Internal/local assistant metadata
+.agents/
+.codex/
