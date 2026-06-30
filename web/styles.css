@@ -1,0 +1,16 @@
+:root { color-scheme: light; }
+body { margin: 0; background: #f4f6f8; }
+#root { min-height: 100vh; }
+.app-shell { min-height: 100vh; }
+.brand { color: #fff; font-weight: 700; font-size: 18px; padding: 18px 20px; }
+.content { padding: 18px; max-height: 100vh; overflow: auto; }
+.toolbar { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 12px; }
+.stage-wrap { max-height: 140px; overflow: auto; }
+.findings { max-height: 360px; overflow: auto; }
+.metric { min-height: 96px; }
+.mono { font-family: Consolas, monospace; }
+@media (max-width: 760px) {
+  .content { padding: 12px; }
+  .ant-layout-sider { position: fixed !important; z-index: 10; height: 100vh; }
+  .ant-layout-sider-collapsed + .ant-layout { margin-left: 80px; }
+}

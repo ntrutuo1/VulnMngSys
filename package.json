@@ -1,0 +1,47 @@
+{
+  "name": "vulnmngsys",
+  "version": "0.1.0",
+  "description": "Windows Server vulnerability management MVP",
+  "author": "VulnMngSys",
+  "private": true,
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "dependencies": {
+    "@babel/standalone": "^7.24.8",
+    "antd": "5.19.4",
+    "dayjs": "^1.11.11",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "electron": "^31.2.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "vn.vulnmngsys.desktop",
+    "productName": "Desktop",
+    "files": [
+      "backend.py",
+      "vms_backend/**/*",
+      "electron-main.js",
+      "web/**/*",
+      "rules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Desktop.exe"
+    }
+  }
+}
