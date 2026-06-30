@@ -14,7 +14,7 @@ class ScanHistory:
     scan_type: str
     start_time: str = field(default_factory=utc_now)
     completed_at: str | None = None
-    score: int = 0
+    score: float = 0.0
     summary: dict = field(default_factory=dict)
 
     def update_status(self, status: str):

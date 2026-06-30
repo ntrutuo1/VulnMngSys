@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "1c8d9d227d0b",
+    "service": "Push_To_Install",
+    "id": "18.10.56.1",
+    "title": "Ensure 'Turn off Push To Install service' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\PushToInstall\\DisablePushToInstall",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PushToInstall' -Name 'DisablePushToInstall' -ErrorAction Stop).DisablePushToInstall } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Push to Install\\Turn off Push To Install service to 'Enabled'",
+    "reason": "In a high security managed environment, application installations should be managed centrally by IT staff, not by end users.",
+    "service_id": 18
+  }
+]

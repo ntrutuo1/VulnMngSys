@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "a1df64ee7d24",
+    "service": "Attachment_Manager",
+    "id": "19.7.5.1",
+    "title": "Ensure 'Do not preserve zone information in file attachments' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\SaveZoneInformation",
+    "expected": 2,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" -Name 'SaveZoneInformation' -ErrorAction SilentlyContinue).SaveZoneInformation; if ($val -ne 2) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Attachment Manager\\Do not preserve zone information in file attachments to 'Disabled'",
+    "reason": "A file that is downloaded from a computer in the Internet or Restricted Sites zone may be moved to a location that makes it appear safe, like an intranet file share, and executed by an unsuspecting user.",
+    "service_id": 19
+  },
+  {
+    "hash_id": "0814bee65e98",
+    "service": "Attachment_Manager",
+    "id": "19.7.5.2",
+    "title": "Ensure 'Notify antivirus programs when opening attachments' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\ScanWithAntiVirus",
+    "expected": 3,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" -Name 'ScanWithAntiVirus' -ErrorAction SilentlyContinue).ScanWithAntiVirus; if ($val -ne 3) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Attachment Manager\\Notify antivirus programs when opening attachments to 'Enabled'",
+    "reason": "Antivirus programs that do not perform on-access checks may not be able to scan downloaded files.",
+    "service_id": 19
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "3a59ecbba5fb",
+    "service": "Camera",
+    "id": "18.10.11.1",
+    "title": "Ensure 'Allow Use of Camera' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Camera\\AllowCamera",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Camera' -Name 'AllowCamera' -ErrorAction Stop).AllowCamera } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Camera\\Allow Use of Camera to 'Disabled'",
+    "reason": "Cameras in a high security environment can pose serious privacy and data exfiltration risks - they should be disabled to help mitigate that risk.",
+    "service_id": 18
+  }
+]

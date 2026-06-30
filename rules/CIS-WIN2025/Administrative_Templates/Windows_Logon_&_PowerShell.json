@@ -1,0 +1,58 @@
+[
+  {
+    "hash_id": "8f91c33728b8",
+    "service": "Windows_Logon_Options",
+    "id": "18.10.83.1",
+    "title": "Ensure 'Configure the transmission of the user's password in the content of MPR notifications sent by winlogon.' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableMPR",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'EnableMPR' -ErrorAction Stop).EnableMPR } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Logon Options\\Configure the transmission of the user's password in the content of MPR notifications sent by winlogon to 'Disabled'",
+    "reason": "The user's password field of MPR notifications should be empty to prevent abuse by threat actors.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "9ab75adc0147",
+    "service": "Windows_Logon_Options",
+    "id": "18.10.83.2",
+    "title": "Ensure 'Sign-in and lock last interactive user automatically after a restart' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\DisableAutomaticRestartSignOn",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'DisableAutomaticRestartSignOn' -ErrorAction Stop).DisableAutomaticRestartSignOn } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Logon Options\\Sign-in and lock last interactive user automatically after a restart to 'Disabled'",
+    "reason": "Disabling this feature will prevent the caching of user's credentials and unauthorized use of the device.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "d1cc69298a52",
+    "service": "Windows_PowerShell",
+    "id": "18.10.88.1",
+    "title": "Ensure 'Turn on PowerShell Script Block Logging' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\\EnableScriptBlockLogging",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging' -Name 'EnableScriptBlockLogging' -ErrorAction Stop).EnableScriptBlockLogging } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows PowerShell\\Turn on PowerShell Script Block Logging to 'Enabled'",
+    "reason": "This policy setting enables logging of all PowerShell script input to the Applications and Services Logs for forensic investigations.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "f45940c9e58a",
+    "service": "Windows_PowerShell",
+    "id": "18.10.88.2",
+    "title": "Ensure 'Turn on PowerShell Transcription' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription\\EnableTranscripting",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription' -Name 'EnableTranscripting' -ErrorAction Stop).EnableTranscripting } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows PowerShell\\Turn on PowerShell Transcription to 'Enabled'",
+    "reason": "PowerShell transcript input can be very valuable when performing forensic investigations of PowerShell attack incidents to determine what occurred.",
+    "service_id": 18
+  }
+]

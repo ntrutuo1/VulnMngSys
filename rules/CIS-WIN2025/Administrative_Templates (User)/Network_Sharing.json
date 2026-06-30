@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "0bb7a87b564c",
+    "service": "Network_Sharing",
+    "id": "19.7.26.1",
+    "title": "Ensure 'Prevent users from sharing files within their profile.' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoInplaceSharing",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" -Name 'NoInplaceSharing' -ErrorAction SilentlyContinue).NoInplaceSharing; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Network Sharing\\Prevent users from sharing files within their profile to 'Enabled'",
+    "reason": "If not properly configured, a user could accidentally share sensitive data with unauthorized users. In an enterprise managed environment, the company should provide a managed location for file sharing.",
+    "service_id": 19
+  }
+]

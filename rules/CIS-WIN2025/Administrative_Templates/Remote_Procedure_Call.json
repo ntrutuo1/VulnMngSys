@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "2110fff08e09",
+    "service": "Remote_Procedure_Call",
+    "id": "18.9.38.1",
+    "title": "Ensure 'Enable RPC Endpoint Mapper Client Authentication' is set to 'Enabled' (MS only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc\\EnableAuthEpResolution",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc' -Name 'EnableAuthEpResolution' -ErrorAction Stop).EnableAuthEpResolution } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Procedure Call\\Enable RPC Endpoint Mapper Client Authentication to 'Enabled'",
+    "reason": "Anonymous access to RPC services could result in accidental disclosure of information to unauthenticated users.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "1689055fcf88",
+    "service": "Remote_Procedure_Call",
+    "id": "18.9.38.2",
+    "title": "Ensure 'Restrict Unauthenticated RPC clients' is set to 'Enabled: Authenticated' (MS only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc\\RestrictRemoteClients",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc' -Name 'RestrictRemoteClients' -ErrorAction Stop).RestrictRemoteClients } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Remote Procedure Call\\Restrict Unauthenticated RPC clients to 'Enabled: Authenticated'",
+    "reason": "Unauthenticated RPC communication can create a security vulnerability.",
+    "service_id": 18
+  }
+]

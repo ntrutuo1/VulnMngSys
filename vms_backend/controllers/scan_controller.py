@@ -5,10 +5,11 @@ class ScanController:
         self.job_service = job_service
 
     def handle_service_scan(self, body: dict):
-        return 202, {"scanId": self.scan_service.start_service_scan(body.get("target", "localhost"))}
+        return 202, {"scanId": self.scan_service.start_service_scan(body.get("target"), body)}
+
 
     def handle_cis_audit(self, body: dict):
-        return 202, {"scanId": self.scan_service.start_cis_scan(body.get("target", "localhost"))}
+        return 202, {"scanId": self.scan_service.start_cis_scan(body.get("target"), body.get("benchmark"))}
 
     def handle_get_scan(self, scan_id: str):
         report = self.report_service.get_report(scan_id)

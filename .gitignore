@@ -7,3 +7,9 @@ release/*
 !release/Desktop.exe
 release-build-*/
 web/vendor/
+*.exe
+
+backend_dist
+backend_dist/*
+build
+build/*

@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "e064173fe717",
+    "service": "Software_Protection",
+    "id": "18.10.63.1",
+    "title": "Ensure 'Turn off KMS Client Online AVS Validation' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\CurrentVersion\\Software Protection Platform\\NoGenTicket",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\CurrentVersion\\Software Protection Platform' -Name 'NoGenTicket' -ErrorAction Stop).NoGenTicket } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Software Protection Platform\\Turn off KMS Client Online AVS Validation to 'Enabled'",
+    "reason": "This policy setting lets you opt-out of sending KMS client activation data to Microsoft automatically.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "bc953080e470",
+    "service": "Windows_Defender_SmartScreen",
+    "id": "18.10.77.2.1",
+    "title": "Ensure 'Configure Windows Defender SmartScreen' is set to 'Enabled: Warn and prevent bypass'",
+    "check_type": "Registry",
+    "registry_path": "",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { $a = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'EnableSmartScreen' -ErrorAction Stop).EnableSmartScreen; $b = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'ShellSmartScreenLevel' -ErrorAction Stop).ShellSmartScreenLevel; if ($a -eq 2 -and $b -eq 'Block') { 1 } else { 0 } } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Defender SmartScreen\\Explorer\\Configure Windows Defender SmartScreen to 'Enabled: Warn and prevent bypass'",
+    "reason": "Windows SmartScreen helps keep PCs safer by warning users before running unrecognized programs downloaded from the Internet.",
+    "service_id": 18
+  }
+]

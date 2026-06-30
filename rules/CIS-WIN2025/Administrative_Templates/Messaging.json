@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "15c2b01fe70a",
+    "service": "Messaging",
+    "id": "18.10.40.1",
+    "title": "Ensure 'Allow Message Service Cloud Sync' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Messaging\\AllowMessageSync",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Messaging' -Name 'AllowMessageSync' -ErrorAction Stop).AllowMessageSync } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Messaging\\Allow Message Service Cloud Sync to 'Disabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information.",
+    "service_id": 18
+  }
+]

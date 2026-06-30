@@ -1,14 +1,15 @@
 import argparse
 import json
 import os
+import socket
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
 from .adapters import MsfRpcAdapter, PowerShellAdapter
-from .config import WEB_DIR
+from .config import MSFCONSOLE_PATH, MSFRPCD_PATH, MSFRPC_HOST, MSFRPC_PORT, WEB_DIR
 from .controllers import DashboardController, HistoryController, ReportController, ScanController, SystemController
 from .database import SQLiteDatabase
-from .repositories import ScanRepository, StatRepository, SystemRepository
+from .repositories import CisRuleRepository, CveRepository, ScanRepository, StatRepository, SystemRepository
 from .services import CisAuditEngine, DashboardService, JobService, MetasploitEngine, ReportService, ScanService, SystemService
 
 
@@ -16,11 +17,30 @@ class Application:
     def __init__(self):
         self.database = SQLiteDatabase()
         self.database.initialize()
+        self.msf_available = MSFCONSOLE_PATH.exists()
+        self.msf_path = str(MSFCONSOLE_PATH)
+        self.msfrpcd_available = MSFRPCD_PATH.exists()
+        self.msfrpcd_path = str(MSFRPCD_PATH)
         powershell = PowerShellAdapter()
         scan_repository = ScanRepository(self.database)
+        import threading
+        
+        rule_repository = CisRuleRepository(self.database)
+        cve_repository = CveRepository(self.database)
+        
+        def background_init():
+            try:
+                rule_repository.import_from_files()
+                cve_repository.import_dataset()
+            except Exception as e:
+                print("Failed background database initialization:", e, flush=True)
+                
+        threading.Thread(target=background_init, daemon=True).start()
+        
+        self.rule_repository = rule_repository
         job_service = JobService()
-        cis_engine = CisAuditEngine(scan_repository, job_service, powershell)
-        metasploit_engine = MetasploitEngine(scan_repository, job_service, powershell, MsfRpcAdapter())
+        cis_engine = CisAuditEngine(scan_repository, rule_repository, job_service, powershell)
+        metasploit_engine = MetasploitEngine(scan_repository, cve_repository, job_service, powershell, MsfRpcAdapter())
         report_service = ReportService(scan_repository)
         self.scan_controller = ScanController(ScanService(scan_repository, job_service, cis_engine, metasploit_engine), report_service, job_service)
         self.history_controller = HistoryController(scan_repository)
@@ -95,15 +115,50 @@ def create_handler(application: Application):
                 return application.report_controller.handle_get_report(parsed.path.split("/")[-1])
             if parsed.path == "/api/stats/dashboard":
                 return application.dashboard_controller.handle_get_dashboard()
+            if parsed.path == "/api/cis/benchmarks":
+                return 200, application.rule_repository.list_benchmarks()
+            if parsed.path == "/api/status":
+                return 200, {
+                    "ready": True,
+                    "backend_host": os.environ.get("VMS_HOST", ""),
+                    "msf_available": application.msf_available,
+                    "msf_path": application.msf_path,
+                    "msfrpcd_available": application.msfrpcd_available,
+                    "msfrpcd_path": application.msfrpcd_path,
+                    "msfrpc_host": MSFRPC_HOST,
+                    "msfrpc_port": MSFRPC_PORT,
+                }
             return 404, {"error": "not_found"}
 
     return ApiHandler
 
 
+def get_default_host():
+    env_host = os.environ.get("VMS_HOST")
+    if env_host:
+        return env_host
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.connect(("8.8.8.8", 80))
+            host = sock.getsockname()[0]
+            if host and not host.startswith("127."):
+                return host
+    except OSError:
+        pass
+    try:
+        host = socket.gethostbyname(socket.gethostname())
+        if host and not host.startswith("127."):
+            return host
+    except OSError:
+        pass
+    return "127.0.0.1"
+
+
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--host", default=get_default_host())
     parser.add_argument("--port", type=int, default=int(os.environ.get("VMS_PORT", "8765")))
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), create_handler(Application()))
-    print(f"http://127.0.0.1:{args.port}", flush=True)
+    server = ThreadingHTTPServer((args.host, args.port), create_handler(Application()))
+    print(f"http://{args.host}:{args.port}", flush=True)
     server.serve_forever()

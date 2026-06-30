@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "9f5f7eeb0094",
+    "service": "Cloud_Content",
+    "id": "18.10.13.1",
+    "title": "Ensure 'Turn off cloud consumer account state content' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableConsumerAccountStateContent",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent' -Name 'DisableConsumerAccountStateContent' -ErrorAction Stop).DisableConsumerAccountStateContent } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Turn off cloud consumer account state content to 'Enabled'",
+    "reason": "The use of consumer accounts in an enterprise managed environment is not good security practice as it could lead to possible data leakage.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "ccec2ec75fc2",
+    "service": "Cloud_Content",
+    "id": "18.10.13.2",
+    "title": "Ensure 'Turn off cloud optimized content' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableCloudOptimizedContent",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent' -Name 'DisableCloudOptimizedContent' -ErrorAction Stop).DisableCloudOptimizedContent } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Turn off cloud optimized content to 'Enabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information.",
+    "service_id": 18
+  }
+]

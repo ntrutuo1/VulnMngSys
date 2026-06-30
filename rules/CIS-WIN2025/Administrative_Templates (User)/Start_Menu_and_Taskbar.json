@@ -1,0 +1,16 @@
+[
+  {
+    "hash_id": "b33d24b40fb3",
+    "service": "Start_Menu_and_Taskbar",
+    "id": "19.5.1.1",
+    "title": "Ensure 'Turn off toast notifications on the lock screen' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\\NoToastApplicationNotificationOnLockScreen",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\" -Name 'NoToastApplicationNotificationOnLockScreen' -ErrorAction SilentlyContinue).NoToastApplicationNotificationOnLockScreen; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Start Menu and Taskbar\\Notifications\\Turn off toast notifications on the lock screen to 'Enabled'",
+    "reason": "While this feature can be handy for users, applications that provide toast notifications might display sensitive personal or business data while the device is left unattended.",
+    "service_id": 19
+  }
+]

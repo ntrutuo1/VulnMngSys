@@ -1,0 +1,44 @@
+[
+  {
+    "hash_id": "5a7eed27b82d",
+    "service": "Search",
+    "id": "18.10.59.2",
+    "title": "Ensure 'Allow Cloud Search' is set to 'Enabled: Disable Cloud Search'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowCloudSearch",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'AllowCloudSearch' -ErrorAction Stop).AllowCloudSearch } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow Cloud Search to 'Enabled: Disable Cloud Search'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "56e9f5808f1d",
+    "service": "Search",
+    "id": "18.10.59.3",
+    "title": "Ensure 'Allow indexing of encrypted files' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowIndexingEncryptedStoresOrItems",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'AllowIndexingEncryptedStoresOrItems' -ErrorAction Stop).AllowIndexingEncryptedStoresOrItems } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow indexing of encrypted files to 'Disabled'",
+    "reason": "Indexing and allowing users to search encrypted files could potentially reveal confidential data stored within the encrypted files.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "784abc9a4155",
+    "service": "Search",
+    "id": "18.10.59.4",
+    "title": "Ensure 'Allow search highlights' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\EnableDynamicContentInWSB",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'EnableDynamicContentInWSB' -ErrorAction Stop).EnableDynamicContentInWSB } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Search\\Allow search highlights to 'Disabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information.",
+    "service_id": 18
+  }
+]

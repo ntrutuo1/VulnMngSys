@@ -76,8 +76,8 @@ class ScanRepository:
         with self.database.session() as connection:
             connection.executemany(
                 """
-                INSERT INTO cis_findings(id,scan_id,rule_id,is_passed,registry_key,title,evidence,status)
-                VALUES(?,?,?,?,?,?,?,?)
+                INSERT INTO cis_findings(id,scan_id,rule_id,is_passed,registry_key,title,evidence,status,remediation)
+                VALUES(?,?,?,?,?,?,?,?,?)
                 """,
                 [
                     (
@@ -89,6 +89,7 @@ class ScanRepository:
                         finding.title,
                         finding.evidence,
                         finding.status,
+                        finding.remediation,
                     )
                     for finding in findings
                 ],
@@ -96,7 +97,7 @@ class ScanRepository:
 
     def list_scans(self, limit: int):
         with self.database.session() as connection:
-            return [
+            rows = [
                 dict(row)
                 for row in connection.execute(
                     """
@@ -110,6 +111,9 @@ class ScanRepository:
                     (limit,),
                 )
             ]
+            for row in rows:
+                row["summary"] = json.loads(row["summary"] or "{}")
+            return rows
 
     def find_scan(self, scan_id: str):
         with self.database.session() as connection:
@@ -123,7 +127,11 @@ class ScanRepository:
                 """,
                 (scan_id,),
             ).fetchone()
-            return dict(row) if row else None
+            if not row:
+                return None
+            result = dict(row)
+            result["summary"] = json.loads(result["summary"] or "{}")
+            return result
 
     def list_findings(self, scan_id: str):
         with self.database.session() as connection:
@@ -141,7 +149,7 @@ class ScanRepository:
                     "severity": "low" if row["is_passed"] else "medium",
                     "title": row["title"],
                     "evidence": row["evidence"],
-                    "fix": "Apply CIS recommendation and scan again.",
+                    "fix": row["remediation"] or "Apply CIS recommendation and scan again.",
                 }
                 for row in connection.execute("SELECT * FROM cis_findings WHERE scan_id=?", (scan_id,))
             ]

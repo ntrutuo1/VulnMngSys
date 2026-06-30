@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <title>VulnMngSys — Starting…</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080d1a;
+      color: #dce8ff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* ── Radar animation ── */
+    .radar-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radar-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(79, 131, 255, 0.25);
+      animation: radar-expand 3s ease-out infinite;
+    }
+
+    .radar-ring:nth-child(1) { width: 60px;  height: 60px;  animation-delay: 0s;    border-color: rgba(79,131,255,0.6); }
+    .radar-ring:nth-child(2) { width: 100px; height: 100px; animation-delay: 0.6s;  border-color: rgba(79,131,255,0.4); }
+    .radar-ring:nth-child(3) { width: 140px; height: 140px; animation-delay: 1.2s;  border-color: rgba(79,131,255,0.25); }
+    .radar-ring:nth-child(4) { width: 180px; height: 180px; animation-delay: 1.8s;  border-color: rgba(79,131,255,0.12); }
+
+    @keyframes radar-expand {
+      0%   { transform: scale(0.6); opacity: 0; }
+      20%  { opacity: 1; }
+      80%  { opacity: 0.3; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+
+    /* ── Center logo ── */
+    .logo-circle {
+      position: relative;
+      z-index: 10;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #4f83ff 0%, #7c5cfc 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 40px rgba(79, 131, 255, 0.5), 0 0 80px rgba(79, 131, 255, 0.2);
+      animation: logo-pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes logo-pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(79,131,255,0.4), 0 0 60px rgba(79,131,255,0.15); }
+      50%       { box-shadow: 0 0 50px rgba(79,131,255,0.7), 0 0 100px rgba(79,131,255,0.3); }
+    }
+
+    /* ── Scan sweep line ── */
+    .sweep-wrap {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      overflow: hidden;
+      animation: sweep-rotate 4s linear infinite;
+    }
+
+    @keyframes sweep-rotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .sweep-gradient {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 90px; height: 2px;
+      transform-origin: left center;
+      background: linear-gradient(to right, rgba(79,131,255,0.7), transparent);
+    }
+
+    /* ── Text ── */
+    .app-name {
+      font-size: 26px;
+      font-weight: 700;
+      color: #dce8ff;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .app-sub {
+      font-size: 12px;
+      color: #3a4a6a;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 48px;
+    }
+
+    /* ── Status ── */
+    .status-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 320px;
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: #7d8eb0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4f83ff;
+      flex-shrink: 0;
+      animation: blink-dot 1.2s ease-in-out infinite;
+      box-shadow: 0 0 6px #4f83ff;
+    }
+
+    .status-dot.done {
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+      animation: none;
+    }
+
+    .status-dot.warn {
+      background: #f5c518;
+      box-shadow: 0 0 6px #f5c518;
+      animation: none;
+    }
+
+    @keyframes blink-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* ── Progress bar ── */
+    .progress-track {
+      width: 320px;
+      height: 3px;
+      background: rgba(79,131,255,0.12);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #4f83ff, #7c5cfc);
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px rgba(79,131,255,0.5);
+    }
+
+    /* ── Steps list ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      width: 300px;
+      margin-top: 4px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11.5px;
+      color: #3a4a6a;
+      transition: color 0.3s ease;
+    }
+
+    .step.active { color: #7d8eb0; }
+    .step.done   { color: #10b981; }
+
+    .step-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid #2d3a55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .step.active .step-icon {
+      border-color: #4f83ff;
+      background: rgba(79,131,255,0.12);
+      animation: step-spin 1.5s linear infinite;
+    }
+
+    .step.done .step-icon {
+      border-color: #10b981;
+      background: rgba(16,185,129,0.12);
+      color: #10b981;
+    }
+
+    @keyframes step-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── Footer ── */
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      font-size: 10px;
+      color: #1e2a40;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <!-- Radar -->
+  <div class="radar-wrap">
+    <div class="radar-ring"></div>
+    <div class="radar-ring"></div>
+    <div class="radar-ring"></div>
+    <div class="radar-ring"></div>
+    <div class="sweep-wrap">
+      <div class="sweep-gradient"></div>
+    </div>
+    <div class="logo-circle">
+      <svg width="28" height="28" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1.5 2 3.8v3.9C2 11.2 5 14 8 14.5 11 14 14 11.2 14 7.7V3.8Z"
+          stroke="white" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="m5.5 8 1.6 1.6L11 5.8"
+          stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="app-name">VulnMngSys</div>
+  <div class="app-sub">Windows Security Platform</div>
+
+  <!-- Status -->
+  <div class="status-wrap">
+    <div class="status-text">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Initializing…</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width: 8%"></div>
+    </div>
+
+    <!-- Boot steps -->
+    <div class="steps">
+      <div class="step active" id="step-backend">
+        <div class="step-icon">⟳</div>
+        <span>Starting Python backend</span>
+      </div>
+      <div class="step" id="step-db">
+        <div class="step-icon"></div>
+        <span>Loading database &amp; rule sets</span>
+      </div>
+      <div class="step" id="step-msf">
+        <div class="step-icon"></div>
+        <span>Verifying Metasploit framework</span>
+      </div>
+      <div class="step" id="step-ui">
+        <div class="step-icon"></div>
+        <span>Launching interface</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">VulnMngSys &bull; Windows Security &bull; v0.1.0</div>
+
+  <script>
+    // Called by electron-main.js via webContents.executeJavaScript()
+    function setBootStatus(text, percent, stepId, stepState) {
+      const el   = document.getElementById('statusText');
+      const fill = document.getElementById('progressFill');
+      const dot  = document.getElementById('statusDot');
+
+      if (el)   el.textContent  = text;
+      if (fill) fill.style.width = percent + '%';
+
+      // dot state
+      if (dot) {
+        dot.className = 'status-dot';
+        if (stepState === 'done') dot.classList.add('done');
+        if (stepState === 'warn') dot.classList.add('warn');
+      }
+
+      // Update step indicators
+      if (stepId) {
+        const steps = ['step-backend','step-db','step-msf','step-ui'];
+        const idx   = steps.indexOf(stepId);
+        steps.forEach((id, i) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (i < idx) {
+            el.className = 'step done';
+            el.querySelector('.step-icon').textContent = '✓';
+          } else if (i === idx) {
+            el.className = 'step active';
+            const icon = el.querySelector('.step-icon');
+            icon.textContent = stepState === 'done' ? '✓' : stepState === 'warn' ? '⚠' : '⟳';
+            if (stepState === 'done') el.className = 'step done';
+          }
+        });
+      }
+    }
+
+    // Auto-animate first step while waiting for Electron to call us
+    let autoTick = 0;
+    const dots = [' .', ' ..', ' ...', ''];
+    const autoTimer = setInterval(() => {
+      const el = document.getElementById('statusText');
+      if (el && el.textContent.startsWith('Initializing')) {
+        el.textContent = 'Initializing' + dots[autoTick % dots.length];
+        autoTick++;
+      } else {
+        clearInterval(autoTimer);
+      }
+    }, 500);
+  </script>
+</body>
+</html>

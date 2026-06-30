@@ -1,0 +1,44 @@
+[
+  {
+    "hash_id": "b063fd0fe3e9",
+    "service": "Security_Account_Manager",
+    "id": "18.9.41.1",
+    "title": "Ensure 'Configure validation of ROCA-vulnerable WHfB keys during authentication' is set to 'Enabled: Block' (DC only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\SAM\\SamNGCKeyROCAValidation",
+    "expected": 2,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\SAM' -Name 'SamNGCKeyROCAValidation' -ErrorAction Stop).SamNGCKeyROCAValidation } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Security Account Manager\\Configure validation of ROCA-vulnerable WHfB keys during authentication to 'Enabled: Block'",
+    "reason": "The 'Return of Coppersmith's attack' (ROCA) vulnerability is a cryptographic weakness. A threat actor can reveal secret keys on certified devices using this library.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "8a222d920cc1",
+    "service": "Security_Account_Manager",
+    "id": "18.9.41.2",
+    "title": "Ensure 'Configure SAM change password RPC methods policy' is set to 'Enabled: Allow strong encryption change password RPC method only' (DC only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\SAM\\SamrChangeUserPasswordApiPolicy",
+    "expected": 2,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\SAM' -Name 'SamrChangeUserPasswordApiPolicy' -ErrorAction Stop).SamrChangeUserPasswordApiPolicy } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Security Account Manager\\Configure SAM change password RPC methods policy to 'Enabled: Allow strong encryption change password RPC method only'",
+    "reason": "User passwords stored in the SAM should only be changed from a Domain Controller using secure methods.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "275f3b41c540",
+    "service": "Security_Account_Manager",
+    "id": "18.9.41.3",
+    "title": "Ensure 'Configure SAM change password RPC methods policy' is set to 'Enabled: Block all change password RPC methods' (MS only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\SAM\\SamrChangeUserPasswordApiPolicy",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\SAM' -Name 'SamrChangeUserPasswordApiPolicy' -ErrorAction Stop).SamrChangeUserPasswordApiPolicy } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Security Account Manager\\Configure SAM change password RPC methods policy to 'Enabled: Block all change password RPC methods'",
+    "reason": "User passwords stored in the SAM should only be changed from a Domain Controller using secure methods. Member servers should block this.",
+    "service_id": 18
+  }
+]

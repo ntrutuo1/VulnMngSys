@@ -8,6 +8,7 @@ class CisFinding:
     title: str
     evidence: str
     status: str
+    remediation: str = ""
     rule_id: str = ""
     is_passed: bool = False
     registry_key: str = ""

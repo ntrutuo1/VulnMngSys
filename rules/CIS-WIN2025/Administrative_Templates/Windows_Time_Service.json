@@ -1,0 +1,31 @@
+
+[
+ {
+    "hash_id": "",
+    "service": "Windows_Time_Service",
+    "id": "18.9.53.1.1",
+    "title": "Ensure 'Enable Windows NTP Client' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient\\Enabled",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient' -Name 'Enabled' -ErrorAction Stop).Enabled } catch { 0 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Windows Time Service\\Time Providers\\Enable Windows NTP Client to 'Enabled'",
+    "reason": "A reliable and accurate account of time is important for a number of services and security requirements, including distributed applications, authentication services, and logging services.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "",
+    "service": "Windows_Time_Service",
+    "id": "18.9.53.1.2",
+    "title": "Ensure 'Enable Windows NTP Server' is set to 'Disabled' (MS only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpServer\\Enabled",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpServer' -Name 'Enabled' -ErrorAction Stop).Enabled } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Windows Time Service\\Time Providers\\Enable Windows NTP Server to 'Disabled'",
+    "reason": "The configuration of proper time synchronization is critically important. Member servers and workstations should not typically be time sources for other clients.",
+    "service_id": 18
+  }
+]

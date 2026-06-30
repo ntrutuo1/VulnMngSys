@@ -1,0 +1,72 @@
+[
+  {
+    "hash_id": "d60ac1ec972c",
+    "service": "Cloud_Content",
+    "id": "19.7.8.1",
+    "title": "Ensure 'Configure Windows spotlight on lock screen' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent\\ConfigureWindowsSpotlight",
+    "expected": 2,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" -Name 'ConfigureWindowsSpotlight' -ErrorAction SilentlyContinue).ConfigureWindowsSpotlight; if ($val -ne 2) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Configure Windows spotlight on lock screen to 'Disabled'",
+    "reason": "Enabling this setting will help ensure your data is not shared with any third party. The Windows Spotlight feature collects data and uses that data to display images from the internet.",
+    "service_id": 19
+  },
+  {
+    "hash_id": "7a243a6756de",
+    "service": "Cloud_Content",
+    "id": "19.7.8.2",
+    "title": "Ensure 'Do not suggest third-party content in Windows spotlight' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent\\DisableThirdPartySuggestions",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" -Name 'DisableThirdPartySuggestions' -ErrorAction SilentlyContinue).DisableThirdPartySuggestions; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Do not suggest third-party content in Windows spotlight to 'Enabled'",
+    "reason": "Enabling this setting will help ensure your data is not shared with any third party.",
+    "service_id": 19
+  },
+  {
+    "hash_id": "53d98fb58d9f",
+    "service": "Cloud_Content",
+    "id": "19.7.8.3",
+    "title": "Ensure 'Do not use diagnostic data for tailored experiences' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent\\DisableTailoredExperiencesWithDiagnosticData",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" -Name 'DisableTailoredExperiencesWithDiagnosticData' -ErrorAction SilentlyContinue).DisableTailoredExperiencesWithDiagnosticData; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Do not use diagnostic data for tailored experiences to 'Enabled'",
+    "reason": "Tracking, collection and utilization of personalized data is a privacy and security issue that is of concern to many organizations.",
+    "service_id": 19
+  },
+  {
+    "hash_id": "6ad2d7662b02",
+    "service": "Cloud_Content",
+    "id": "19.7.8.4",
+    "title": "Ensure 'Turn off all Windows spotlight features' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent\\DisableWindowsSpotlightFeatures",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" -Name 'DisableWindowsSpotlightFeatures' -ErrorAction SilentlyContinue).DisableWindowsSpotlightFeatures; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Turn off all Windows spotlight features to 'Enabled'",
+    "reason": "Enabling this setting will help ensure your data is not shared with any third party.",
+    "service_id": 19
+  },
+  {
+    "hash_id": "9c71ee2e0cc0",
+    "service": "Cloud_Content",
+    "id": "19.7.8.5",
+    "title": "Ensure 'Turn off Spotlight collection on Desktop' is set to 'Enabled'",
+    "check_type": "Registry",
+    "registry_path": "HKU\\[USER SID]\\Software\\Policies\\Microsoft\\Windows\\CloudContent\\DisableSpotlightCollectionOnDesktop",
+    "expected": 1,
+    "operator": "==",
+    "powershell_check": "$pass = 1; Get-ChildItem 'Registry::HKEY_USERS\\S-1-5-21-*' | Where-Object { $_.PSChildName -notmatch '_Classes$' } | ForEach-Object { $val = (Get-ItemProperty -Path \"$($_.PSPath)\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" -Name 'DisableSpotlightCollectionOnDesktop' -ErrorAction SilentlyContinue).DisableSpotlightCollectionOnDesktop; if ($val -ne 1) { $pass = 0 } }; $pass",
+    "remediation": "Set GP: User Configuration\\Policies\\Administrative Templates\\Windows Components\\Cloud Content\\Turn off Spotlight collection on Desktop to 'Enabled'",
+    "reason": "Enabling this setting will help ensure your data is not shared with any third party. The Windows Spotlight feature collects data and uses that data to display images from Microsoft.",
+    "service_id": 19
+  }
+]

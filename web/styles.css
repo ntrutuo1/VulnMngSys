@@ -1,16 +1,207 @@
-:root { color-scheme: light; }
-body { margin: 0; background: #f4f6f8; }
-#root { min-height: 100vh; }
-.app-shell { min-height: 100vh; }
-.brand { color: #fff; font-weight: 700; font-size: 18px; padding: 18px 20px; }
-.content { padding: 18px; max-height: 100vh; overflow: auto; }
-.toolbar { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 12px; }
-.stage-wrap { max-height: 140px; overflow: auto; }
-.findings { max-height: 360px; overflow: auto; }
-.metric { min-height: 96px; }
-.mono { font-family: Consolas, monospace; }
-@media (max-width: 760px) {
-  .content { padding: 12px; }
-  .ant-layout-sider { position: fixed !important; z-index: 10; height: 100vh; }
-  .ant-layout-sider-collapsed + .ant-layout { margin-left: 80px; }
+/* ══════════════════════════════════════════════════════════
+   VulnMngSys — Dark Security Theme
+   ══════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0; padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #080d1a;
+  color: #e2e8f5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
+
+#root { height: 100vh; overflow: hidden; }
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100,130,255,0.18); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(100,130,255,0.35); }
+
+/* ── Animations ────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes gradient-slide {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scan-ping {
+  0%   { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* ── Ant Design dark overrides ─────────────────────────── */
+
+/* Table */
+.ant-table-wrapper .ant-table { background: transparent !important; }
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: #3d4d6b !important;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: rgba(79,131,255,0.06) !important;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  border-bottom-color: rgba(100,130,255,0.07) !important;
+  transition: background 0.12s;
+}
+
+/* Pagination */
+.ant-pagination .ant-pagination-item a { color: #6b7a99; }
+.ant-pagination .ant-pagination-item:hover a { color: #4f83ff; }
+.ant-pagination .ant-pagination-item-active a { color: #4f83ff; }
+
+/* Form */
+.ant-form-item .ant-form-item-label > label {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #6b7a99 !important;
+}
+
+/* Progress */
+.ant-progress .ant-progress-inner { background: #192035 !important; }
+
+/* Tooltip */
+.ant-tooltip .ant-tooltip-inner {
+  background: #1e2440 !important;
+  border: 1px solid rgba(100,130,255,0.18) !important;
+  font-size: 11.5px !important;
+}
+.ant-tooltip .ant-tooltip-arrow-content { background: #1e2440 !important; }
+
+/* Message */
+.ant-message-notice-content {
+  background: #1e2440 !important;
+  border: 1px solid rgba(100,130,255,0.2) !important;
+  color: #e2e8f5 !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+}
+
+/* Select dropdown */
+.ant-select-dropdown {
+  border: 1px solid rgba(100,130,255,0.15) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+}
+
+/* Button primary */
+.ant-btn-primary {
+  background: linear-gradient(135deg, #4f83ff 0%, #7c5cfc 100%) !important;
+  border: none !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 10px rgba(79,131,255,0.3) !important;
+  transition: all 0.2s !important;
+}
+.ant-btn-primary:hover:not(:disabled) {
+  opacity: 0.9 !important;
+  box-shadow: 0 4px 18px rgba(79,131,255,0.45) !important;
+  transform: translateY(-1px);
+}
+.ant-btn-primary:active:not(:disabled) { transform: translateY(0) !important; }
+
+/* Btn default */
+.ant-btn-default {
+  border-color: rgba(100,130,255,0.2) !important;
+  color: #8899bb !important;
+  font-weight: 500 !important;
+}
+.ant-btn-default:hover {
+  border-color: #4f83ff !important;
+  color: #4f83ff !important;
+}
+
+/* Btn danger */
+.ant-btn-dangerous {
+  background: rgba(255,45,109,0.08) !important;
+  border-color: rgba(255,45,109,0.3) !important;
+  color: #ff4d7a !important;
+}
+.ant-btn-dangerous:hover {
+  background: rgba(255,45,109,0.15) !important;
+  border-color: #ff2d6d !important;
+}
+
+/* Alert */
+.ant-alert { border-radius: 7px !important; }
+.ant-alert-info {
+  background: rgba(79,131,255,0.07) !important;
+  border-color: rgba(79,131,255,0.18) !important;
+}
+.ant-alert-info .ant-alert-icon { color: #4f83ff !important; }
+.ant-alert-info .ant-alert-message { color: #8899bb !important; font-size: 12px !important; }
+
+/* Descriptions */
+.ant-descriptions-bordered .ant-descriptions-item-label {
+  background: #192035 !important;
+  color: #4a5680 !important;
+  font-size: 12px !important;
+}
+.ant-descriptions-bordered .ant-descriptions-item-content {
+  background: transparent !important;
+  color: #e2e8f5 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+}
+.ant-descriptions-bordered .ant-descriptions-item-label,
+.ant-descriptions-bordered .ant-descriptions-item-content,
+.ant-descriptions-bordered .ant-descriptions-row {
+  border-color: rgba(100,130,255,0.1) !important;
+}
+.ant-descriptions-bordered { border-color: rgba(100,130,255,0.1) !important; }
+
+/* ── Utility classes ───────────────────────────────────── */
+.mono { font-family: 'JetBrains Mono', monospace !important; }
+
+.fade-in { animation: fade-in 0.25s ease both; }
+
+.glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Scan ping animation (radar effect on scan icon) ───── */
+.scan-ping-wrap { position: relative; display: inline-flex; }
+.scan-ping-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: #4f83ff;
+  animation: scan-ping 1.8s cubic-bezier(0,0,0.2,1) infinite;
+}
+
+/* ── Progress running bar ──────────────────────────────── */
+.progress-gradient-bar {
+  height: 2px;
+  background: linear-gradient(90deg, #4f83ff, #7c5cfc, #22d3ee, #4f83ff);
+  background-size: 300% 100%;
+  animation: gradient-slide 2s linear infinite;
+  border-radius: 1px;
+}
+
+/* ── Table row clickable hint ──────────────────────────── */
+.clickable-row { cursor: pointer; }
+.clickable-row:hover { color: #c0ccff !important; }

@@ -1,0 +1,217 @@
+{
+    "schema_version": "1.0",
+    "generated_at": "2026-06-30",
+    "note": "Normalized JSON seed generated from the pasted CVE list. Repeated header lines and duplicate CVE IDs were removed where identifiable. Rows from the pasted table keep the original table columns when available; the two requested additional CVEs are appended at the end.",
+    "fields": [
+        "cve",
+        "published",
+        "last_update",
+        "max_cvss_base_score",
+        "epss_score",
+        "cisa_kev_added",
+        "public_exploit_exists",
+        "summary"
+    ],
+    "vulnerabilities": [
+        {
+            "cve": "CVE-2025-27729",
+            "published": "2025-04-08",
+            "last_update": "2025-07-08",
+            "max_cvss_base_score": 7.8,
+            "epss_score": "0.74%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Use after free in Windows Shell allows an unauthorized attacker to execute code locally."
+        },
+        {
+            "cve": "CVE-2025-26674",
+            "published": "2025-04-08",
+            "last_update": "2025-07-09",
+            "max_cvss_base_score": 7.8,
+            "epss_score": "0.55%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Heap-based buffer overflow in Windows Media allows an authorized attacker to execute code locally."
+        },
+        {
+            "cve": "CVE-2025-26666",
+            "published": "2025-04-08",
+            "last_update": "2025-07-09",
+            "max_cvss_base_score": 7.8,
+            "epss_score": "0.55%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Heap-based buffer overflow in Windows Media allows an authorized attacker to execute code locally."
+        },
+        {
+            "cve": "CVE-2025-24072",
+            "published": "2025-03-11",
+            "last_update": "2025-07-07",
+            "max_cvss_base_score": 7.8,
+            "epss_score": "0.50%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Use after free in Microsoft Local Security Authority Server (lsasrv) allows an authorized attacker to elevate privileges locally."
+        },
+        {
+            "cve": "CVE-2025-24048",
+            "published": "2025-03-11",
+            "last_update": "2025-07-02",
+            "max_cvss_base_score": 7.8,
+            "epss_score": "0.50%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Heap-based buffer overflow in Role: Windows Hyper-V allows an authorized attacker to elevate privileges locally."
+        },
+        {
+            "cve": "CVE-2022-26937",
+            "published": "2022-05-10",
+            "last_update": "2025-01-02",
+            "max_cvss_base_score": 9.8,
+            "epss_score": "76.77%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": "Potential",
+            "summary": "Windows Network File System Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2022-23270",
+            "published": "2022-05-10",
+            "last_update": "2025-01-02",
+            "max_cvss_base_score": 9.3,
+            "epss_score": "73.10%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Windows Point-to-Point Tunneling Protocol Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2022-21972",
+            "published": "2022-05-10",
+            "last_update": "2025-01-02",
+            "max_cvss_base_score": 9.3,
+            "epss_score": "80.93%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Windows Point-to-Point Tunneling Protocol Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2022-21907",
+            "published": "2022-01-11",
+            "last_update": "2024-11-14",
+            "max_cvss_base_score": 10.0,
+            "epss_score": "92.79%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": "Potential",
+            "summary": "HTTP Protocol Stack Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2022-21898",
+            "published": "2022-01-11",
+            "last_update": "2024-11-14",
+            "max_cvss_base_score": 10.0,
+            "epss_score": "2.41%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "DirectX Graphics Kernel Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2022-21874",
+            "published": "2022-01-11",
+            "last_update": "2024-11-14",
+            "max_cvss_base_score": 10.0,
+            "epss_score": "2.34%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Windows Security Center API Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2021-43215",
+            "published": "2021-12-15",
+            "last_update": "2022-05-23",
+            "max_cvss_base_score": 9.8,
+            "epss_score": "2.71%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "iSNS Server Memory Corruption Vulnerability Can Lead to Remote Code Execution"
+        },
+        {
+            "cve": "CVE-2021-43217",
+            "published": "2021-12-15",
+            "last_update": "2022-07-12",
+            "max_cvss_base_score": 9.8,
+            "epss_score": "6.42%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Windows Encrypting File System (EFS) Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2018-8420",
+            "published": "2018-09-13",
+            "last_update": "2018-11-19",
+            "max_cvss_base_score": 9.3,
+            "epss_score": "48.90%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": "Potential",
+            "summary": "MS XML Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2018-8350",
+            "published": "2018-08-15",
+            "last_update": "2022-05-23",
+            "max_cvss_base_score": 9.3,
+            "epss_score": "18.59%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Windows PDF Remote Code Execution Vulnerability"
+        },
+        {
+            "cve": "CVE-2009-0568",
+            "published": "2009-06-10",
+            "last_update": "2026-04-23",
+            "max_cvss_base_score": 10.0,
+            "epss_score": "32.39%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "RPC Marshalling Engine Vulnerability"
+        },
+        {
+            "cve": "CVE-2009-1133",
+            "published": "2009-08-12",
+            "last_update": "2026-04-23",
+            "max_cvss_base_score": 9.3,
+            "epss_score": "30.50%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Remote Desktop Connection Heap Overflow Vulnerability"
+        },
+        {
+            "cve": "CVE-2009-0230",
+            "published": "2009-06-10",
+            "last_update": "2026-04-23",
+            "max_cvss_base_score": 9.0,
+            "epss_score": "34.88%",
+            "cisa_kev_added": null,
+            "public_exploit_exists": null,
+            "summary": "Print Spooler Load Library Vulnerability"
+        },
+        {
+            "cve": "CVE-2025-53772",
+            "published": "2025-08-12",
+            "last_update": null,
+            "max_cvss_base_score": 8.8,
+            "epss_score": null,
+            "cisa_kev_added": null,
+            "public_exploit_exists": "Yes",
+            "summary": "Deserialization of untrusted data in Web Deploy allows an authorized attacker to execute code over a network."
+        },
+        {
+            "cve": "CVE-2026-49975",
+            "published": "2026-06-08",
+            "last_update": "2026-06-29",
+            "max_cvss_base_score": 7.5,
+            "epss_score": null,
+            "cisa_kev_added": null,
+            "public_exploit_exists": "Yes",
+            "summary": "Memory Allocation with Excessive Size Value vulnerability in Apache HTTP Server's mod_http2 leads to denial of service via malicious HTTP requests. Public analyses associate the issue with the HTTP/2 Bomb technique affecting multiple HTTP/2 implementations including Apache httpd and, in broader testing, IIS."
+        }
+    ]
+}

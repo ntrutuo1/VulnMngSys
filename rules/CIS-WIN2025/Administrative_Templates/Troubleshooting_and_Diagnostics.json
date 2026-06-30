@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "85989f1dd68f",
+    "service": "Troubleshooting_and_Diagnostics",
+    "id": "18.9.49.5.1",
+    "title": "Ensure 'Microsoft Support Diagnostic Tool: Turn on MSDT interactive communication with support provider' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\ScriptedDiagnosticsProvider\\Policy\\DisableQueryRemoteServer",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\ScriptedDiagnosticsProvider\\Policy' -Name 'DisableQueryRemoteServer' -ErrorAction Stop).DisableQueryRemoteServer } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Troubleshooting and Diagnostics\\Microsoft Support Diagnostic Tool\\Microsoft Support Diagnostic Tool: Turn on MSDT interactive communication with support provider to 'Disabled'",
+    "reason": "In high-security environments, data must never be shared with third-parties without explicit consent, as it may contain sensitive information.",
+    "service_id": 18
+  },
+  {
+    "hash_id": "e5db53be625c",
+    "service": "Troubleshooting_and_Diagnostics",
+    "id": "18.9.49.11.1",
+    "title": "Ensure 'Enable/Disable PerfTrack' is set to 'Disabled'",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WDI\\{9c5a40da-b965-4fc3-8781-88dd50a6299d}\\ScenarioExecutionEnabled",
+    "expected": 0,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WDI\\{9c5a40da-b965-4fc3-8781-88dd50a6299d}' -Name 'ScenarioExecutionEnabled' -ErrorAction Stop).ScenarioExecutionEnabled } catch { 1 }",
+    "remediation": "Set GP: Computer Configuration\\Policies\\Administrative Templates\\System\\Troubleshooting and Diagnostics\\Windows Performance PerfTrack\\Enable/Disable PerfTrack to 'Disabled'",
+    "reason": "When enabled the aggregated data of a given event will be transmitted to Microsoft. Restricting the ability to execute PerfTrack limits the potential for data leakage.",
+    "service_id": 18
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "hash_id": "",
+    "service": "Print_Spooler",
+    "id": "5.1",
+    "title": "Ensure 'Print Spooler (Spooler)' is set to 'Disabled' (DC only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Spooler\\Start",
+    "expected": 4,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Spooler' -Name 'Start' -ErrorAction Stop).Start } catch { 2 }",
+    "remediation": "To establish the recommended configuration via GP, set the following UI path to Disabled: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\System Services\\Print Spooler",
+    "reason": "Disabling the Print Spooler (Spooler) service mitigates the PrintNightmare vulnerability (CVE-2021-34527) and other attacks against the service.",
+    "service_id": 5
+  },
+  {
+    "hash_id": "",
+    "service": "Print_Spooler",
+    "id": "5.2",
+    "title": "Ensure 'Print Spooler (Spooler)' is set to 'Disabled' (MS only)",
+    "check_type": "Registry",
+    "registry_path": "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Spooler\\Start",
+    "expected": 4,
+    "operator": "==",
+    "powershell_check": "try { (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Spooler' -Name 'Start' -ErrorAction Stop).Start } catch { 2 }",
+    "remediation": "To establish the recommended configuration via GP, set the following UI path to Disabled: Computer Configuration\\Policies\\Windows Settings\\Security Settings\\System Services\\Print Spooler",
+    "reason": "Disabling the Print Spooler (Spooler) service mitigates the PrintNightmare vulnerability (CVE-2021-34527) and other attacks against the service.",
+    "service_id": 5
+  }
+]

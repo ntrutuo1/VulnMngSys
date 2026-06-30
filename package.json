@@ -7,7 +7,7 @@
   "main": "electron-main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win portable"
+    "dist": "electron-builder --win nsis"
   },
   "dependencies": {
     "@babel/standalone": "^7.24.8",
@@ -22,26 +22,37 @@
   },
   "build": {
     "appId": "vn.vulnmngsys.desktop",
-    "productName": "Desktop",
+    "productName": "VulnMngSys",
+    "asar": false,
     "files": [
+      "backend_dist/backend.exe",
       "backend.py",
       "vms_backend/**/*",
       "electron-main.js",
       "web/**/*",
       "rules/**/*",
+      "windows_cve_dataset.json",
+      "vulnmngsys.sqlite3",
       "package.json"
     ],
     "win": {
       "signAndEditExecutable": false,
       "target": [
         {
-          "target": "portable",
+          "target": "nsis",
           "arch": [
             "x64"
           ]
         }
       ],
-      "artifactName": "Desktop.exe"
+      "artifactName": "VulnMngSys-Setup.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }
