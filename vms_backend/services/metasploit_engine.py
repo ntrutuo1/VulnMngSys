@@ -3,7 +3,8 @@ import re
 import socket
 from pathlib import Path
 
-from ..models import CveFinding
+from ..models import CveFinding, TARGET_SERVICES
+
 
 
 
@@ -35,6 +36,8 @@ class MetasploitEngine:
             self.job_service.update_status(scan.scan_id, stage="Matching CVEs and Metasploit modules", percent=88)
             scan_record = self.repository.find_scan(scan.scan_id) or {}
             service_context = self.detect_service_context(services, ports, software)
+            # Intersect with target services list to extract only the matching ones
+            service_context["services"] = service_context["services"] & TARGET_SERVICES.keys()
             service_context["target"] = scan_record.get("target") or os.environ.get("VMS_HOST") or self._get_local_ip()
             findings = self.evaluate_services(scan.scan_id, services, ports, software)
             cve_findings, modules_used = self.evaluate_cves(scan.scan_id, service_context, scan_options)
@@ -60,7 +63,6 @@ class MetasploitEngine:
             "RemoteRegistry": ("Remote Registry is running", "Remote Registry", "high", 25, "Disable Remote Registry unless remote administration requires it."),
             "TlntSvr": ("Telnet Server is running", "Telnet", "critical", 35, "Remove Telnet and use SSH, RDP with NLA, or VPN."),
             "SNMP": ("SNMP is running", "SNMP", "medium", 12, "Review community strings, restrict ACLs, or disable SNMP if unused."),
-            "WinRM": ("WinRM is running", "WinRM", "medium", 12, "Use HTTPS/Kerberos and restrict TrustedHosts."),
         }
         service_by_name = {service.get("Name"): service for service in services}
         for service_name, (evidence, affected, severity, score, patch_status) in risky_services.items():
@@ -69,7 +71,7 @@ class MetasploitEngine:
                 findings.append(CveFinding(self.repository.new_id(), scan_id, f"{evidence}: {service.get('DisplayName')}", severity, affected_service=affected, risk_score=score, patch_status=patch_status))
 
         open_ports = {int(item.get("LocalPort")) for item in ports if str(item.get("State", "")).lower() == "listen" and str(item.get("LocalPort", "")).isdigit()}
-        for port, title, severity, score in [(21, "FTP open", "high", 25), (23, "Telnet open", "critical", 35), (445, "SMB open", "medium", 12), (3389, "RDP open", "medium", 12), (5985, "WinRM HTTP open", "medium", 12)]:
+        for port, title, severity, score in [(21, "FTP open", "high", 25), (23, "Telnet open", "critical", 35)]:
             if port in open_ports:
                 findings.append(CveFinding(self.repository.new_id(), scan_id, f"TCP/{port} is listening", severity, affected_service=title, risk_score=score, patch_status="Close the port in Windows Firewall if unused, or restrict it to trusted admin IPs."))
 
@@ -90,16 +92,24 @@ class MetasploitEngine:
             detected.add("iis")
         if 445 in open_ports or "lanmanserver" in service_names:
             detected.add("smb")
-        if "webclient" in service_names or "webdav" in display_names:
+        if "webclient" in service_names or "webdav" in display_names or "webdav" in software_names:
             detected.add("webdav")
         if 443 in open_ports or "http/2" in software_names or "iis" in detected:
             detected.add("http2")
         if "msdepsvc" in service_names or "web deploy" in software_names or 8172 in open_ports:
             detected.add("web_deploy")
-        if 2049 in open_ports:
-            detected.add("nfs")
-        if 3389 in open_ports:
+        if "wsusservice" in service_names or "wsauserv" in service_names or any(port in open_ports for port in [8530, 8531]):
+            detected.add("wsus")
+        if 3389 in open_ports or "termservice" in service_names:
             detected.add("rdp")
+        if 2049 in open_ports or "nfs" in service_names:
+            detected.add("nfs")
+        if 135 in open_ports or "rpcss" in service_names:
+            detected.add("rpc")
+        if "spooler" in service_names:
+            detected.add("spooler")
+        if 5985 in open_ports or 5986 in open_ports or "winrm" in service_names:
+            detected.add("winrm")
         return {"services": detected, "ports": open_ports}
 
     def is_ignored(self, identifier: str) -> bool:
@@ -123,25 +133,40 @@ class MetasploitEngine:
     def evaluate_cves(self, scan_id: str, context: dict, scan_options: dict = None):
         findings = []
         modules_used = set()
-        for cve, module in self.cve_repository.find_for_services(context["services"]):
-            if module and (self.is_ignored(cve.cve_id) or self.is_ignored(module.module_path)):
-                continue
+        
+        # 1. Get all Metasploit modules directly mapped to the detected services
+        matched_module_pairs = self.cve_repository.find_modules_for_services(context["services"])
+        
+        for cve, module in matched_module_pairs:
             if not module:
+                continue
+            if self.is_ignored(cve.cve_id) or self.is_ignored(module.module_path):
+                continue
+                
+            modules_used.add(module.module_path)
+            
+            # Prevent execution of standard exploit modules during scan (except the 2 custom ones)
+            is_exploit = module.module_type == "exploit" or "exploit" in module.module_path.lower()
+            is_custom_module = "web_deploy" in module.module_path or "http2" in module.module_path or "53772" in module.module_path or "49975" in module.module_path
+            
+            if is_exploit and not is_custom_module:
+                severity = self._severity(cve.max_cvss_base_score)
+                risk_score = float(cve.max_cvss_base_score or 5)
                 findings.append(
                     CveFinding(
                         self.repository.new_id(),
                         scan_id,
-                        f"Detected service match: {', '.join(sorted(set(cve.service_keywords) & context['services']))}. {cve.summary}",
-                        self._severity(cve.max_cvss_base_score),
+                        f"Vulnerability match found: {cve.cve_id}. Metasploit exploit module {module.module_path} is available. (Exploit execution skipped for safety). Summary: {cve.summary}",
+                        severity,
                         cve_id=cve.cve_id,
                         affected_service=", ".join(cve.service_keywords),
-                        risk_score=float(cve.max_cvss_base_score or 5),
-                        patch_status="No Metasploit module was mapped for this CVE in the local database.",
+                        msf_module=module.module_path,
+                        risk_score=risk_score,
+                        patch_status=f"Remediation is available for {cve.cve_id}. Apply the latest security updates."
                     )
                 )
                 continue
-            
-            modules_used.add(module.module_path)
+
             options, missing = self.build_module_options(module, context, scan_options)
             if missing:
                 findings.append(
@@ -164,26 +189,35 @@ class MetasploitEngine:
             
             # Check for actual vulnerability confirmation (real evidence)
             is_vulnerable = False
-            if "The target is vulnerable." in evidence_text:
-                is_vulnerable = True
-            elif "[+]" in evidence_text or "vulnerable" in evidence_text.lower():
-                if "not vulnerable" not in evidence_text.lower() and "safe" not in evidence_text.lower():
+            vuln_line = ""
+            for line in evidence_text.splitlines():
+                line_str = line.strip()
+                if "The target is vulnerable." in line_str:
                     is_vulnerable = True
+                    vuln_line = line_str
+                    break
+                elif "[+]" in line_str or "vulnerable" in line_str.lower():
+                    if "not vulnerable" not in line_str.lower() and "safe" not in line_str.lower():
+                        is_vulnerable = True
+                        vuln_line = line_str
+                        break
             
             if is_vulnerable:
                 severity = self._severity(cve.max_cvss_base_score)
                 risk_score = float(cve.max_cvss_base_score or 5)
                 patch_status = f"Metasploit status: {result['status']}. Confirmed vulnerable. Review remediation for {cve.cve_id}."
+                evidence_text = vuln_line or "The target is vulnerable."
             else:
                 severity = "low"
                 risk_score = 0.0
                 patch_status = f"Metasploit status: {result['status']}. Scanned but vulnerability was NOT confirmed by the module output."
+                evidence_text = f"Scanned: {module.module_path} executed but vulnerability was not confirmed."
                 
             findings.append(
                 CveFinding(
                     self.repository.new_id(),
                     scan_id,
-                    evidence_text or f"Metasploit module {module.module_path} returned no output.",
+                    evidence_text,
                     severity,
                     cve_id=cve.cve_id,
                     affected_service=", ".join(cve.service_keywords),
@@ -192,6 +226,26 @@ class MetasploitEngine:
                     patch_status=patch_status,
                 )
             )
+
+        # 2. Append CVEs matched by services that have no Metasploit modules mapped in the database
+        all_cve_pairs = self.cve_repository.find_for_services(context["services"])
+        for cve, module in all_cve_pairs:
+            if not module:
+                if self.is_ignored(cve.cve_id):
+                    continue
+                findings.append(
+                    CveFinding(
+                        self.repository.new_id(),
+                        scan_id,
+                        f"Detected service match: {', '.join(sorted(set(cve.service_keywords) & context['services']))}. {cve.summary}",
+                        self._severity(cve.max_cvss_base_score),
+                        cve_id=cve.cve_id,
+                        affected_service=", ".join(cve.service_keywords),
+                        risk_score=float(cve.max_cvss_base_score or 5),
+                        patch_status="No Metasploit module was mapped for this CVE in the local database.",
+                    )
+                )
+                
         return findings, modules_used
 
     def _get_local_ip(self):
@@ -213,33 +267,44 @@ class MetasploitEngine:
         if scan_options:
             for k, v in scan_options.items():
                 if v is not None and v != "":
-                    options[k.upper()] = v
+                    upper_key = k.upper()
+                    if upper_key == "TARGET":
+                        # Skip overriding 'TARGET' option (which is the Metasploit target OS index) with target host IP
+                        continue
+                    options[upper_key] = v
                     
         options.setdefault("RHOSTS", target)
         options.setdefault("RHOST", target)
-        if "http2" in context["services"]:
+        
+        # Scope port/service specific options based on target module paths to prevent cross-pollution
+        if "http2_bomb" in module.module_path or "49975" in module.module_path:
             options.setdefault("RPORT", 443 if 443 in ports else 80)
             options.setdefault("SSL", 443 in ports)
             options.setdefault("MODE", "VERIFY")
-        if "web_deploy" in context["services"]:
-            options.setdefault("RPORT", 8172 if 8172 in ports else 80)
-            options.setdefault("SSL", 8172 in ports or 443 in ports)
+        elif "web_deploy" in module.module_path or "53772" in module.module_path:
+            options.setdefault("RPORT", 80)
+            options.setdefault("SSL", False)
             options.setdefault("TARGETURI", "/MSDEPLOYAGENTSERVICE")
-            options.setdefault("NTLM", True)
+        elif "smb" in module.module_path:
+            options.setdefault("RPORT", 445)
+        elif "rdp" in module.module_path:
+            options.setdefault("RPORT", 3389)
 
         rhost = options.get("RHOST") or options.get("RHOSTS") or "127.0.0.1"
+        is_web_deploy = "web_deploy" in module.module_path or "53772" in module.module_path
         for name, required in module.required_options.items():
             if required and not options.get(name):
                 if name == "LHOST":
-                    if rhost in {"127.0.0.1", "localhost", "::1"}:
-                        options[name] = "127.0.0.1"
-                    else:
-                        options[name] = self._get_local_ip()
+                    options[name] = rhost  # LHOST = RHOST luôn
                 elif name == "LPORT":
                     options[name] = 4444
                 elif name == "USERNAME":
+                    if is_web_deploy:
+                        continue
                     options[name] = os.environ.get("USERNAME") or "Administrator"
                 elif name == "PASSWORD":
+                    if is_web_deploy:
+                        continue
                     options[name] = "Password123"
                 elif name in {"THREADS", "CONNECTIONS"}:
                     options[name] = 7000
@@ -253,6 +318,7 @@ class MetasploitEngine:
                     options[name] = 5
                 elif name == "POOL":
                     options[name] = 50
+
 
         missing = [name for name, required in module.required_options.items() if required and not options.get(name)]
         return options, missing

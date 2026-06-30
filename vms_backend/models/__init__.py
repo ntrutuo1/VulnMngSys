@@ -5,5 +5,21 @@ from .metasploit_module import MetasploitModuleSpec
 from .scan_history import ScanHistory
 from .target_server import TargetServer
 from .windows_cve import WindowsCve
+from .exceptions import BusinessException, NotFoundException, ValidationException
+from .services import TARGET_SERVICES
 
-__all__ = ["CisFinding", "CisRule", "CveFinding", "MetasploitModuleSpec", "ScanHistory", "TargetServer", "WindowsCve"]
+__all__ = [
+    "CisFinding",
+    "CisRule",
+    "CveFinding",
+    "MetasploitModuleSpec",
+    "ScanHistory",
+    "TargetServer",
+    "WindowsCve",
+    "BusinessException",
+    "NotFoundException",
+    "ValidationException",
+    "TARGET_SERVICES",
+]
+
+

@@ -82,10 +82,16 @@ class CisAuditEngine:
         try:
             evidence = self.powershell_adapter.execute_cmd(rule.powershell_check, timeout=20).strip()
         except Exception:
-            return None
+            evidence = ""
+            
+        # Treat unavailable or non-existent registry paths/properties as empty string to evaluate them
         if self._is_unavailable(evidence):
-            return None
-        return self._compare(evidence, json.loads(rule.expected), rule.operator), evidence
+            actual_check = ""
+        else:
+            actual_check = evidence
+
+        passed = self._compare(actual_check, json.loads(rule.expected), rule.operator)
+        return passed, evidence
 
     def _is_unavailable(self, evidence: str):
         value = evidence.strip()

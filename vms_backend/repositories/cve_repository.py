@@ -146,6 +146,26 @@ class CveRepository:
                     rows.append(self._row_to_cve_module(row))
         return rows
 
+    def find_modules_for_services(self, service_names: set[str]):
+        if not service_names:
+            return []
+        modules = []
+        with self.database.session() as connection:
+            # Query all modules and their associated CVE information
+            for row in connection.execute(
+                """
+                SELECT m.cve_id, m.module_path, m.module_type, m.source_file, m.required_options, m.default_options,
+                       c.published, c.last_update, c.max_cvss_base_score, c.epss_score, c.cisa_kev_added, c.public_exploit_exists, c.summary, c.service_keywords
+                FROM metasploit_modules m
+                LEFT JOIN windows_cves c ON c.cve_id = m.cve_id
+                """
+            ):
+                keywords = set(json.loads(row["service_keywords"] or "[]"))
+                if keywords & service_names:
+                    modules.append(self._row_to_cve_module(row))
+        return modules
+
+
     def count_cves(self):
         with self.database.session() as connection:
             return connection.execute("SELECT COUNT(*) FROM windows_cves").fetchone()[0]
@@ -189,8 +209,13 @@ class CveRepository:
             "web_deploy": ["web deploy", "msdeploy", "ms deploy"],
             "nfs": ["network file system", " nfs "],
             "rdp": ["remote desktop", "rdp"],
+            "rpc": ["rpc ", "rpc marshalling"],
+            "spooler": ["spooler", "print spooler"],
+            "winrm": ["winrm", "ws-management"],
+            "wsus": ["wsus", "server update services"],
         }
         return [key for key, needles in mapping.items() if any(needle in text for needle in needles)]
+
 
 
     def _parse_options(self, text):
